@@ -1,0 +1,21 @@
+---
+sidebar_position: 3
+title: 'Quiz: Welcome to Agentic Infrastructure as Code'
+---
+
+import Quiz from '@site/src/components/Quiz';
+
+# Section 1 Quiz
+
+<Quiz questions={[
+  {prompt:'What is the first control in the governed workflow?',options:[{text:'A task contract',correct:true,explanation:'It defines scope, evidence, and stop conditions.'},{text:'A production deployment',correct:false,explanation:'Delivery comes after review.'},{text:'A model API key',correct:false,explanation:'The core path needs no model API.'}]},
+  {prompt:'Which action is outside the Section 1 preflight?',options:[{text:'Starting a Kind cluster',correct:true,explanation:'The preflight does not start a workload.'},{text:'Checking Docker version',correct:false,explanation:'This confirms the local runtime is reachable.'},{text:'Checking Terraform version',correct:false,explanation:'This is part of the tool check.'}]},
+  {prompt:'Select all durable evidence for an agentic IaC change.',multiSelect:true,options:[{text:'A reviewed diff',correct:true,explanation:'It shows the actual change.'},{text:'Validation output',correct:true,explanation:'It proves the check ran.'},{text:'A confident chat response',correct:false,explanation:'Confidence is not evidence.'},{text:'A defined stop condition',correct:true,explanation:'It limits unsafe extra action.'}]},
+  {prompt:'Why does the course use CLI checks?',options:[{text:'They work across compatible agents',correct:true,explanation:'The repository and CLI checks are portable.'},{text:'They make review unnecessary',correct:false,explanation:'Human review remains a control.'},{text:'They require a cloud account',correct:false,explanation:'The core path is local-first.'}]},
+  {prompt:'What is the course machine baseline?',options:[{text:'7 GB RAM and four logical CPUs',correct:true,explanation:'This is the supported local-first profile.'},{text:'16 GB RAM and a GPU',correct:false,explanation:'Neither is required for the core path.'},{text:'A cloud VM with admin access',correct:false,explanation:'The labs avoid mandatory cloud access.'}]},
+  {prompt:'What should happen after a task reaches its stop condition?',options:[{text:'Stop and present evidence for review',correct:true,explanation:'Do not expand the task without approval.'},{text:'Apply the change immediately',correct:false,explanation:'Approval is a separate decision.'},{text:'Start every related service',correct:false,explanation:'Use only the current lab profile.'}]},
+  {prompt:'Which statement about agent choice is true?',options:[{text:'Any compatible coding agent can be used for core labs',correct:true,explanation:'The labs grade artifacts and evidence, not a tool transcript.'},{text:'Codex is required for every lab',correct:false,explanation:'It is the demonstration client only.'},{text:'Hermes replaces all coding agents',correct:false,explanation:'Hermes is used later for operations.'}]},
+  {prompt:'What does GitOps describe in this project?',options:[{text:'Approved desired state',correct:true,explanation:'It reconciles the reviewed target state.'},{text:'A Terraform provider',correct:false,explanation:'Terraform providers manage resource APIs.'},{text:'A coding-agent transcript',correct:false,explanation:'A transcript is not the delivery record.'}]},
+  {prompt:'Why is starting all services during preflight a bad idea?',options:[{text:'It uses resources without proving the current task',correct:true,explanation:'The lab needs a workstation check only.'},{text:'Docker cannot run local services',correct:false,explanation:'Docker can run services when a later lab needs them.'},{text:'It prevents Git from working',correct:false,explanation:'These concerns are unrelated.'}]},
+  {prompt:'What will Section 2 add?',options:[{text:'A bounded repair with validation evidence',correct:true,explanation:'You will repair a broken Terraform module within a task contract.'},{text:'An autonomous production apply',correct:false,explanation:'The course never authorizes autonomous production apply.'},{text:'A mandatory paid agent subscription',correct:false,explanation:'The core workflow is agent-neutral.'}]}
+]} />

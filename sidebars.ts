@@ -11,8 +11,8 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: "Module 1",
-      items: ['m1-first-governed-agentic-iac-change/lesson', 'm1-first-governed-agentic-iac-change/lab', 'm1-first-governed-agentic-iac-change/quiz', 'm1-first-governed-agentic-iac-change/deep-dive'],
+      label: "Section 1 — Welcome to Agentic IaC",
+      items: ['m1-welcome-agentic-infrastructure-as-code/lesson', 'm1-welcome-agentic-infrastructure-as-code/lab', 'm1-welcome-agentic-infrastructure-as-code/quiz'],
     },
     {
       type: 'category',
