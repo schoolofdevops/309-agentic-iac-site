@@ -3,9 +3,13 @@ sidebar_position: 1
 title: 'Lesson: Make Your First Governed Agentic IaC Change'
 ---
 
+import Slides from '@site/src/components/Slides';
+
 # Make Your First Governed Agentic IaC Change
 
 An AI agent can inspect files, run tools, and edit a repository. That is useful, but it needs a boundary.
+
+<Slides src="decks/m1-governed-agentic-iac.html" title="Module 1 — Governed Agentic IaC Change" />
 
 ## The safe working loop
 
