@@ -34,6 +34,7 @@ const config: Config = {
       title: 'Agentic Infrastructure as Code',
       items: [
         { type: 'docSidebar', sidebarId: 'courseSidebar', position: 'left', label: 'Course' },
+        { to: '/docs/course-build-status', label: 'Build Status', position: 'left' },
         { href: 'https://github.com/schoolofdevops/309-agentic-iac', label: 'GitHub', position: 'right' },
       ],
     },

@@ -3,6 +3,7 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 const sidebars: SidebarsConfig = {
   courseSidebar: [
     'intro',
+    'course-build-status',
     {
       type: 'category',
       label: 'Setup',
