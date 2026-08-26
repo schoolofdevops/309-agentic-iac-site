@@ -59,8 +59,8 @@ export const slides = [
   divider(55, 'The Project and the Course Workflow'),
   content(56, 'Production AI Workload Platform', 'A small workload with realistic infrastructure.', 'pipeline', ['client', 'API|job ID', 'queue', 'worker|mock inference', 'result +|job state'], 'no GPU or model API required'),
   content(57, 'Infrastructure and Delivery Boundaries', 'Each tool owns a different lifecycle.', 'cards', ['Terraform|cloud-shaped base', 'Helm|workload package', 'Kubernetes|runtime state', 'Argo CD|reconciliation', 'Actions|plan + approval', 'Hermes|read-only observe'], 'one agent does not own everything'),
-  content(58, 'The 7 GB Local Resource Contract', 'Run only the current lab profile.', 'pipeline', ['7 GB RAM|4 CPU', 'local cloud|profile', 'Kind|profile', 'Argo CD|profile', 'cleanup'], 'active containers stay at or below 4 GiB'),
+  content(58, 'Low-Resource Lab Strategy', 'Use the smallest profile needed.', 'pipeline', ['tested|reference', 'one active|profile', 'small Kind|cluster', 'cleanup|before next', 'warning|not a gate'], '7 GB guides the lab design; it does not reject the learner'),
   content(59, 'The Course Project Progression', 'Every section leaves a reviewable artifact.', 'ladder', ['foundation', 'context +|tools', 'Terraform +|tests', 'Kubernetes +|GitOps', 'Hermes +|capstone'], 'one project grows through the course'),
   content(60, 'Agentic IaC Foundation Complete', 'You can explain, bound, and review the system.', 'hub', ['ready for lab', 'evolution', 'agency +|autonomy', 'six parts', 'agent loop', 'guardrails', 'tool choice'], 'next: prove the foundation yourself'),
-  content(61, 'Next: Prepare the Agentic IaC Workspace', 'Five small actions, one clear checkpoint.', 'icons', ['preflight', 'inspect', 'classify', 'bound', 'verify'], '', true),
+  content(61, 'Next: Prepare the Agentic IaC Workspace', 'Five human steps, one clean starting point.', 'icons', ['locate', 'preflight', 'discover', 'inspect', 'compare'], '', true),
 ];

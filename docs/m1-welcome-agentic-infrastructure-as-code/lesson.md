@@ -277,12 +277,12 @@ Across the course, you will grow a compact Production AI Workload Platform. A cl
 
 Terraform and OpenTofu describe the cloud-shaped foundation. Kubernetes runs the API and worker. Helm packages the workload. Argo CD reconciles approved Kubernetes desired state. GitHub Actions provides the baseline Terraform plan and approval workflow. Hermes later observes current evidence and prepares a read-only drift report.
 
-The core path needs no cloud account, model API key, GPU, or large model. Labs start only the profile needed for the current task. The supported baseline is 7 GB RAM, four logical CPUs, 20 GB free disk, and at most 4 GiB of active container workload.
+The core path needs no cloud account, model API key, GPU, or large model. Labs start only the profile needed for the current task. The course was tested with 7 GB RAM, four logical CPUs, 20 GB free disk, and at most 4 GiB of active container workload. These values are a reference profile, not a Section 1 admission gate. The preflight warns and continues when it detects less capacity.
 
 Each section adds one project capability and one engineering control. You will not only build the platform. You will build the task contracts, context, Skills, evaluations, policies, evidence, delivery gates, and operational reports needed to change it safely.
 
 ## What to do next
 
-Open the lab and verify your workspace. The lab runs a small preflight, maps the repository, and asks you to classify example actions by autonomy level. It does not apply infrastructure.
+Open the lab and verify your workspace. The lab shows your current directory, reports available tools and coding agents, and asks you to inspect the safe boundary for the first repair. It does not apply infrastructure.
 
-When the checkpoint passes, you will be ready for Section 2. There you will give a compatible coding agent its first bounded Terraform repair and review the evidence yourself.
+After the lab, you will be ready for Section 2. There you will give a compatible coding agent its first bounded Terraform repair and review the evidence yourself.

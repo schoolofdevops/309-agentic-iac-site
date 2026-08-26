@@ -19,7 +19,7 @@ sidebar_position: 2
 
 - The commercial, 12-section, agent-neutral curriculum is approved.
 - Coding-agent labs are portable across compatible agents. Codex is demonstrated; Hermes is the one named operational-agent hands-on section.
-- The 7 GB learner-machine baseline is the course constraint. Core labs use local tools only: no GPU, cloud account, or model API key.
+- The course is tested against a 7 GB learner-machine reference profile. Section 1 warns rather than rejects learners below it. Core labs use local tools only: no GPU, cloud account, or model API key.
 - P0's governed Terraform repair works with both Terraform and OpenTofu.
 - P1 has a local Terraform/OpenTofu lifecycle replay; P2 has a Kind/Helm smoke replay; P3 has a compact Argo CD synchronization replay.
 - Section 1 has a live-tested preflight lab, learner lesson, operator challenge, 15-question quiz, embedded 61-slide technical deck, and a complete slide-aligned voiceover script.

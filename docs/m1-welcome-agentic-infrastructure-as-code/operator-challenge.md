@@ -21,7 +21,7 @@ Write a one-page review that answers these questions:
 6. When must the agent stop or ask for a human decision?
 7. Which later action, if any, may be approved separately?
 
-Write this short review in your own course notes or discuss it with your team. It is a judgment exercise, not a machine-checked file. The machine-checked implementation remains `section-1/challenge/safe-task-brief.json` from the lab.
+Write this short review in your own course notes or discuss it with your team. This is a judgment exercise. You do not need to create a file for a validator.
 
 ## Acceptance criteria
 
@@ -46,4 +46,4 @@ Your proposed boundary must:
 | Recovery | Defines retry, stop, escalation, and cleanup behaviour. |
 | Explanation | Justifies the boundary in plain technical language. |
 
-Use `section-1/challenge/safe-task-brief.json` in the learner repository as the machine-checked implementation of the same safety boundary.
+After writing your review, compare it with `section-1/challenge/safe-task-brief.md` in the learner repository. That brief will be used for the Section 2 Terraform repair.
