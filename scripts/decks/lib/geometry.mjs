@@ -101,6 +101,12 @@ function targetInwardNormal(portName) {
   return {x: 0, y: -1};
 }
 
+function normalized(vector) {
+  const magnitude = Math.hypot(vector.x, vector.y);
+  if (magnitude === 0) return {x: 0, y: 0};
+  return {x: vector.x / magnitude, y: vector.y / magnitude};
+}
+
 function finalTangent(route) {
   const previous = route.kind === 'cubic' ? route.c2 : route.start;
   return {x: route.end.x - previous.x, y: route.end.y - previous.y};
@@ -114,11 +120,11 @@ export function validateEdge(edge, nodes, {clearance = 6} = {}) {
   if (!target) errors.push(`${edge.id}: target node ${edge.to} does not exist`);
   if (!source || !target) return errors;
 
-  let expectedStart;
-  let expectedEnd;
+  let expectedStart = edge.fromPoint;
+  let expectedEnd = edge.toPoint;
   try {
-    expectedStart = port(source, edge.fromPort);
-    expectedEnd = port(target, edge.toPort);
+    if (!expectedStart) expectedStart = port(source, edge.fromPort);
+    if (!expectedEnd) expectedEnd = port(target, edge.toPort);
   } catch (error) {
     errors.push(`${edge.id}: ${error.message}`);
     return errors;
@@ -132,7 +138,9 @@ export function validateEdge(edge, nodes, {clearance = 6} = {}) {
   }
 
   const tangent = finalTangent(edge.route);
-  const normal = targetInwardNormal(edge.toPort);
+  const normal = edge.toPoint
+    ? normalized({x: center(target).x - expectedEnd.x, y: center(target).y - expectedEnd.y})
+    : targetInwardNormal(edge.toPort);
   if (tangent.x * normal.x + tangent.y * normal.y <= 0) {
     errors.push(`${edge.id}: final tangent points away from target port ${edge.to}.${edge.toPort}`);
   }
