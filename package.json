@@ -8,7 +8,8 @@
     "swizzle": "docusaurus swizzle",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "deck:m1": "node scripts/decks/build-m1-deck.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",
