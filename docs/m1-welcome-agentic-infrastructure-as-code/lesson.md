@@ -3,9 +3,13 @@ sidebar_position: 1
 title: 'Welcome to Agentic Infrastructure as Code'
 ---
 
+import Slides from '@site/src/components/Slides';
+
 # Welcome to Agentic Infrastructure as Code
 
 Infrastructure changes are valuable only when another engineer can understand, review, and safely repeat them. AI can speed up the work. It does not remove this responsibility.
+
+<Slides src="decks/m1-welcome-agentic-iac.html" title="Section 1 — Welcome to Agentic IaC" />
 
 ## The project you will build
 

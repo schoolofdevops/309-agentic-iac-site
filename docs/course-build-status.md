@@ -11,9 +11,9 @@ sidebar_position: 2
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
 | Active phase | Phase 0 low-resource viability evidence, followed by Section 1 end-to-end production |
 | Active learner section | Section 1 — *Welcome to Agentic Infrastructure as Code* |
-| Current sequence | Validated lab → lesson and lab guide → technical deck → slide-aligned voiceover → quiz → learner QA |
-| Current blocker | None |
-| Last checkpoint | 25 August 2026 — P0 repair passed; fresh local P1, P2, and P3 replays were completed and cleaned up. |
+| Current sequence | Lab, lesson, guide, deck, draft voiceover, and quiz are complete; learner QA is next. |
+| Current blocker | No local headless browser is available for screenshot-based deck inspection. |
+| Last checkpoint | 26 August 2026 — the Section 1 preflight, deck, and draft voiceover passed their structural checks. |
 
 ## Completed checkpoints
 
@@ -22,6 +22,7 @@ sidebar_position: 2
 - The 7 GB learner-machine baseline is the course constraint. Core labs use local tools only: no GPU, cloud account, or model API key.
 - P0's governed Terraform repair works with both Terraform and OpenTofu.
 - P1 has a local Terraform/OpenTofu lifecycle replay; P2 has a Kind/Helm smoke replay; P3 has a compact Argo CD synchronization replay.
+- Section 1 now has a live-tested preflight lab, learner lesson and guide, 10-question quiz, embedded technical deck, and draft slide-aligned voiceover.
 
 ## Important evidence note
 
@@ -29,8 +30,8 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Reconcile the old site navigation to the approved 12-section course structure.
-2. Complete the remaining Phase 0 clean/warm evidence, including a full P4 sequential run.
-3. Build Section 1 in production order: lab proof, learner guide, lesson, deck, voiceover, quiz, and learner QA.
+1. Run Section 1 learner QA and visually inspect the deck when a browser renderer is available.
+2. Reconcile the old site navigation to the approved 12-section course structure.
+3. Complete the remaining Phase 0 clean/warm evidence, including a full P4 sequential run.
 
 The canonical record lives in the source repository at `planning/COURSE-BUILD-STATUS.md`.
