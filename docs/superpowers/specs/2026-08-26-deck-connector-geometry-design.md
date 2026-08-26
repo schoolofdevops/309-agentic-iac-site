@@ -1,12 +1,12 @@
 ---
-draft: true
+draft: false
 title: Deck Connector Geometry Design
 ---
 
 # Deck Connector Geometry Design
 
 **Date:** 26 August 2026
-**Status:** Approved in chat; awaiting written-spec review
+**Status:** Implemented and verified
 **Scope:** Module 1 deck correction and a reusable course-local deck generation pipeline
 
 ## Problem
