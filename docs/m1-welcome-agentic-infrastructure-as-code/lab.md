@@ -12,7 +12,7 @@ This lab verifies the small local toolset needed to begin the course. It does no
 - Confirm the 7 GB local-first learner profile.
 - Verify Git, Docker, Terraform, and OpenTofu.
 - Inspect the learner lab repository.
-- Choose a compatible coding agent for later labs.
+- Understand the instructor demonstration path for later agent tasks.
 
 ## Prerequisites
 
@@ -86,26 +86,15 @@ Observe the separation. `phase-0` contains internal feasibility fixtures.
 
 `section-1` contains the learner preflight. Later sections add only the tools and project capability they need.
 
-## PART IV - Choose your coding-agent path
+## PART IV - The instructor path: Codex
 
-Use any compatible coding agent in later labs: Codex, Claude Code, Goose, Cursor, GitHub Copilot, VS Code, or another agent with files and a terminal.
+In the course demonstrations, I use **Codex**. It is the instructor path you will see on screen.
 
-The lab checks evaluate repository evidence, not an agent transcript.
+You do not need an agent in this preflight lab. In Section 2, the agent task begins. You may follow the same task with Claude Code, Goose, Cursor, GitHub Copilot, VS Code, or another compatible coding agent.
 
-Create a local note with your choice.
+The required result stays the same for everyone: a bounded change, a visible diff, and Terraform/OpenTofu validation evidence. The course does not grade a chat transcript or a product-specific screen.
 
-```bash
-printf '%s\n' 'Chosen coding agent: <replace with your tool>' > .agent-choice.txt
-cat .agent-choice.txt
-```
-
-[ Expected output ]
-
-```text
-Chosen coding agent: <replace with your tool>
-```
-
-Replace the placeholder before moving on. This file is local to you and is not a graded course artifact.
+For now, continue when the preflight is green. We will configure and use Codex in the Section 2 demonstration.
 
 ## Troubleshooting
 
@@ -131,17 +120,7 @@ A validation result from one tool is not automatically evidence for the other.
 
 ## Teardown
 
-No runtime resources were created. Keep the cloned repository for the next lab. Remove only your local agent-choice note if you do not want it.
-
-```bash
-rm -f .agent-choice.txt
-```
-
-[ Expected output ]
-
-```text
-# no output
-```
+No runtime resources were created. Keep the cloned repository for the next lab.
 
 ## Summary
 
