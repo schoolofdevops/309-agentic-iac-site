@@ -407,7 +407,7 @@ Open the contact sheet and inspect all 61 tiles. Open slides 3, 6, 7, 10, 19, 23
 
 Set the design status to `Implemented and verified`. Check every completed plan checkbox. Record the final commands, connector count, slide count, and public verification URL at the bottom of the plan.
 
-- [ ] **Step 5: Commit, push, merge, and deploy**
+- [x] **Step 5: Commit, push, merge, and deploy**
 
 ```bash
 git add docs/superpowers static/decks scripts/decks tests/decks package.json .gitignore
@@ -417,7 +417,7 @@ git push origin m1-deck-geometry
 
 Fast-forward the site `main` branch only after the branch checks pass, then push `main` to trigger GitHub Pages.
 
-- [ ] **Step 6: Verify the deployment**
+- [x] **Step 6: Verify the deployment**
 
 Wait for the GitHub Pages workflow to complete successfully. Fetch the public lesson and deck, verify the new generated HTML contains connector metadata, render public slides 6 and 7 in Chrome, and compare them with the locally approved geometry.
 
@@ -428,4 +428,6 @@ Wait for the GitHub Pages workflow to complete successfully. Fetch the public le
 - `npm run build`: Docusaurus production build passed.
 - CourseSmith Module 1 numeric audit: PASS with 13 checks and the four previously reviewed warnings.
 - Visual QA: 61 final-fragment PNGs reviewed; slides 3, 6, 7, 10, 19, 23, 27, 30, 32, and 60 reviewed at full size.
-- Public verification URL: pending deployment.
+- GitHub Pages deployment: [workflow run 32947355155](https://github.com/schoolofdevops/309-agentic-iac-site/actions/runs/32947355155) completed successfully.
+- Public deck: [Module 1 deck](https://schoolofdevops.github.io/309-agentic-iac-site/decks/m1-agentic-iac-fundamentals.html). Its SHA-256 matches the committed deck, it contains all 141 connector metadata records, and public slides 6 and 7 were rendered and visually compared with the local captures.
+- Public lesson: [Agentic Infrastructure as Code Fundamentals](https://schoolofdevops.github.io/309-agentic-iac-site/docs/m1-welcome-agentic-infrastructure-as-code/lesson/).
