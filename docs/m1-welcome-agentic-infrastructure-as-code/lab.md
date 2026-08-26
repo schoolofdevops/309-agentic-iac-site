@@ -68,7 +68,7 @@ Your version numbers can differ. The important result is the final `PASS` line. 
 List the current lab areas.
 
 ```bash
-find phase-0 section-1 -maxdepth 2 -type d | sort
+command find phase-0 section-1 -maxdepth 1 -type d | sort
 ```
 
 [ Expected output ]
