@@ -15,24 +15,21 @@ DevOps, platform, SRE, cloud and infrastructure engineers, plus software and AI 
 
 ## Program at a glance
 
-| Module | Lesson | Lab | Lab validated | Quiz |
-|---|---|---|---|---|
-| Module 1 — Make Your First Governed Agentic IaC Change | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 2 — Model Infrastructure Before Generating It | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 3 — Design the Production AI Workload Platform | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 4 — Work Effectively with Claude Code, Codex, and Hermes | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 5 — Engineer Context and Memory for IaC Agents | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 6 — Build Agent Skills and Connect Trusted Context | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 7 — Harness Engineering with Superpowers | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 8 — Build the Cloud Foundation with Terraform | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 9 — Test, Secure, and Cost-Check Agent-Generated IaC | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 10 — Package and Run the AI Workload with Kubernetes and Helm | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 11 — Govern Deployment Through Git | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 12 — Operate the Platform with a Governed Hermes Agent | ⬜ | ⬜ | ⬜ | ⬜ |
-| Module 13 — Capstone: Ship a Governed AI Platform Change | ⬜ | ⬜ | ⬜ | ⬜ |
+| Section | Runtime | Status |
+|---|---:|---|
+| 1 — Agentic Infrastructure as Code Fundamentals | 1h 25m | Ready for review |
+| 2 — Governed Agent Workflows for IaC | 50m | Planned |
+| 3 — Plan Safe Infrastructure Changes | 50m | Planned |
+| 4 — Context, Memory, and Graph Engineering for IaC Agents | 1h 05m | Planned |
+| 5 — Agent Tools, Skills, and MCP for Infrastructure | 1h | Planned |
+| 6 — Engineer, Evaluate, and Optimize Reliable Agentic IaC Workflows | 1h | Planned |
+| 7 — Terraform and OpenTofu with AI Agents | 1h 25m | Planned |
+| 8 — Test, Secure, and Govern AI-Generated IaC | 1h 10m | Planned |
+| 9 — Kubernetes and Helm Delivery with AI Agents | 1h 20m | Planned |
+| 10 — GitOps and Human-Controlled Delivery | 1h 05m | Planned |
+| 11 — Hands-On Hermes for Governed Operations | 55m | Planned |
+| 12 — Capstone: Ship a Governed Infrastructure Change | 1h 20m | Planned |
 
 ## How to use this course
 
-Each module is a **Lesson** (concepts + analogies + diagrams), a **Lab** (copy-runnable, validated
-live), and a **Quiz**. Work them in order; the project spine — Build a Production AI Workload Platform from a governed infrastructure repository, adding one verified capability in every module. — grows across
-modules into the capstone.
+Each section combines focused concept videos, technical slides, a guided lab, an operator challenge, and a quiz. Work through them in order. The same compact production AI workload platform grows across the course, with one governed and reviewable capability added in each section.

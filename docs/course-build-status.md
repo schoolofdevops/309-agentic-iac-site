@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **In progress:** Section 1 production is active. This page is updated at material checkpoints; it is not a real-time job monitor.
+> **Review checkpoint:** Section 1 is built and validated locally. It is waiting for instructor review before Section 2 production begins.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Phase 0 low-resource viability evidence, followed by Section 1 end-to-end production |
-| Active learner section | Section 1 — *Welcome to Agentic Infrastructure as Code* |
-| Current sequence | Section 1 is published. Section 2 lab production is next. |
-| Current blocker | No local headless browser is available for screenshot-based deck inspection. |
-| Last checkpoint | 26 August 2026 — Section 1 passed learner QA and deployed to GitHub Pages. |
+| Active phase | Section 1 instructor review |
+| Active learner section | Section 1 — *Agentic Infrastructure as Code Fundamentals* |
+| Current sequence | Hold before Section 2 until the instructor accepts Section 1. |
+| Current blocker | Instructor review only |
+| Last checkpoint | 26 August 2026 — lesson, lab, challenge, quiz, 61-slide deck, and full voiceover script passed local production checks. |
 
 ## Completed checkpoints
 
@@ -22,7 +22,7 @@ sidebar_position: 2
 - The 7 GB learner-machine baseline is the course constraint. Core labs use local tools only: no GPU, cloud account, or model API key.
 - P0's governed Terraform repair works with both Terraform and OpenTofu.
 - P1 has a local Terraform/OpenTofu lifecycle replay; P2 has a Kind/Helm smoke replay; P3 has a compact Argo CD synchronization replay.
-- Section 1 is published with a live-tested preflight lab, learner lesson and guide, 10-question quiz, embedded technical deck, and draft slide-aligned voiceover.
+- Section 1 has a live-tested preflight lab, learner lesson, operator challenge, 15-question quiz, embedded 61-slide technical deck, and a complete slide-aligned voiceover script.
 
 ## Important evidence note
 
@@ -30,8 +30,8 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Build and validate the Section 2 governed Terraform-repair path.
-2. Reconcile the old site navigation to the approved 12-section course structure.
-3. Complete the remaining Phase 0 clean/warm evidence, including a full P4 sequential run.
+1. Instructor tests and accepts Section 1.
+2. Build and validate the Section 2 governed Terraform-repair path.
+3. Complete the remaining low-resource replay evidence where the course makes a support claim.
 
-The canonical record lives in the source repository at `planning/COURSE-BUILD-STATUS.md`.
+The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.

@@ -14,7 +14,7 @@ export interface EmbedProps {
  * Embeds a self-contained interactive (served from /static/sims/) as a responsive
  * inline player with a toolbar: native fullscreen toggle + open-in-new-tab link.
  */
-export default function Embed({ src, title = 'Interactive', ratio = '16 / 9' }: EmbedProps): JSX.Element {
+export default function Embed({ src, title = 'Interactive', ratio = '16 / 9' }: EmbedProps): React.JSX.Element {
   const url = useBaseUrl(src);
   const frameRef = useRef<HTMLDivElement>(null);
 

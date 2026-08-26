@@ -44,7 +44,7 @@ function Question({q, state, onToggle}: {q: QuizQuestion; state: State; onToggle
   );
 }
 
-export default function Quiz({questions}: {questions: QuizQuestion[]}): JSX.Element {
+export default function Quiz({questions}: {questions: QuizQuestion[]}): React.JSX.Element {
   const [states, setStates] = useState<State[]>(
     questions.map(() => ({selected: new Set<number>(), checked: false})),
   );

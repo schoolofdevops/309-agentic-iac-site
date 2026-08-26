@@ -14,7 +14,7 @@ export interface SlidesProps {
  * as a responsive 16:9 inline player, with a link to open it fullscreen in a new tab.
  * Each deck carries its own reveal.js + styles, so it is fully isolated from the docs theme.
  */
-export default function Slides({src, title = 'Slides'}: SlidesProps): JSX.Element {
+export default function Slides({src, title = 'Slides'}: SlidesProps): React.JSX.Element {
   const url = useBaseUrl(src);
   return (
     <div className={styles.deck}>
