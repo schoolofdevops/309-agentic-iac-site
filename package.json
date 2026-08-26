@@ -10,7 +10,8 @@
     "serve": "docusaurus serve",
     "typecheck": "tsc",
     "deck:m1": "node scripts/decks/build-m1-deck.mjs",
-    "deck:check": "node --test tests/decks/*.test.mjs && node scripts/decks/validate-deck.mjs static/decks/m1-agentic-iac-fundamentals.html --fresh"
+    "deck:check": "node --test tests/decks/*.test.mjs && node scripts/decks/validate-deck.mjs static/decks/m1-agentic-iac-fundamentals.html --fresh",
+    "deck:render:m1": "node scripts/decks/render-m1-deck.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",
