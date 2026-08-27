@@ -373,6 +373,23 @@ Add the external client and the missing relationships so a reviewer can trace:
 5. API to result store;
 6. API and worker runtime access to secret management.
 
+CALM uses `interacts` when an actor uses a system node. Add the client-to-API relationship with this shape:
+
+```json
+{
+  "unique-id": "client-calls-api",
+  "relationship-type": {
+    "interacts": {
+      "actor": "api-client",
+      "nodes": ["workload-api"]
+    }
+  },
+  "protocol": "HTTPS"
+}
+```
+
+Use `connects` for the service-to-service paths already demonstrated by the starter relationships.
+
 Give the client its own trust boundary. Keep each relationship reference consistent with a node `unique-id`.
 Use AMQP for the queue interfaces. Keep TLS as a separate security control, because a protocol label alone does not prove encryption.
 This file records architecture. It is not deployment configuration.
