@@ -539,10 +539,21 @@ Continue with the [capability admission challenge](./operator-challenge.md).
 
 ## Teardown
 
-Remove the temporary CLI directory.
+Remove the copied Terraform file.
 
 ```bash
-rm -rf /tmp/agentic-iac-section-5
+rm /tmp/agentic-iac-section-5/main.tf
+```
+
+[ Expected output ]
+
+```text
+```
+
+Remove the empty temporary directory.
+
+```bash
+rmdir /tmp/agentic-iac-section-5
 ```
 
 [ Expected output ]
