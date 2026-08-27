@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 4 are built, validated, deployed, and verified from the public learner path. Section 5 has passed strict learner QA and is at the publication gate.
+> **Published checkpoint:** Sections 1 through 5 are built, validated, deployed, and verified from the public learner path.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 5 publication and live verification |
-| Active learner section | Section 5 — *Connect Your IaC Agent to Tools, Skills, and MCP* |
-| Current sequence | Merge the validated Section 5 artifacts, deploy the site, and verify the public learner path. |
+| Active phase | Section 6 lab proof and design |
+| Active learner section | Section 6 — *Build, Test, and Optimize Reliable IaC Agent Workflows* |
+| Current sequence | Prove the Section 6 harness and evaluation path before content production. |
 | Current blocker | None. |
-| Last checkpoint | 27 August 2026 — Section 5 passed a context-free learner replay with zero findings, 34/34 durable lab tests, and exact local page and deck verification. |
+| Last checkpoint | 27 August 2026 — Section 5 deployed and live-verified through GitHub Pages workflow `33092035073`. |
 
 ## Completed checkpoints
 
@@ -41,8 +41,8 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Publish Section 5 and verify the live site and public learner artifacts.
-2. Begin Section 6 with its lab proof before learner content production.
+1. Prove the Section 6 harness and evaluation lab on the low-resource path.
+2. Build Section 6 completely after that proof passes.
 3. Complete later low-resource replay evidence where those sections make a support claim.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
