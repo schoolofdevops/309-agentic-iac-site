@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 6 are built, validated, deployed, and verified from the public learner path.
+> **Published checkpoint:** Sections 1 through 7 are built, validated, deployed, and verified from the public learner path.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 7 lab-first feasibility |
-| Active learner section | Section 7 — *Build Infrastructure with Terraform, OpenTofu, and AI Agents* |
-| Current sequence | Prove the modular local-cloud foundation with Terraform and OpenTofu before content production. |
+| Active phase | Section 8 lab-first feasibility |
+| Active learner section | Section 8 — *Test and Secure AI-Generated Infrastructure Code* |
+| Current sequence | Prove the Section 8 security and testing path before learner content production. |
 | Current blocker | None. |
-| Last checkpoint | 27 August 2026 — Section 6 deployed and live-verified through GitHub Pages workflow `33101630504`. |
+| Last checkpoint | 28 August 2026 — Section 7 deployed and live-verified through GitHub Pages workflow `33113247778`. |
 
 ## Completed checkpoints
 
@@ -39,6 +39,19 @@ sidebar_position: 2
 - A context-free learner reproduced the weak functional-only green result, the complete 2/4 rejection, the accepted Terraform and OpenTofu 4/4 results, optional RTK path, and guarded cleanup. The restored canonical clone passed all 51 labs tests.
 - The Section 6 deck contains 152 semantic nodes, 123 geometry-validated connectors, and 122 staged reveals. All slides passed a complete 1280 by 720 visual review; the full site passes TypeScript and production-build gates.
 - Section 6 is live. Its lesson, lab, operator challenge, deep dive, quiz, deck, build-status page, and public learner artifacts returned HTTP 200. Workflow `33101630504` deployed exact site commit `5525d95`, and the public 329,211-byte deck matches committed SHA-256 `06ceb32904c8ea1554dcad06dfb0c0195080b5c0e771367962bd6e73ed6fa10b`.
+- Section 7 has a human-first eight-resource local cloud lab, four-signal plan
+  challenge, eleven-lecture lesson, state and refactor deep dive, 15-question
+  quiz, 82-slide technical deck, and 82.4-minute slide-aligned voiceover.
+- Terraform 1.14.8 and OpenTofu 1.12.6 each completed create, direct reads,
+  declarative address move, in-place update, convergence, destroy, empty state,
+  and empty direct-API checks against the guarded local Floci endpoint.
+- The Section 7 deck contains 198 semantic nodes, 157 geometry-validated
+  connectors, and 156 staged reveals. All slides passed a complete 1280 by 720
+  visual review after evidence arrows were corrected and rerendered.
+- Section 7 is live. Its lesson, lab, operator challenge, deep dive, quiz, and
+  deck returned HTTP 200 after workflow `33113247778` deployed exact site commit
+  `53a1eb7`. The public 369,724-byte deck matches committed SHA-256
+  `4181cbf6dc3c6e2cf4d3927550e81661cb3be5230b801c4486dd503f6c6b8f05`.
 
 ## Important evidence note
 
@@ -46,8 +59,8 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Begin Section 7 with lab-first feasibility and evidence.
-2. Build Section 7 only after its supported versions and local proof are frozen.
+1. Begin Section 8 with lab-first testing and security feasibility evidence.
+2. Build Section 8 only after its supported tools and low-resource proof are frozen.
 3. Complete later low-resource replay evidence where those sections make a support claim.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
