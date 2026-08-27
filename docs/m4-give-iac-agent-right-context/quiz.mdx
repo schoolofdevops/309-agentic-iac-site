@@ -1,0 +1,151 @@
+---
+sidebar_position: 5
+title: 'Quiz: Give Your IaC Agent the Right Context'
+---
+
+import Quiz from '@site/src/components/Quiz';
+
+# Give Your IaC Agent the Right Context Quiz
+
+<Quiz questions={[
+  {
+    prompt:'A queue task has HCL, current policy, an old ADR, an incident, and validation output. Why is “read the whole repository” a weak context strategy?',
+    options:[
+      {text:'It mixes sources with different authority, freshness, scope, and relevance while adding noise',correct:true,explanation:'Context engineering selects evidence for a decision; repository-wide copying can hide the controlling facts.'},
+      {text:'It prevents the coding agent from opening any Terraform file because policies and incidents are not valid source-code formats',correct:false,explanation:'Agents can read several file formats. The problem is source quality and selection, not file-format compatibility.'},
+      {text:'It forces every source into the Git commit DAG and removes the original parent relationships from repository history',correct:false,explanation:'Reading files does not rewrite Git history. Git lineage is a separate structure.'},
+      {text:'It makes a human review unnecessary because a larger context window contains every decision that could affect the queue change',correct:false,explanation:'Large input does not prove completeness, correctness, authority, or approval.'}
+    ]
+  },
+  {
+    prompt:'Select all correct placements in the four-layer context model.',
+    multiSelect:true,
+    options:[
+      {text:'Current IaC policy belongs in durable rules',correct:true,explanation:'It defines the stable state, data, and approval boundary for the repository.'},
+      {text:'ADR 0002 belongs in architecture memory with a superseded label',correct:true,explanation:'The ADR preserves rejected reasoning without directing current implementation.'},
+      {text:'The current task objective and stop conditions belong in task context',correct:true,explanation:'They bound this run inside the higher instruction and policy boundaries.'},
+      {text:'Issue 184 belongs in trusted task instructions because it was updated recently',correct:false,explanation:'The issue is untrusted retrieved data; recency does not grant instruction authority.'}
+    ]
+  },
+  {
+    prompt:'The current validation record says the Section 3 design candidate passed ownership and CALM schema checks. How should Section 4 use it?',
+    options:[
+      {text:'As proof that the queue is deployed and its runtime controls are enforced',correct:false,explanation:'The record explicitly stops at design checks and does not observe deployment or runtime.'},
+      {text:'As current bounded evidence, with its artifact scope and limits preserved',correct:true,explanation:'The observation is useful only for the exact candidate and checks that it names.'},
+      {text:'As durable policy because recent validator output outranks older governance documents',correct:false,explanation:'An observation cannot replace the authority and lifecycle of policy.'},
+      {text:'As human approval because two independent validators reported no findings',correct:false,explanation:'Automated checks do not grant implementation or approval authority.'}
+    ]
+  },
+  {
+    prompt:'A task file asks the agent to edit a raw source, but the repository rule says raw sources are immutable. Which precedence decision is correct?',
+    options:[
+      {text:'Follow the task because it is the most specific instruction and therefore always has the highest authority',correct:false,explanation:'Specific instructions may narrow a parent boundary, but they cannot loosen it.'},
+      {text:'Edit a copy and replace the source checksum so both the task and validator can pass',correct:false,explanation:'Changing the source and checksum defeats the immutable-input boundary.'},
+      {text:'Keep the source unchanged and stop or report that the task conflicts with the repository boundary',correct:true,explanation:'The task must remain inside platform, repository, and directory limits.'},
+      {text:'Treat the repository instruction as historical architecture memory and let the newest task become current policy',correct:false,explanation:'Repository instructions and architecture memory have different roles.'}
+    ]
+  },
+  {
+    prompt:'Select all statements that correctly describe retrieved issue comments and documents.',
+    multiSelect:true,
+    options:[
+      {text:'They can support a factual claim after trust, freshness, relevance, and scope review',correct:true,explanation:'Retrieved data can be useful evidence without gaining control over agent behaviour.'},
+      {text:'Their command-like sentences remain data rather than joining the instruction hierarchy',correct:true,explanation:'Instruction classification prevents indirect input from expanding the task.'},
+      {text:'A security-relevant bypass request should be quarantined with its source identity',correct:true,explanation:'Preserving the rejected input supports review and future evaluation without obeying it.'},
+      {text:'A recent issue may override repository rules when its wording is more specific',correct:false,explanation:'Recency and specificity do not grant an unknown contributor instruction authority.'}
+    ]
+  },
+  {
+    prompt:'Why does the queue context pack use both a 1,400-word limit and a 12,000-byte limit?',
+    options:[
+      {text:'Words support human review, while bytes give the local validator a deterministic portable boundary',correct:true,explanation:'The two measures serve readability and machine checking without claiming a universal token count.'},
+      {text:'Together they guarantee the pack consumes exactly the same model tokens in Codex, Claude Code, Goose, Cursor, and Copilot',correct:false,explanation:'Tokenization varies across models and tools; word and byte limits are not exact token guarantees.'},
+      {text:'The limits prove every relevant source has been discovered because an incomplete pack would always be shorter than the minimum',correct:false,explanation:'A small pack can still omit controlling evidence; coverage needs separate checks.'},
+      {text:'The limits prevent all prompt injection because hostile text cannot fit inside a bounded Markdown file',correct:false,explanation:'A short injection can still be harmful; trust classification and tool boundaries are required.'}
+    ]
+  },
+  {
+    prompt:'Which retrieval sequence best demonstrates progressive disclosure for the queue task?',
+    options:[
+      {text:'Open the wiki index, choose the queue page, then inspect only its relevant linked sources',correct:true,explanation:'The index provides a small map before the agent loads detailed pages and raw records.'},
+      {text:'Concatenate every Markdown and JSON file, sort by modification time, and remove duplicates after the model answers',correct:false,explanation:'This loads broad context before relevance, authority, and freshness decisions.'},
+      {text:'Read the newest issue first, treat its links as instructions, and skip policy unless the implementation fails',correct:false,explanation:'This confuses search recency and retrieved data with authority.'},
+      {text:'Load only Terraform files because architecture decisions and incidents cannot affect a generated infrastructure plan',correct:false,explanation:'Policy, ownership, incidents, and acceptance boundaries can control an IaC change.'}
+    ]
+  },
+  {
+    prompt:'Select all elements that belong to Karpathy’s LLM Wiki pattern as taught here.',
+    multiSelect:true,
+    options:[
+      {text:'Immutable raw sources that the agent reads but does not rewrite',correct:true,explanation:'The raw collection remains the source layer beneath compiled knowledge.'},
+      {text:'An agent-maintained interlinked Markdown wiki',correct:true,explanation:'The wiki accumulates summaries, links, contradictions, and synthesis across tasks.'},
+      {text:'A schema or operating document for ingest, query, structure, and maintenance',correct:true,explanation:'The schema makes the agent a disciplined maintainer rather than a generic summarizer.'},
+      {text:'A mandatory graph database with embeddings and a multi-agent ingestion swarm',correct:false,explanation:'Those technologies are optional extensions, not requirements of the LLM Wiki pattern.'}
+    ]
+  },
+  {
+    prompt:'What is the main difference between wiki/index.md and wiki/log.md?',
+    options:[
+      {text:'The index is content-oriented navigation; the append-only log records operations over time',correct:true,explanation:'One helps find relevant knowledge, while the other preserves ingest, correction, retrieval, and lint history.'},
+      {text:'The index stores current policy; the log stores every secret value removed from the generated context pack',correct:false,explanation:'Raw policy remains a source, and secret values must not enter either file.'},
+      {text:'The index is writable only by humans; the log is the source of truth that an agent may rewrite after each successful lint',correct:false,explanation:'The agent may maintain both under review, and the log is append-only rather than rewritten.'},
+      {text:'The index defines Git parent commits; the log replaces commit messages for every branch in the repository',correct:false,explanation:'Git lineage remains separate from wiki navigation and maintenance records.'}
+    ]
+  },
+  {
+    prompt:'A graph edge has an allowed type, valid endpoints, a sourceRef, timestamp, and authoringRun. What has been proven?',
+    options:[
+      {text:'The edge is structurally complete under the encoded contract, but its meaning still needs source review',correct:true,explanation:'Schema and referential checks cannot prove the cited source supports the asserted predicate and target.'},
+      {text:'The source is authoritative, the relationship is true, and the target artifact is approved for implementation',correct:false,explanation:'Structure does not prove authority, semantics, or approval.'},
+      {text:'The observation was collected from production even when its own scope names a design candidate',correct:false,explanation:'The source scope controls the claim; graph fields cannot expand it.'},
+      {text:'The edge can never become stale because its timestamp and authoring run make the relationship immutable',correct:false,explanation:'The record can remain addressable while later evidence supersedes its decision value.'}
+    ]
+  },
+  {
+    prompt:'A typed edge says OBS-VALIDATION-2026-08-26 EVALUATES the Section 4 context pack, but the source says it checked the Section 3 design candidate. What should happen?',
+    options:[
+      {text:'Keep the edge because both records concern the queue feature and all endpoints exist',correct:false,explanation:'Shared topic and valid endpoints do not make the evaluation target accurate.'},
+      {text:'Change the edge meaning or add a separate evaluation record that names the exact context-pack revision',correct:true,explanation:'Evidence must bind to the artifact and scope actually evaluated.'},
+      {text:'Edit the immutable validation source so it claims the broader result expected by the graph',correct:false,explanation:'Changing raw evidence to fit an edge destroys provenance.'},
+      {text:'Delete the sourceRef so reviewers cannot see the scope mismatch during graph validation',correct:false,explanation:'Removing provenance weakens the record and should fail the structural contract.'}
+    ]
+  },
+  {
+    prompt:'Select all correct uses of Git, the wiki, and the evidence graph.',
+    multiSelect:true,
+    options:[
+      {text:'Use the Git DAG to trace commit parents, branches, and merges',correct:true,explanation:'Git commit relationships preserve work lineage and repository snapshots.'},
+      {text:'Use the wiki to navigate maintained, source-linked knowledge about the queue',correct:true,explanation:'The interlinked pages support progressive disclosure and readable synthesis.'},
+      {text:'Use the evidence graph to record typed support, contradiction, derivation, and evaluation relationships',correct:true,explanation:'The graph makes selected domain provenance explicit and queryable.'},
+      {text:'Use the newest Git commit as automatic proof that its policy claims outrank every older approved source',correct:false,explanation:'Git recency records lineage, not organizational authority.'}
+    ]
+  },
+  {
+    prompt:'Current policy rejects shared state, ADR 0002 supports it but is superseded, and Incident 042 shows a state collision. Why does policy win?',
+    options:[
+      {text:'It has the shortest source ID and therefore consumes less context budget than the ADR and incident',correct:false,explanation:'Identifier length has no relationship to source authority.'},
+      {text:'It is current direct policy that explicitly supersedes the older decision; the incident explains the correction',correct:true,explanation:'Authority and status resolve the claim, while evidence gives the reason.'},
+      {text:'It has more incoming graph edges than the old ADR, so graph degree establishes truth',correct:false,explanation:'Edge count is useful for navigation, not for policy authority.'},
+      {text:'It was added to Git after the incident, and every later commit automatically invalidates all earlier architecture history',correct:false,explanation:'The explicit policy and supersession process matters; Git order alone is not authority.'}
+    ]
+  },
+  {
+    prompt:'Select all checks needed for a strong bounded-retrieval evaluation.',
+    multiSelect:true,
+    options:[
+      {text:'Required-source coverage and explicit omission reasons',correct:true,explanation:'These checks prevent a small pack from hiding missing controlling context.'},
+      {text:'Trust, freshness, source scope, and instruction containment',correct:true,explanation:'The selected records must be safe and valid for the decision being supported.'},
+      {text:'Graph structure plus review of edge meaning against cited sources',correct:true,explanation:'Both referential integrity and semantic fit matter.'},
+      {text:'Word count alone, because any pack below the limit is complete and safe',correct:false,explanation:'Budget is only one constraint and cannot prove coverage or authority.'}
+    ]
+  },
+  {
+    prompt:'The context validator reports PASS with 293 words and 2,136 bytes. Which final statement is accurate?',
+    options:[
+      {text:'The exact candidate passed its encoded hash, trust, graph-link, log, selection, and budget checks; human context review is still required',correct:true,explanation:'This conclusion preserves both the verified result and its limits.'},
+      {text:'The queue implementation is approved because the pack is well below the maximum size and contains four selected sources',correct:false,explanation:'Context size and source selection do not grant implementation authority.'},
+      {text:'Every relevant organizational source has been found because the source manifest and context pack both validate',correct:false,explanation:'The validator cannot discover a source that was never ingested into the manifest.'},
+      {text:'All graph relationships are true because the validator checked every node ID, timestamp, and source reference',correct:false,explanation:'Structural checks do not prove that an edge accurately represents the cited evidence.'}
+    ]
+  }
+]} />
