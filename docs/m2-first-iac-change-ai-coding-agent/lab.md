@@ -144,7 +144,7 @@ cd ../..
 Run Codex against the repository and point it to the canonical task contract.
 
 ```bash
-codex exec --ephemeral --sandbox workspace-write --cd "$(pwd)" --color never "Read and follow the canonical task contract at ./section-2/task.md exactly. Inspect the repository rules and task contract before any edit. Respect all scope, forbidden-action, validation, evidence, and stop conditions. Do not make edits outside the task's allowed file. Stop after the required validation; do not apply, use state commands, credentials, or destructive actions."
+codex exec --ephemeral --sandbox workspace-write --cd "$(pwd)" --color never "Read and follow the canonical task contract at ./section-2/task.md exactly. Inspect the task contract and current files before any edit. Respect all scope, forbidden-action, validation, evidence, and stop conditions. Do not make edits outside the task's allowed file. Stop after the required validation; do not apply, use state commands, credentials, or destructive actions."
 ```
 
 [ Captured output from the course validation run ]

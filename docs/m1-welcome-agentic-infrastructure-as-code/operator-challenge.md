@@ -46,4 +46,5 @@ Your proposed boundary must:
 | Recovery | Defines retry, stop, escalation, and cleanup behaviour. |
 | Explanation | Justifies the boundary in plain technical language. |
 
-After writing your review, compare it with `section-1/challenge/safe-task-brief.md` in the learner repository. That brief will be used for the Section 2 Terraform repair.
+After writing your review, compare it with `section-2/task.md` in the learner
+repository. This is the complete task used for the Section 2 Terraform repair.
