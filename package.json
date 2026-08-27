@@ -12,10 +12,12 @@
     "deck:m1": "node scripts/decks/build-m1-deck.mjs",
     "deck:m2": "node scripts/decks/build-m2-deck.mjs",
     "deck:m3": "node scripts/decks/build-m3-deck.mjs",
-    "deck:check": "node --test tests/decks/*.test.mjs && node scripts/decks/validate-deck.mjs static/decks/m1-agentic-iac-fundamentals.html --fresh && node scripts/decks/validate-deck.mjs static/decks/m2-first-iac-change-ai-coding-agent.html --fresh && node scripts/decks/validate-deck.mjs static/decks/m3-plan-iac-before-agent-codes.html",
+    "deck:m4": "node scripts/decks/build-m4-deck.mjs",
+    "deck:check": "node --test tests/decks/*.test.mjs && node scripts/decks/validate-deck.mjs static/decks/m1-agentic-iac-fundamentals.html --fresh && node scripts/decks/validate-deck.mjs static/decks/m2-first-iac-change-ai-coding-agent.html --fresh && node scripts/decks/validate-deck.mjs static/decks/m3-plan-iac-before-agent-codes.html && node scripts/decks/validate-deck.mjs static/decks/m4-give-iac-agent-right-context.html",
     "deck:render:m1": "node scripts/decks/render-m1-deck.mjs",
     "deck:render:m2": "node scripts/decks/render-m2-deck.mjs",
-    "deck:render:m3": "node scripts/decks/render-m3-deck.mjs"
+    "deck:render:m3": "node scripts/decks/render-m3-deck.mjs",
+    "deck:render:m4": "node scripts/decks/render-m4-deck.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",
