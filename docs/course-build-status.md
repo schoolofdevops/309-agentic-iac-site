@@ -10,8 +10,8 @@ sidebar_position: 2
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
 | Active phase | Section 7 lab-first feasibility |
-| Active learner section | Section 6 — *Build, Test, and Optimize Reliable IaC Agent Workflows* |
-| Current sequence | Prove the Section 7 policy and PR-automation lab before content production. |
+| Active learner section | Section 7 — *Build Infrastructure with Terraform, OpenTofu, and AI Agents* |
+| Current sequence | Prove the modular local-cloud foundation with Terraform and OpenTofu before content production. |
 | Current blocker | None. |
 | Last checkpoint | 27 August 2026 — Section 6 deployed and live-verified through GitHub Pages workflow `33101630504`. |
 
