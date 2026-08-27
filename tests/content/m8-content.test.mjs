@@ -55,7 +55,7 @@ test('Section 8 teaches the nine approved lectures in exact order and at full de
 test('Section 8 deep dive covers evaluator internals and proof boundaries', () => {
   const deep = read('deep-dive.md');
   assert.match(deep, /sidebar_position: 4/);
-  assert.match(deep, /sidebar_label: 'Deep Dive \(Part 2\)'/);
+  assert.match(deep, /sidebar_label: 'Deep Dive: When Green IaC Checks Are Wrong'/);
   assert(words(deep) >= 2200, `deep dive has only ${words(deep)} substantive words`);
 
   for (const term of [
@@ -76,10 +76,23 @@ test('Section 8 deep dive covers evaluator internals and proof boundaries', () =
   ]) assert.match(deep, new RegExp(term, 'i'), `deep dive must cover ${term}`);
 
   const commandBlocks = (deep.match(/```bash\n/g) || []).length;
-  const validatedBlocks = (deep.match(/\*\*Validated (?:output|result)\*\*/g) || []).length;
+  const validatedBlocks = (deep.match(/\*\*(?:Validated (?:output|result)|Output structure)\*\*/g) || []).length;
   assert.equal(commandBlocks, validatedBlocks, 'every deep-dive command needs validated output');
   assert.doesNotMatch(deep, /placeholder|folded in during live lab validation/i);
   assert.match(deep, /:::tip\[Where you will use this\]/);
+});
+
+test('Section 8 keeps the teardown recovery and learner navigation complete', () => {
+  const lab = read('lab.md');
+  const deep = read('deep-dive.md');
+  const challenge = read('operator-challenge.md');
+
+  assert.match(lab, /command ls -1 section-8/);
+  assert.match(deep, /Run the baseline with Terraform/);
+  assert.match(deep, /Run the repaired pipeline/);
+  assert.match(deep, /Compare the OpenTofu evidence/);
+  assert.match(deep, /Your hashes will not match a recording or another run/);
+  assert.match(challenge, /section-8\/challenge\/answer-key\.md/);
 });
 
 test('Section 8 quiz has fifteen scenarios, at least five multi-selects, and complete explanations', () => {

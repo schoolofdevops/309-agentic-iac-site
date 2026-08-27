@@ -74,7 +74,7 @@ Your path will be different. It should be the root of the learner labs clone.
 List the Section 8 files.
 
 ```bash
-ls -1 section-8
+command ls -1 section-8
 ```
 
 [ Expected output ]

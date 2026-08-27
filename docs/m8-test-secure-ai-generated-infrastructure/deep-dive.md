@@ -1,7 +1,7 @@
 ---
 sidebar_position: 4
 title: 'Deep Dive: When Green IaC Checks Are Wrong'
-sidebar_label: 'Deep Dive (Part 2)'
+sidebar_label: 'Deep Dive: When Green IaC Checks Are Wrong'
 ---
 
 # Deep Dive: When Green IaC Checks Are Wrong
@@ -10,7 +10,15 @@ The lab showed a rejected starter, a repaired five-resource candidate, and a pla
 
 :::info[Where this picks up]
 
-Begin at the labs repository after the Section 8 lab. Keep the rejected baseline and repaired Terraform evidence while you complete this page. If you already ran the lab teardown, repeat the lab's **Run the baseline with Terraform** and **Run the repaired pipeline** steps, then return here. Re-running is safe because the runner creates a new local evidence directory, uses `-refresh=false`, and performs no environment operation. Do not continue if your source is half-repaired; restore either the starter or the reviewed repaired candidate first.
+Begin at the labs repository after the Section 8 lab. Keep the rejected
+baseline, repaired Terraform, and repaired OpenTofu evidence while you complete
+this page. If you already ran the lab teardown, repeat these three lab steps:
+**Run the baseline with Terraform**, **Run the repaired pipeline**, and
+**Compare the OpenTofu evidence**. Then return here. Re-running is safe because
+the runner creates a new local evidence directory, uses `-refresh=false`, and
+performs no environment operation. Do not continue if your source is
+half-repaired; restore either the starter or the reviewed repaired candidate
+first.
 
 :::
 
@@ -277,26 +285,43 @@ Inspect the core identities from both Section 8 reports.
 jq '{engine, source_sha256, evaluator_sha256, plan_sha256, lockfile, decision}' /tmp/agentic-iac-section-8-baseline/evidence-report.json /tmp/agentic-iac-section-8-repaired/evidence-report.json
 ```
 
-**Validated output**
+**Output structure**
 
 ```text
 {
   "engine": "terraform",
-  "source_sha256": "fb7eb906bfd6b1d7e14a5d06fbfb37bb2f248dbcdd0f53087185e873229d4d55",
-  "evaluator_sha256": "a4fd12ba0f7c4c7d0bac129c32e6fcb64ce81c3509b3ca48c22341b24689075e",
-  "plan_sha256": "bf113486c0116970e3ce26168b7a8056998e30c4f7f16842ffd6cca87eae262f",
+  "source_sha256": "<starter source hash>",
+  "evaluator_sha256": "<evaluator hash>",
+  "plan_sha256": "<this run's plan hash>",
+  "lockfile": {
+    "source_sha256": "<source lock hash>",
+    "effective_sha256": "<effective lock hash>",
+    "rewritten": false
+  },
   "decision": "REJECTED"
 }
 {
   "engine": "terraform",
-  "source_sha256": "0b9fe15b59b876de3837aa7e94f8fc38000581f2d642fe4ed25f0b9b5cbe7a9f",
-  "evaluator_sha256": "a4fd12ba0f7c4c7d0bac129c32e6fcb64ce81c3509b3ca48c22341b24689075e",
-  "plan_sha256": "b47ef9a09442bc347931f2a31b85552b57f06232b622bad8ceb4c363dca4a042",
+  "source_sha256": "<repaired source hash>",
+  "evaluator_sha256": "<same evaluator hash>",
+  "plan_sha256": "<this run's different plan hash>",
+  "lockfile": {
+    "source_sha256": "<source lock hash>",
+    "effective_sha256": "<effective lock hash>",
+    "rewritten": false
+  },
   "decision": "READY_FOR_HUMAN_REVIEW"
 }
 ```
 
-The repaired source hash should differ from the starter. The evaluator hash should remain the same if the pipeline itself was not changed. The plan hash should differ because the resource shape and values changed. If the evaluator hash changes during a repair limited to Terraform and policy inputs, stop and review the scope violation.
+Your hashes will not match a recording or another run. The rendered plan
+contains run metadata, so its byte hash can change even when the stable plan
+facts match. Check the relationships: the repaired source hash should differ
+from the starter, while the evaluator hash should remain the same if the
+pipeline itself was not changed. The plan hashes should be present and should
+refer to the reports you are reviewing. If the evaluator hash changes during a
+repair limited to Terraform and policy inputs, stop and review the scope
+violation.
 
 Provenance also needs repository identity: commit, branch or candidate reference, clean or dirty status, and the precise file scope included in the source hash. The Section 8 runner hashes the starter, policy, scanner, adversarial, and fixture inputs. It separately hashes its own evaluator source. Document exclusions such as generated `.terraform` directories and evidence output.
 

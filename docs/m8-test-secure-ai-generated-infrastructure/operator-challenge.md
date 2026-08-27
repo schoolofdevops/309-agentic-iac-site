@@ -53,4 +53,8 @@ provenance, and approval. Do not approve an apply, merge, accepted risk, or
 production operation.
 
 The learner repository contains a separate answer key. Complete your verdict
-before opening it.
+before opening it. Then compare your reasoning with:
+
+```bash
+sed -n '1,240p' section-8/challenge/answer-key.md
+```
