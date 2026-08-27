@@ -15,6 +15,10 @@ Install tools when the course first uses them. You do not need the complete tool
 | One compatible coding agent | Section 2 | Use the version command supplied by that agent. |
 | Terraform | Section 2 | `terraform version` |
 | OpenTofu | Section 2 | `tofu version` |
+| TFLint | Section 8 | `tflint --version` |
+| Trivy | Section 8 | `trivy --version` |
+| OPA | Section 8 | `opa version` |
+| Conftest | Section 8 | `conftest --version` |
 | Docker-compatible runtime | Later local runtime labs | `docker version` |
 | kubectl and Kind | Kubernetes section | `kubectl version --client` and `kind version` |
 | Helm | Kubernetes section | `helm version --short` |
@@ -57,6 +61,20 @@ used Terraform 1.14.8 and OpenTofu 1.12.6. A later compatible patch release is
 also suitable.
 
 Run the preflight again after installing a tool. Confirm that its row changes to `AVAILABLE`.
+
+## What to install before Section 8
+
+Section 8 adds four local inspection tools:
+
+1. TFLint 0.64 for Terraform language lint;
+2. Trivy 0.72 for Terraform misconfiguration checks;
+3. OPA 1.19 for Rego policy unit tests;
+4. Conftest 0.69 for policy checks over the rendered plan JSON.
+
+The validated lab used those exact minor versions. The first Terraform or
+OpenTofu initialization may download the AWS provider. TFLint and Trivy may
+also download their plugin or check bundle. The lab does not contact a cloud
+API and does not require a cloud credential.
 
 ## Troubleshooting
 

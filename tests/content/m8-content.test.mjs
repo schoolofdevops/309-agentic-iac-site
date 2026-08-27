@@ -76,8 +76,9 @@ test('Section 8 deep dive covers evaluator internals and proof boundaries', () =
   ]) assert.match(deep, new RegExp(term, 'i'), `deep dive must cover ${term}`);
 
   const commandBlocks = (deep.match(/```bash\n/g) || []).length;
-  const expectedBlocks = (deep.match(/\*\*Expected output\*\*\n\n```text\n<expected output — folded in during live lab validation>/g) || []).length;
-  assert.equal(commandBlocks, expectedBlocks, 'every deep-dive command needs an expected-output placeholder');
+  const validatedBlocks = (deep.match(/\*\*Validated (?:output|result)\*\*/g) || []).length;
+  assert.equal(commandBlocks, validatedBlocks, 'every deep-dive command needs validated output');
+  assert.doesNotMatch(deep, /placeholder|folded in during live lab validation/i);
   assert.match(deep, /:::tip\[Where you will use this\]/);
 });
 

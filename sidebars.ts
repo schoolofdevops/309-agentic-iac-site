@@ -85,6 +85,17 @@ const sidebars: SidebarsConfig = {
         'm7-build-infrastructure-terraform-opentofu-ai/quiz',
       ],
     },
+    {
+      type: 'category',
+      label: 'Section 8 — Test and Secure AI-Generated Infrastructure Code',
+      items: [
+        'm8-test-secure-ai-generated-infrastructure/lesson',
+        'm8-test-secure-ai-generated-infrastructure/lab',
+        'm8-test-secure-ai-generated-infrastructure/operator-challenge',
+        'm8-test-secure-ai-generated-infrastructure/deep-dive',
+        'm8-test-secure-ai-generated-infrastructure/quiz',
+      ],
+    },
   ],
 };
 
