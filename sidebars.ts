@@ -19,6 +19,17 @@ const sidebars: SidebarsConfig = {
         'm1-welcome-agentic-infrastructure-as-code/quiz',
       ],
     },
+    {
+      type: 'category',
+      label: 'Section 2 — Governed Agent Workflows for IaC',
+      items: [
+        'm2-agentic-iac-fundamentals/lesson',
+        'm2-agentic-iac-fundamentals/lab',
+        'm2-agentic-iac-fundamentals/operator-challenge',
+        'm2-agentic-iac-fundamentals/deep-dive',
+        'm2-agentic-iac-fundamentals/quiz',
+      ],
+    },
   ],
 };
 
