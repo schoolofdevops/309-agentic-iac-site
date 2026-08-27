@@ -34,8 +34,11 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Section 3 — Plan Your IaC Change Before the Agent Writes Code',
       items: [
+        'm3-plan-iac-before-agent-codes/lesson',
         'm3-plan-iac-before-agent-codes/lab',
         'm3-plan-iac-before-agent-codes/operator-challenge',
+        'm3-plan-iac-before-agent-codes/deep-dive',
+        'm3-plan-iac-before-agent-codes/quiz',
       ],
     },
   ],
