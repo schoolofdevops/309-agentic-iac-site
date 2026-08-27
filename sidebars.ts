@@ -52,6 +52,14 @@ const sidebars: SidebarsConfig = {
         'm4-give-iac-agent-right-context/quiz',
       ],
     },
+    {
+      type: 'category',
+      label: 'Section 5 — Connect Your IaC Agent to Tools, Skills, and MCP',
+      items: [
+        'm5-connect-iac-agent-tools-skills-mcp/lab',
+        'm5-connect-iac-agent-tools-skills-mcp/operator-challenge',
+      ],
+    },
   ],
 };
 
