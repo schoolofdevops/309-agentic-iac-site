@@ -4,11 +4,15 @@ title: 'Test and Secure AI-Generated Infrastructure Code'
 description: Build a layered evidence pipeline for generated Terraform and OpenTofu before a human reviews the plan.
 ---
 
+import Slides from '@site/src/components/Slides';
+
 # Test and Secure AI-Generated Infrastructure Code
 
 An agent returns a small Terraform change. The code is formatted. `terraform validate` is green. The agent says the work is safe. A quick review still finds an S3 public-access block with all four controls disabled, an IAM policy with `Action = "*"` and `Resource = "*"`, an unencrypted queue, and an unused Elastic IP. The policy check is green only because its rule reads a field that does not exist in the rendered plan.
 
 This is the problem for this section. Generated infrastructure code is an **untrusted candidate**, even when it looks clean and the agent sounds confident. We will build several independent checks, preserve their outputs, and connect every decision to the exact source, evaluator, plan, lock file, and tool version that produced it. The pipeline stops at `READY_FOR_HUMAN_REVIEW`. A person still reviews risk and decides what happens next.
+
+<Slides src="decks/m8-test-secure-ai-generated-infrastructure.html" title="Section 8: Test and Secure AI-Generated Infrastructure Code" />
 
 :::info[The working example]
 

@@ -134,7 +134,10 @@ function renderNode(node, index, fragments) {
 
 export function renderDiagram(diagram) {
   if (diagram.errors.length) throw new Error(`invalid ${diagram.kind} diagram:\n${diagram.errors.join('\n')}`);
-  const edges = `<g class="semantic-edges" filter="url(#rough)" fill="none" stroke="${GRAY}" stroke-width="2.1">${diagram.edges.map(renderEdge).join('')}</g>`;
+  // Keep connectors crisp. The rough filter can clip short paths and their
+  // arrowheads even when the geometry is valid, which makes causal direction
+  // disappear in the rendered deck. Boxes retain the hand-drawn treatment.
+  const edges = `<g class="semantic-edges" fill="none" stroke="${GRAY}" stroke-width="2.1">${diagram.edges.map(renderEdge).join('')}</g>`;
   const nodes = diagram.nodes.map((node, index) => renderNode(node, index, diagram.fragments)).join('');
   return `${edges}${nodes}`;
 }
