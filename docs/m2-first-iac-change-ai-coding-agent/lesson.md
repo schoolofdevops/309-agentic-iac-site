@@ -3,13 +3,17 @@ sidebar_position: 1
 title: 'Build Your First IaC Change with an AI Coding Agent'
 ---
 
+import Slides from '@site/src/components/Slides';
+
 # Build Your First IaC Change with an AI Coding Agent
 
 An infrastructure request often arrives as one sentence: “Fix the Terraform.” A capable coding agent can turn that sentence into a change very quickly. Speed is useful only when the agent also knows what it may inspect, what it may change, how it must prove the result, and where it must stop.
 
 This section turns a vague request into a governed workflow. The example is small: repair one missing Terraform resource and validate it with Terraform and OpenTofu. The engineering pattern is much larger. You can use the same pattern for a module upgrade, Helm change, policy repair, or GitOps pull request.
 
-## 1. From a request to an agent task
+<Slides src="decks/m2-first-iac-change-ai-coding-agent.html" title="Section 2: Build Your First IaC Change with an AI Coding Agent" />
+
+## How Do You Turn an IaC Request into an Agent Task?
 
 “Fix the Terraform” states a concern, not an executable task. It does not name the defect, the allowed files, the desired end state, or the actions that are too risky. Two engineers can read it differently. An agent can do the same, but much faster and across more files.
 
@@ -27,7 +31,7 @@ A useful task converts intent into a testable contract:
 
 This is more precise than a long prompt. The task is a repository artifact. A human can review it, an agent can follow it, and CI can reuse its deterministic checks.
 
-## 2. Task contracts for infrastructure work
+## What Is an IaC Task Contract?
 
 A strong infrastructure task contract has seven parts.
 
@@ -45,7 +49,7 @@ Write forbidden actions as explicit verbs. “Be careful” is not a control. �
 
 Stop conditions are also part of normal success. If the only valid repair needs a second file, the correct result is not a creative workaround. The correct result is a short escalation that names the missing authority.
 
-## 3. Inspect before you change
+## What Should an IaC Agent Inspect Before It Changes Code?
 
 An agent should build a current view of the work before editing. For IaC, inspection normally covers five areas:
 
@@ -70,7 +74,7 @@ A managed resource "random_id" "platform" has not been declared in the root modu
 
 The message supports a narrow hypothesis: the output references a resource declaration that is absent. It does not authorize changing the output, applying infrastructure, or adding a cloud provider.
 
-## 4. Facts, assumptions, plans, and checkpoints
+## How Do Plans, Assumptions, and Human Checkpoints Work?
 
 Agents work better when facts and assumptions are separated before the change.
 
@@ -91,7 +95,7 @@ A plan explains the next actions. It is useful evidence of intent, but it is not
 
 Place a human checkpoint before an action that changes the risk class. Editing one isolated file and validating locally is bounded execution. Applying to an environment, accessing credentials, widening the file scope, or accepting a replacement plan requires a separate decision. Do not hide that decision inside an earlier approval to “fix” the module.
 
-## 5. The governed change loop
+## How Does a Safe IaC Agent Change Loop Work?
 
 The working loop is `inspect → propose → change → validate → review → stop`. Each transition needs an allowed action and a result that can be observed.
 
@@ -117,7 +121,7 @@ Notice what is missing. There is no transition from `Authorized` or `Validated` 
 
 Validation can return to the change step, but retry must be bounded. A retry is reasonable when the error is in scope and the next change remains inside the approved file. Stop when the same failure repeats, the evidence conflicts, another file is required, a credential prompt appears, or a tool asks to contact an unapproved system.
 
-## 6. Evidence is not an agent summary
+## What Evidence Proves an IaC Agent Change?
 
 An agent summary is a claim. Evidence lets another person test that claim.
 
@@ -133,7 +137,7 @@ Evidence has identity and scope. Record the command, working directory, artifact
 
 The live proof for this repair exposed an important boundary. Codex made the correct one-file change, but its workspace sandbox could not resolve `registry.terraform.io`. It stopped. A host-side runner with registry access then completed the independent checks. The accurate conclusion is: the agent authored the scoped repair; the host runner proved Terraform and OpenTofu validation. Combining those into “Codex validated everything” would be false.
 
-## 7. Recover from an unsafe proposal
+## How Do You Recover from an Unsafe Agent Proposal?
 
 Assume the agent proposes this next step after validation:
 
@@ -152,7 +156,7 @@ Use a controlled recovery:
 
 Recovery does not mean deleting all agent work. It means returning to the last trusted checkpoint and preserving a reviewable lineage.
 
-## 8. Codex demonstration with portable artifacts
+## How Do You Repair Terraform with an AI Coding Agent?
 
 The instructor demonstration uses Codex, but Codex is not the workflow contract. The portable artifacts are:
 

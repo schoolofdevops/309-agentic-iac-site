@@ -4,6 +4,7 @@ import {basename, dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import {buildM1Deck} from './build-m1-deck.mjs';
+import {buildM2Deck} from './build-m2-deck.mjs';
 import {
   boundaryToward,
   center,
@@ -109,10 +110,17 @@ export function validateDeckHtml(html) {
 }
 
 export async function compareFreshDeck(committedPath) {
-  const directory = await mkdtemp(join(tmpdir(), 'm1-deck-fresh-'));
+  const builders = new Map([
+    ['m1-agentic-iac-fundamentals.html', buildM1Deck],
+    ['m2-first-iac-change-ai-coding-agent.html', buildM2Deck],
+  ]);
+  const deckName = basename(committedPath);
+  const builder = builders.get(deckName);
+  if (!builder) throw new Error(`no fresh-deck builder registered for ${deckName}`);
+  const directory = await mkdtemp(join(tmpdir(), 'deck-fresh-'));
   const generatedPath = join(directory, basename(committedPath));
   try {
-    await buildM1Deck({outputPath: generatedPath});
+    await builder({outputPath: generatedPath});
     const [committed, generated] = await Promise.all([
       readFile(committedPath, 'utf8'),
       readFile(generatedPath, 'utf8'),

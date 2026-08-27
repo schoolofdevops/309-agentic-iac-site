@@ -212,9 +212,15 @@ export function boundary(items, {foot = ''} = {}) {
 }
 
 export function icons(items) {
+  const compact = items.length > 5;
+  const width = compact ? 145 : 175;
+  const gap = compact ? 30 : 35;
+  const start = compact ? 40 : 35;
+  // Keep the original five-card geometry byte-for-byte stable for Module 1.
+  const center = compact ? width / 2 : 87;
   return items.map((item, index) => {
-    const x = 35 + index * 210;
-    return `<g class="fragment" transform="translate(${x},0)"><g filter="url(#rough)" fill="none" stroke="${INK}" stroke-width="2.5" stroke-dasharray="7 6"><rect x="0" y="80" width="175" height="180" rx="16"/></g><g filter="url(#rough)" stroke="${INK}" stroke-width="2.5"><circle cx="87" cy="135" r="32" fill="${FILLS[index % FILLS.length]}"/><path d="M65,135 L82,151 L113,116" fill="none"/></g>${labelText(87, 205, item, 'lbl-b', 'middle', 24)}</g>`;
+    const x = start + index * (width + gap);
+    return `<g class="fragment" transform="translate(${x},0)"><g filter="url(#rough)" fill="none" stroke="${INK}" stroke-width="2.5" stroke-dasharray="7 6"><rect x="0" y="80" width="${width}" height="180" rx="16"/></g><g filter="url(#rough)" stroke="${INK}" stroke-width="2.5"><circle cx="${center}" cy="135" r="32" fill="${FILLS[index % FILLS.length]}"/><path d="M${center - 22},135 L${center - 5},151 L${center + 26},116" fill="none"/></g>${labelText(center, 205, item, 'lbl-b', 'middle', 24)}</g>`;
   }).join('');
 }
 
