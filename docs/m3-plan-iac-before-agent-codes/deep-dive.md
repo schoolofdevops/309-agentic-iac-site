@@ -51,7 +51,7 @@ The model does not create a node for every pod or Terraform resource. That detai
 
 ### Interfaces identify interaction points
 
-The API exposes `jobs-api` over HTTPS. The queue exposes separate publisher and consumer interfaces over AMQPS. An interface can state host, port, protocol, and a logical path or queue.
+The API exposes `jobs-api` over HTTPS. The queue exposes separate publisher and consumer interfaces over AMQP on port 5671. A separate security control requires TLS-protected transport. An interface can state host, port, protocol, and a logical path or queue.
 
 The official [CALM interface tutorial](https://calm.finos.org/tutorials/beginner/05-interfaces/) explains inline interfaces and reusable external definitions. It also documents a current validation limit for external interface definitions. This course uses small inline interfaces so the relevant contract is visible in one file.
 
@@ -113,7 +113,7 @@ These concepts often appear together, but they answer different questions.
 
 | Concept | Question | Queue example | What it does not prove |
 | --- | --- | --- | --- |
-| Interface | Where and how can interaction occur? | Queue publisher over AMQPS on port 5671. | That the endpoint is reachable or correctly authorized. |
+| Interface | Where and how can interaction occur? | Queue publisher over AMQP on port 5671. | That TLS is enforced, or the endpoint is reachable and authorized. |
 | Relationship | Which components interact or depend on each other? | API publishes to queue through `queue-publish`. | That the communication works at runtime. |
 | Control | What domain requirement applies? | Protect queue traffic and authenticate producers. | That enforcement is deployed and effective. |
 | Standard | What reusable organizational definition or constraint should elements follow? | Approved interface or security requirement shape. | That every implementation currently follows it. |
@@ -142,8 +142,8 @@ flowchart LR
   end
 
   C -->|HTTPS: authenticated request| API
-  API -->|AMQPS: publish| Q
-  Q -->|AMQPS: consume| WK
+  API -->|AMQP publish; TLS required| Q
+  Q -->|AMQP consume; TLS required| WK
   WK -->|write result| R
   API -->|read result| R
   API -->|runtime secret lookup| SM

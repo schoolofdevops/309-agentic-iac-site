@@ -384,7 +384,7 @@ Here is a shortened excerpt from the completed learner model:
       "interfaces": [
         {
           "unique-id": "queue-publish",
-          "protocol": "AMQPS",
+          "protocol": "AMQP",
           "port": 5671
         }
       ]
@@ -406,6 +406,8 @@ Here is a shortened excerpt from the completed learner model:
   ]
 }
 ```
+
+The interface records AMQP on port 5671. A separate security control requires TLS-protected transport and authenticated producers and consumers. The interface describes where communication occurs; the control describes the protection the design requires.
 
 The `$schema` value pins the model to CALM 1.2. The official [CALM CLI documentation](https://calm.finos.org/working-with-calm/cli/) provides `validate` for checking an architecture. In the validated lab, the pinned CLI reports zero errors and warnings for the candidate model.
 
