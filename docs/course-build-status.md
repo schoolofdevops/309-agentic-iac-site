@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 5 are built, validated, deployed, and verified from the public learner path. Section 6 is complete locally and awaiting merged deployment verification.
+> **Published checkpoint:** Sections 1 through 6 are built, validated, deployed, and verified from the public learner path.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 6 publication |
+| Active phase | Section 7 lab-first feasibility |
 | Active learner section | Section 6 — *Build, Test, and Optimize Reliable IaC Agent Workflows* |
-| Current sequence | Merge verified Section 6 artifacts, deploy the site, and verify every public route. |
+| Current sequence | Prove the Section 7 policy and PR-automation lab before content production. |
 | Current blocker | None. |
-| Last checkpoint | 27 August 2026 — Section 5 deployed and live-verified through GitHub Pages workflow `33092035073`. |
+| Last checkpoint | 27 August 2026 — Section 6 deployed and live-verified through GitHub Pages workflow `33101630504`. |
 
 ## Completed checkpoints
 
@@ -38,6 +38,7 @@ sidebar_position: 2
 - Section 6 has a provider-free two-run harness lab, smallest-improvement challenge, eight-lecture lesson, evaluator deep dive, 15-question quiz, 60-slide deck, and 57.6-minute slide-aligned voiceover.
 - A context-free learner reproduced the weak functional-only green result, the complete 2/4 rejection, the accepted Terraform and OpenTofu 4/4 results, optional RTK path, and guarded cleanup. The restored canonical clone passed all 51 labs tests.
 - The Section 6 deck contains 152 semantic nodes, 123 geometry-validated connectors, and 122 staged reveals. All slides passed a complete 1280 by 720 visual review; the full site passes TypeScript and production-build gates.
+- Section 6 is live. Its lesson, lab, operator challenge, deep dive, quiz, deck, build-status page, and public learner artifacts returned HTTP 200. Workflow `33101630504` deployed exact site commit `5525d95`, and the public 329,211-byte deck matches committed SHA-256 `06ceb32904c8ea1554dcad06dfb0c0195080b5c0e771367962bd6e73ed6fa10b`.
 
 ## Important evidence note
 
@@ -45,8 +46,8 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Merge and deploy Section 6, then verify exact public routes and artifact hashes.
-2. Begin Section 7 with lab-first feasibility and evidence.
+1. Begin Section 7 with lab-first feasibility and evidence.
+2. Build Section 7 only after its supported versions and local proof are frozen.
 3. Complete later low-resource replay evidence where those sections make a support claim.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
