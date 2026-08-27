@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 3 are built, validated, deployed, and verified from the public learner path. Section 4 has passed strict learner QA and is at the deployment gate.
+> **Published checkpoint:** Sections 1 through 4 are built, validated, deployed, and verified from the public learner path.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 4 release and live verification |
-| Active learner section | Section 4 — *Give Your IaC Agent the Right Context* |
-| Current sequence | Merge the proven Section 4 slice, deploy it, and verify the exact live artifacts. |
+| Active phase | Section 5 live lab proof and design |
+| Active learner section | Section 5 — *Connect Your IaC Agent to Tools, Skills, and MCP* |
+| Current sequence | Prove the Section 5 skill and tool-contract path before content production. |
 | Current blocker | None. |
-| Last checkpoint | 27 August 2026 — Section 4 passed strict context-free learner QA with zero findings. |
+| Last checkpoint | 27 August 2026 — Section 4 deployed and live-verified through GitHub Pages workflow `33076982964`. |
 
 ## Completed checkpoints
 
@@ -33,6 +33,7 @@ sidebar_position: 2
 - The Section 4 canonical starter reports exactly five intended trust, freshness, precedence, and retrieval problems. The isolated candidate passes with a 293-word, 2,136-byte pack while every raw-source hash remains unchanged.
 - The Section 4 deck passes all 28 deck tests with 193 semantic nodes, 136 geometry-validated connectors, and 99 staged reveals. A complete 1280 by 720 render review passed.
 - A context-free learner completed the Section 3 to Section 4 seam with zero findings. The final context pack, exact six-file scope, challenge, navigation, site build, locally served routes, and committed/built/served deck hash all matched.
+- Section 4 is live. Its lesson, lab, challenge, deep dive, quiz, deck, build status, and public learner artifacts returned HTTP 200. Workflow `33076982964` deployed exact site commit `ddde0b0`, and the public deck hash matches the committed artifact.
 
 ## Important evidence note
 
@@ -40,8 +41,8 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Deploy and live-verify Section 4: *Give Your IaC Agent the Right Context*.
-2. Build Section 5 completely, beginning with its live lab proof.
+1. Prove the Section 5 skill and tool-contract lab on the low-resource path.
+2. Build Section 5 completely after that proof passes.
 3. Complete later low-resource replay evidence where those sections make a support claim.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
