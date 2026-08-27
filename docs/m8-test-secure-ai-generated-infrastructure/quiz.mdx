@@ -1,0 +1,151 @@
+---
+sidebar_position: 5
+title: 'Quiz: Test and Secure AI-Generated Infrastructure Code'
+---
+
+import Quiz from '@site/src/components/Quiz';
+
+# Test and Secure AI-Generated Infrastructure Code Quiz
+
+<Quiz questions={[
+  {
+    prompt:'An agent returns formatted, valid Terraform that disables all four S3 public-access controls. What is the correct conclusion?',
+    options:[
+      {text:'Formatting and validation passed, but security evidence must reject the candidate',correct:true,explanation:'Those early gates prove readable and schema-valid HCL, not acceptable public-access intent.'},
+      {text:'The candidate is safe because the provider accepted every Boolean field',correct:false,explanation:'A provider schema can accept values that violate the organization security requirement.'},
+      {text:'The agent summary is enough because it was generated after validation',correct:false,explanation:'A summary cannot replace checks that observe the actual security values.'},
+      {text:'The configuration should be applied so runtime evidence can decide',correct:false,explanation:'A known unsafe plan should be repaired before any environment operation is considered.'},
+    ]
+  },
+  {
+    prompt:'Which statements correctly describe an IaC evidence pyramid? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Cheap checks should fail fast before expensive or manual review',correct:true,explanation:'This ordering gives rapid feedback without removing deeper gates.'},
+      {text:'Each gate should state the claim and proof limit it supports',correct:true,explanation:'A result is useful only when reviewers know what it can and cannot observe.'},
+      {text:'Independent higher gates remain necessary after lower gates pass',correct:true,explanation:'Schema validity, tests, security, policy, cost, and review cover different failure surfaces.'},
+      {text:'The highest green automated gate grants permission to apply',correct:false,explanation:'Environment authority remains a separate human and workflow decision.'},
+    ]
+  },
+  {
+    prompt:'Why does provider-aware terraform validate normally follow terraform init -backend=false in this plan-only workflow?',
+    options:[
+      {text:'Validation needs the selected provider schemas without configuring a remote backend',correct:true,explanation:'Initialization makes provider schemas available while the backend flag preserves the local plan-only boundary.'},
+      {text:'Initialization proves that every cloud API is reachable and authorized',correct:false,explanation:'The command selects dependencies; it does not prove environment permission or service reachability.'},
+      {text:'The backend flag creates an isolated production state automatically',correct:false,explanation:'Disabling backend configuration does not create or approve production state.'},
+      {text:'Validation compares the final monthly price of every planned resource',correct:false,explanation:'Schema validation is not a pricing or FinOps calculation.'},
+    ]
+  },
+  {
+    prompt:'Which test-design choices improve an IaC module contract? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Assert stable behaviour at the module ownership boundary',correct:true,explanation:'Behavioural assertions survive harmless internal refactoring.'},
+      {text:'Seed a known failure and confirm the test rejects it',correct:true,explanation:'A negative fixture demonstrates that the evaluator can observe the protected behaviour.'},
+      {text:'Review evaluator changes separately from implementation changes',correct:true,explanation:'This reduces the chance that an agent weakens a test to make its own code pass.'},
+      {text:'Match exact line numbers so the test covers implementation layout',correct:false,explanation:'Line positions are fragile and usually do not express the infrastructure contract.'},
+    ]
+  },
+  {
+    prompt:'Conftest exits zero, but the Rego rule reads change.after.acl while the plan uses block_public_acls. What happened?',
+    options:[
+      {text:'The policy produced a false green because it evaluated an undefined field',correct:true,explanation:'The engine ran successfully, but the deny rule never observed the unsafe planned value.'},
+      {text:'Terraform automatically renamed the field to preserve policy compatibility',correct:false,explanation:'Terraform did not provide the field expected by the faulty rule.'},
+      {text:'Conftest proved that all public-access controls are enabled',correct:false,explanation:'A zero exit proves only that the evaluated rule produced no blocking result.'},
+      {text:'The rendered plan cannot be used as structured policy input',correct:false,explanation:'Plan JSON is suitable input when schema paths and unknown values are handled correctly.'},
+    ]
+  },
+  {
+    prompt:'Which controls make a scanner suppression reviewable? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Match every ignore ID with one detailed registry entry',correct:true,explanation:'The simple tool configuration and human review record must describe the same exceptions.'},
+      {text:'Record narrow scope, owner, reason, expiry, and compensating evidence',correct:true,explanation:'These fields support responsibility, review, and later removal.'},
+      {text:'Freeze scanner and rule-bundle identity in the evidence',correct:true,explanation:'The meaning of zero findings depends on the evaluator and checks that actually ran.'},
+      {text:'Permit the agent to add any ignore that makes the pipeline green',correct:false,explanation:'The agent cannot approve its own risk exception or silently weaken a required gate.'},
+    ]
+  },
+  {
+    prompt:'A security scanner returns zero findings after its check-bundle download fails. How should the required gate behave?',
+    options:[
+      {text:'Report the scanner as unavailable and fail or block the required gate',correct:true,explanation:'An evaluator error must not be converted into evidence that no defect exists.'},
+      {text:'Treat the empty result as proof that every control passed',correct:false,explanation:'No executed rules means there is no valid zero-finding observation.'},
+      {text:'Approve the plan if formatting and tests remain green',correct:false,explanation:'Other gates cannot substitute for a required scanner result.'},
+      {text:'Delete the scanner gate because external bundles are inconvenient',correct:false,explanation:'Availability problems require recovery or an explicit policy decision, not a silent bypass.'},
+    ]
+  },
+  {
+    prompt:'How should a policy treat an unknown IAM resource boundary in the plan?',
+    options:[
+      {text:'Block or mark it indeterminate according to an explicit high-risk rule',correct:true,explanation:'Least privilege cannot be approved when the authority boundary is unavailable.'},
+      {text:'Assume the provider will choose a narrow resource after apply',correct:false,explanation:'An unknown value is not evidence of a safe final identity.'},
+      {text:'Convert the unknown marker to an empty string and allow it',correct:false,explanation:'Changing representation hides uncertainty rather than resolving it.'},
+      {text:'Ignore every unknown because plans always contain computed values',correct:false,explanation:'Unknowns need classification by their effect on security, replacement, data, and operations.'},
+    ]
+  },
+  {
+    prompt:'Which practices reduce secret exposure in an agent evidence workflow? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Prevent secret-producing commands and fields where possible',correct:true,explanation:'Data minimization removes exposure before redaction is needed.'},
+      {text:'Redact before logs are stored or sent into model context',correct:true,explanation:'Later cleanup cannot reliably remove every copied value.'},
+      {text:'Test redaction with representative fake secret formats',correct:true,explanation:'Negative fixtures show whether the redactor observes expected patterns and structures.'},
+      {text:'Assume sensitive Terraform outputs never enter plan or state files',correct:false,explanation:'Sensitive marking reduces display but does not guarantee removal from protected artifacts.'},
+    ]
+  },
+  {
+    prompt:'The starter has six resources, including an unused Elastic IP, and two empty Owner tags. What can a local FinOps gate prove?',
+    options:[
+      {text:'The plan violates the five-resource limit, approved class, and ownership requirements',correct:true,explanation:'These are deterministic structural facts available without a paid pricing query.'},
+      {text:'The exact production invoice for the next twelve months',correct:false,explanation:'Resource shape alone lacks usage, region, discount, traffic, and pricing assumptions.'},
+      {text:'The Elastic IP is technically required by a hidden workload',correct:false,explanation:'The plan and task provide no dependency or approved reason for that resource.'},
+      {text:'Any non-empty Owner string maps to a real accountable team',correct:false,explanation:'Tag presence is useful, but allowed identities need a separate source of truth.'},
+    ]
+  },
+  {
+    prompt:'Which cases belong in agent safety evaluations? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'A request to edit files outside the allowed scope',correct:true,explanation:'The final HCL can be correct while the work path violates repository ownership.'},
+      {text:'An instruction to apply infrastructure during a plan-only task',correct:true,explanation:'Environment authority cannot be added by retrieved or user-supplied task text.'},
+      {text:'A claim that all checks passed while a required gate failed',correct:true,explanation:'Truthfulness requires the summary to preserve blocking results.'},
+      {text:'A normal formatter request with fixed arguments inside the task',correct:false,explanation:'This is expected bounded activity, not an adversarial case.'},
+    ]
+  },
+  {
+    prompt:'Why should evaluator mutation run in a temporary copy or isolated branch?',
+    options:[
+      {text:'The final accepted evidence must use the restored, reviewed evaluator',correct:true,explanation:'A mutation can prove rejection only if it cannot contaminate the evaluator used for acceptance.'},
+      {text:'Mutation tests need access to production state to be realistic',correct:false,explanation:'Safe evaluator mutations use inert fixtures and require no environment operation.'},
+      {text:'A branch automatically proves every mutation is representative',correct:false,explanation:'Isolation protects state; reviewers must still choose risk-relevant mutations.'},
+      {text:'The infrastructure candidate should approve its own policy change',correct:false,explanation:'Separating candidate and evaluator ownership improves independence.'},
+    ]
+  },
+  {
+    prompt:'A report has a source hash, evaluator hash, plan hash, and tool versions. What do the hashes prove?',
+    options:[
+      {text:'They bind observations to exact bytes but do not prove those bytes are correct',correct:true,explanation:'Artifact identity prevents substitution; tests and review establish fitness for a claim.'},
+      {text:'They prove the source contains no security or reliability defect',correct:false,explanation:'A faulty artifact can have a perfectly stable cryptographic hash.'},
+      {text:'They grant merge and apply authority to the pipeline process',correct:false,explanation:'Identity and authorization are separate decisions.'},
+      {text:'They make tool versions and dependency locks unnecessary',correct:false,explanation:'Reproduction also depends on the evaluator, dependencies, commands, and environment boundary.'},
+    ]
+  },
+  {
+    prompt:'Terraform and OpenTofu produce different plan hashes for the repaired source. What should the reviewer compare?',
+    options:[
+      {text:'Stable semantic facts such as addresses, actions, relevant values, unknowns, and gate results',correct:true,explanation:'Registry sources, package builds, metadata, and serialization can differ without changing intended resource actions.'},
+      {text:'Only the byte length of each saved binary plan file',correct:false,explanation:'File size does not express resource semantics or compatibility.'},
+      {text:'Only whether both commands exited zero during initialization',correct:false,explanation:'Successful initialization omits planned actions, values, policies, and lock differences.'},
+      {text:'Whether an agent says the two engines are interchangeable',correct:false,explanation:'Compatibility needs direct evidence at language, dependency, plan, evaluator, and state boundaries.'},
+    ]
+  },
+  {
+    prompt:'Every automated Section 8 gate passes. What is the strongest valid pipeline decision?',
+    options:[
+      {text:'The exact candidate is ready for a human to review its plan and remaining risk',correct:true,explanation:'The evidence pipeline prepares a decision; it does not merge, apply, or accept risk.'},
+      {text:'The infrastructure is approved for immediate production deployment',correct:false,explanation:'Production approval and environment operation are outside the plan-only evidence boundary.'},
+      {text:'The candidate will behave correctly in every account and region',correct:false,explanation:'Local plan evidence applies only to the observed source, tools, inputs, and evaluator scope.'},
+      {text:'Future source edits may reuse the decision without rerunning checks',correct:false,explanation:'A source change breaks the evidence link and requires a new plan and gate results.'},
+    ]
+  },
+]} />
