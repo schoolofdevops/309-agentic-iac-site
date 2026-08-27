@@ -30,6 +30,14 @@ const sidebars: SidebarsConfig = {
         'm2-first-iac-change-ai-coding-agent/quiz',
       ],
     },
+    {
+      type: 'category',
+      label: 'Section 3 — Plan Your IaC Change Before the Agent Writes Code',
+      items: [
+        'm3-plan-iac-before-agent-codes/lab',
+        'm3-plan-iac-before-agent-codes/operator-challenge',
+      ],
+    },
   ],
 };
 
