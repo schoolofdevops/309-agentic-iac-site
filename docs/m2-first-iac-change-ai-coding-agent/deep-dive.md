@@ -35,7 +35,7 @@ printf 'fmt exit: %s\n' "$?"
 **Expected output**
 
 ```text
-<expected output — folded in during live lab validation>
+fmt exit: 0
 ```
 
 The broken file is correctly formatted, so formatting can exit `0` while the configuration still contains an undeclared reference. In a review, treat `fmt` as a style gate, not a semantic gate.
@@ -50,7 +50,14 @@ printf 'validate exit: %s\n' "$?"
 **Expected output**
 
 ```text
-<expected output — folded in during live lab validation>
+Error: Reference to undeclared resource
+
+  on main.tf line 6, in output "platform_name":
+   6:   value = random_id.platform.hex
+
+A managed resource "random_id" "platform" has not been declared in the root
+module.
+validate exit: 1
 ```
 
 The error text explains the defect. The non-zero exit status makes the result usable by a shell, CI runner, or agent harness. Keep both: text without status is difficult to automate, while status without text is difficult to diagnose.
@@ -68,7 +75,7 @@ git rev-parse HEAD:section-2/task.md
 **Expected output**
 
 ```text
-<expected output — folded in during live lab validation>
+e1e74c1b612c83566edad2917db8a78aba84d230
 ```
 
 This object ID binds the review to the exact committed task. A working-tree file can differ from it, so a strong evidence record also identifies the commit or captures a checksum of the uncommitted candidate.
@@ -81,8 +88,12 @@ git diff HEAD --numstat -- section-2/starter/main.tf
 
 **Expected output**
 
+On the committed starter used for validation, Git prints no output because the
+working file matches `HEAD`. After you complete the four-line repair in the lab,
+the same command prints:
+
 ```text
-<expected output — folded in during live lab validation>
+4	0	section-2/starter/main.tf
 ```
 
 After the lab, the expected repair reports four inserted lines and no deletions. On a fresh checkout, this command is silent. That silence means no working-tree diff; it does not mean a repair was validated elsewhere.
@@ -114,7 +125,7 @@ printf 'diff-check exit: %s\n' "$?"
 **Expected output**
 
 ```text
-<expected output — folded in during live lab validation>
+diff-check exit: 0
 ```
 
 An exit status of `0` means Git found no whitespace error in this diff. It does not prove that only one file changed, that the HCL is valid, or that no ignored runtime artifact exists. Each claim needs its own observation.
@@ -154,9 +165,7 @@ rm -r "$m2_tmpdir"
 
 **Expected output**
 
-```text
-<expected output — folded in during live lab validation>
-```
+No output is expected. A successful `rm` command is silent.
 
 This removes only the unique directory stored in `m2_tmpdir` during this terminal session.
 Keep the Section 2 learner repository and your repaired `main.tf`. This page does not create infrastructure, state, or a provider cache.
