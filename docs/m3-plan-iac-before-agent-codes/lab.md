@@ -373,7 +373,9 @@ Add the external client and the missing relationships so a reviewer can trace:
 5. API to result store;
 6. API and worker runtime access to secret management.
 
-Give the client its own trust boundary. Keep each relationship reference consistent with a node `unique-id`. This file records architecture. It is not deployment configuration.
+Give the client its own trust boundary. Keep each relationship reference consistent with a node `unique-id`.
+Use AMQP for the queue interfaces. Keep TLS as a separate security control, because a protocol label alone does not prove encryption.
+This file records architecture. It is not deployment configuration.
 
 ## PART V - Validate and review the candidate
 
