@@ -126,10 +126,9 @@ function renderEdge(connector) {
   return `<path data-edge-id="${escapeHtml(connector.id)}" data-from="${escapeHtml(connector.from)}" data-to="${escapeHtml(connector.to)}" data-from-port="${escapeHtml(connector.fromPort)}" data-to-port="${escapeHtml(connector.toPort)}" d="${connector.route.d}" marker-end="url(#ahg)"/>`;
 }
 
-function renderNode(node, index, fragments) {
-  const fragment = fragments && (node.role !== 'hub' || index > 0) ? ' fragment' : '';
+function renderNode(node, index) {
   const labelY = node.y + (node.height - (String(node.label).split('|').length - 1) * 21) / 2 + 7;
-  return `<g class="semantic-node${fragment}" data-node-id="${escapeHtml(node.id)}" data-x="${node.x}" data-y="${node.y}" data-width="${node.width}" data-height="${node.height}"><g filter="url(#rough)" stroke="${INK}" stroke-width="${node.role === 'hub' ? 3 : 2.5}"><rect x="${node.x}" y="${node.y}" width="${node.width}" height="${node.height}" rx="${node.role === 'hub' ? 16 : 12}" fill="${node.fill}"/></g>${labelText(node.x + node.width / 2, labelY, node.label, node.role === 'hub' ? 'lbl-b' : 'lbl-sm')}</g>`;
+  return `<g class="semantic-node" data-node-id="${escapeHtml(node.id)}" data-x="${node.x}" data-y="${node.y}" data-width="${node.width}" data-height="${node.height}"><g filter="url(#rough)" stroke="${INK}" stroke-width="${node.role === 'hub' ? 3 : 2.5}"><rect x="${node.x}" y="${node.y}" width="${node.width}" height="${node.height}" rx="${node.role === 'hub' ? 16 : 12}" fill="${node.fill}"/></g>${labelText(node.x + node.width / 2, labelY, node.label, node.role === 'hub' ? 'lbl-b' : 'lbl-sm')}</g>`;
 }
 
 export function renderDiagram(diagram) {
@@ -137,9 +136,25 @@ export function renderDiagram(diagram) {
   // Keep connectors crisp. The rough filter can clip short paths and their
   // arrowheads even when the geometry is valid, which makes causal direction
   // disappear in the rendered deck. Boxes retain the hand-drawn treatment.
-  const edges = `<g class="semantic-edges" fill="none" stroke="${GRAY}" stroke-width="2.1">${diagram.edges.map(renderEdge).join('')}</g>`;
-  const nodes = diagram.nodes.map((node, index) => renderNode(node, index, diagram.fragments)).join('');
-  return `${edges}${nodes}`;
+  const edgeGroup = (connector) => `<g class="semantic-edges" fill="none" stroke="${GRAY}" stroke-width="2.1">${renderEdge(connector)}</g>`;
+  if (!diagram.fragments) {
+    const edges = `<g class="semantic-edges" fill="none" stroke="${GRAY}" stroke-width="2.1">${diagram.edges.map(renderEdge).join('')}</g>`;
+    const nodes = diagram.nodes.map((node, index) => renderNode(node, index)).join('');
+    return `${edges}${nodes}`;
+  }
+
+  const nodeById = new Map(diagram.nodes.map((node) => [node.id, node]));
+  const initialNode = diagram.nodes.find((node) => node.role === 'hub') || diagram.nodes[0];
+  const renderedNodes = new Set([initialNode.id]);
+  const steps = diagram.edges.map((connector) => {
+    const target = nodeById.get(connector.to);
+    const targetHtml = target && !renderedNodes.has(target.id)
+      ? renderNode(target, diagram.nodes.indexOf(target))
+      : '';
+    if (target) renderedNodes.add(target.id);
+    return `<g class="fragment semantic-step">${edgeGroup(connector)}${targetHtml}</g>`;
+  }).join('');
+  return `${renderNode(initialNode, diagram.nodes.indexOf(initialNode))}${steps}`;
 }
 
 function withFoot(svg, foot, y = 385) {
@@ -238,7 +253,8 @@ export function icons(items) {
   const center = compact ? width / 2 : 87;
   return items.map((item, index) => {
     const x = start + index * (width + gap);
-    return `<g class="fragment" transform="translate(${x},0)"><g filter="url(#rough)" fill="none" stroke="${INK}" stroke-width="2.5" stroke-dasharray="7 6"><rect x="0" y="80" width="${width}" height="180" rx="16"/></g><g filter="url(#rough)" stroke="${INK}" stroke-width="2.5"><circle cx="${center}" cy="135" r="32" fill="${FILLS[index % FILLS.length]}"/><path d="M${center - 22},135 L${center - 5},151 L${center + 26},116" fill="none"/></g>${labelText(center, 205, item, 'lbl-b', 'middle', 24)}</g>`;
+    const fragment = index === 0 ? '' : ' class="fragment"';
+    return `<g${fragment} transform="translate(${x},0)"><g filter="url(#rough)" fill="none" stroke="${INK}" stroke-width="2.5" stroke-dasharray="7 6"><rect x="0" y="80" width="${width}" height="180" rx="16"/></g><g filter="url(#rough)" stroke="${INK}" stroke-width="2.5"><circle cx="${center}" cy="135" r="32" fill="${FILLS[index % FILLS.length]}"/><path d="M${center - 22},135 L${center - 5},151 L${center + 26},116" fill="none"/></g>${labelText(center, 205, item, 'lbl-b', 'middle', 24)}</g>`;
   }).join('');
 }
 

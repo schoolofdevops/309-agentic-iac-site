@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
   createHubDiagram,
   createLoopDiagram,
+  createPipelineDiagram,
   renderDiagram,
 } from '../../scripts/decks/lib/primitives.mjs';
 
@@ -56,4 +57,11 @@ test('rendered semantic nodes and edges carry machine-checkable metadata', () =>
   const firstEdge = html.indexOf('data-edge-id=');
   const firstNode = html.indexOf('data-node-id=');
   assert.ok(firstEdge >= 0 && firstEdge < firstNode, 'connectors must render behind boxes');
+});
+
+test('fragment diagrams reveal each connector with its destination node', () => {
+  const html = renderDiagram(createPipelineDiagram(['source', 'check', 'decision'], {fragments: true}));
+  assert.equal((html.match(/class="fragment semantic-step"/g) || []).length, 2);
+  assert.match(html, /class="fragment semantic-step">[\s\S]*data-from="source" data-to="check"[\s\S]*data-node-id="check"/);
+  assert.doesNotMatch(html.match(/^.*?<g class="fragment semantic-step">/s)?.[0] || '', /data-node-id="check"/);
 });
