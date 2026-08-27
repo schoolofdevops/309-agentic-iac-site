@@ -63,6 +63,17 @@ const sidebars: SidebarsConfig = {
         'm5-connect-iac-agent-tools-skills-mcp/quiz',
       ],
     },
+    {
+      type: 'category',
+      label: 'Section 6 — Build, Test, and Optimize Reliable IaC Agent Workflows',
+      items: [
+        'm6-build-test-optimize-reliable-iac-agent-workflows/lesson',
+        'm6-build-test-optimize-reliable-iac-agent-workflows/lab',
+        'm6-build-test-optimize-reliable-iac-agent-workflows/operator-challenge',
+        'm6-build-test-optimize-reliable-iac-agent-workflows/deep-dive',
+        'm6-build-test-optimize-reliable-iac-agent-workflows/quiz',
+      ],
+    },
   ],
 };
 

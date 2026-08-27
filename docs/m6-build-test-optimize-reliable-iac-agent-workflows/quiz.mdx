@@ -1,0 +1,151 @@
+---
+sidebar_position: 5
+title: 'Quiz: Build, Test, and Optimize Reliable IaC Agent Workflows'
+---
+
+import Quiz from '@site/src/components/Quiz';
+
+# Build, Test, and Optimize Reliable IaC Agent Workflows Quiz
+
+<Quiz questions={[
+  {
+    prompt:'A Terraform repair validates successfully, but the run also changes an ownership file outside scope. Which result is correct?',
+    options:[
+      {text:'Accept it because Terraform validation is the strongest gate',correct:false,explanation:'Validation proves configuration validity, not changed-file scope.'},
+      {text:'Reject it at the safety gate while preserving the functional pass',correct:true,explanation:'The functional observation remains true, but every required gate must pass.'},
+      {text:'Change the functional result to fail',correct:false,explanation:'The requested repair can work even when the overall run is unacceptable.'},
+      {text:'Ask a second agent to decide without checking the diff',correct:false,explanation:'Another opinion does not replace an independent changed-file observation.'},
+    ]
+  },
+  {
+    prompt:'What is the main purpose of an agent workflow harness?',
+    options:[
+      {text:'Make the model produce longer explanations',correct:false,explanation:'Length is not the goal; bounded and reviewable execution is.'},
+      {text:'Surround the model with specification, isolation, execution, evaluation, and recovery controls',correct:true,explanation:'The harness turns an open-ended request into a repeatable engineering workflow.'},
+      {text:'Give the model direct production credentials',correct:false,explanation:'A safe harness narrows authority and keeps production approval external.'},
+      {text:'Replace every deterministic test with model judgment',correct:false,explanation:'Exact facts should use deterministic checks whenever possible.'},
+    ]
+  },
+  {
+    prompt:'Which practices belong in a portable Superpowers-style workflow? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Approve the design before wide implementation',correct:true,explanation:'Early design review catches scope and architecture problems before broad edits.'},
+      {text:'Use an isolated branch or worktree',correct:true,explanation:'Isolation preserves the canonical baseline and unrelated user work.'},
+      {text:'Write a failing acceptance check before the repair',correct:true,explanation:'A red check proves that the evaluator can see the seeded defect.'},
+      {text:'Let the agent mark its own work approved for deployment',correct:false,explanation:'Verification and deployment approval must remain separate.'},
+    ]
+  },
+  {
+    prompt:'Why does the Section 6 evaluator derive changed files from before and after bytes?',
+    options:[
+      {text:'To avoid trusting the run summary to prove its own scope compliance',correct:true,explanation:'Observed bytes provide evidence independent of the agent claim.'},
+      {text:'To make Git history unnecessary',correct:false,explanation:'Git history and run evidence solve different review needs.'},
+      {text:'To calculate provider billing',correct:false,explanation:'Changed-file hashes do not measure model usage or price.'},
+      {text:'To approve the deployment automatically',correct:false,explanation:'Derived evidence supports review; it does not grant approval.'},
+    ]
+  },
+  {
+    prompt:'A complete suite enables only a functional gate but contains unused safety thresholds. What is true?',
+    options:[
+      {text:'The safety thresholds still enforce the run',correct:false,explanation:'A threshold that is never evaluated is not an active control.'},
+      {text:'The suite is complete because the JSON contains four sections',correct:false,explanation:'Structure does not prove that required gates execute.'},
+      {text:'The green result proves only the enabled functional claim',correct:true,explanation:'The result must be scoped to the one gate that actually ran.'},
+      {text:'The model should infer and run the missing gates',correct:false,explanation:'Required evaluation behaviour must be explicit and deterministic.'},
+    ]
+  },
+  {
+    prompt:'Which observations belong in a useful IaC Run Card? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Task, fixture, plan, price-card, and suite hashes',correct:true,explanation:'Hashes bind the review record to the exact evaluated inputs.'},
+      {text:'Derived changed files and command results',correct:true,explanation:'These observations explain what the run actually did.'},
+      {text:'Gate results, thresholds, failure classes, and recovery',correct:true,explanation:'These fields support decision and safe continuation.'},
+      {text:'Every parent environment value',correct:false,explanation:'Environment values can contain sensitive data and are not required for normal review.'},
+    ]
+  },
+  {
+    prompt:'A Run Card says ready_for_human_review. What may happen next?',
+    options:[
+      {text:'An authorized human reviews intent, evidence, residual risk, and the next action',correct:true,explanation:'Passing evaluation makes the run reviewable; it does not approve production change.'},
+      {text:'The evaluator deploys immediately',correct:false,explanation:'Evaluator authority stops before deployment.'},
+      {text:'The agent grants itself a production identity',correct:false,explanation:'Identity and authorization come from external systems.'},
+      {text:'All future runs with the same name are trusted',correct:false,explanation:'Future bytes, tools, policy, and intent require fresh evaluation.'},
+    ]
+  },
+  {
+    prompt:'What does the lab estimate ceil UTF-8 bytes divided by 4 represent?',
+    options:[
+      {text:'A stable course estimate for comparing the two runs',correct:true,explanation:'It supports a repeatable local comparison.'},
+      {text:'An exact tokenizer result for every model',correct:false,explanation:'Tokenizers differ by model and version.'},
+      {text:'Provider telemetry',correct:false,explanation:'The estimate is computed locally, not reported by a provider.'},
+      {text:'A final invoice',correct:false,explanation:'The fixed course price card is explicitly not provider billing.'},
+    ]
+  },
+  {
+    prompt:'Which budgets should an agentic IaC workflow consider? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Context and output',correct:true,explanation:'Both consume model capacity and can hide noise.'},
+      {text:'Retries, time, and concurrency',correct:true,explanation:'Repeated or parallel work consumes capacity and can increase risk.'},
+      {text:'Provider, tool, infrastructure, and operator cost',correct:true,explanation:'FinOps includes more than model tokens.'},
+      {text:'Only the number of prompt characters',correct:false,explanation:'One character count misses outputs, tools, retries, infrastructure, and human effort.'},
+    ]
+  },
+  {
+    prompt:'A team reduces command count from 12 to 1 by giving the agent an unrestricted shell script. Why should the candidate be rejected?',
+    options:[
+      {text:'The command budget improved too much',correct:false,explanation:'A lower count is not itself a problem.'},
+      {text:'The optimization weakened the execution and safety boundary',correct:true,explanation:'Budget improvement cannot compensate for broader unsafe authority.'},
+      {text:'Every workflow must run exactly three commands',correct:false,explanation:'Thresholds follow the task; three is the contract for this fixture.'},
+      {text:'Shell scripts can never be tested',correct:false,explanation:'Scripts can be tested, but unrestricted shell authority is wrong for this bounded task.'},
+    ]
+  },
+  {
+    prompt:'Why retain raw local command records when the Run Card is compact?',
+    options:[
+      {text:'The raw records support debugging and audit while the card supports normal review',correct:true,explanation:'The two layers serve different evidence needs.'},
+      {text:'The Run Card should contain no hashes or counts',correct:false,explanation:'Compact evidence still needs enough data to identify and compare the run.'},
+      {text:'Raw logs are always safe to store forever',correct:false,explanation:'Raw traces need access, redaction, retention, and deletion rules.'},
+      {text:'Compact output automatically proves safety',correct:false,explanation:'Presentation does not replace functional, safety, regression, and budget checks.'},
+    ]
+  },
+  {
+    prompt:'Which controls reduce telemetry privacy risk? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Record environment key names instead of values',correct:true,explanation:'This supports reproducibility without copying sensitive values.'},
+      {text:'Redact secret-shaped output before storage',correct:true,explanation:'Redaction reduces accidental exposure in command evidence.'},
+      {text:'Define access and retention separately for raw logs and Run Cards',correct:true,explanation:'Evidence layers have different sensitivity and operational needs.'},
+      {text:'Store every prompt and credential in one permanent trace',correct:false,explanation:'Collecting unnecessary sensitive data creates avoidable risk.'},
+    ]
+  },
+  {
+    prompt:'What is a strong mutation test for the Section 6 regression evaluator?',
+    options:[
+      {text:'Change the queue default while keeping the Terraform configuration valid',correct:true,explanation:'The mutation tests whether a valid but wrong behaviour triggers regression.summary.'},
+      {text:'Delete the Terraform executable',correct:false,explanation:'That tests the environment path, not the queue regression claim.'},
+      {text:'Ask the model if the test seems useful',correct:false,explanation:'The mutation should have a deterministic expected failure.'},
+      {text:'Increase the token threshold until everything passes',correct:false,explanation:'Weakening a threshold does not test evaluator sensitivity.'},
+    ]
+  },
+  {
+    prompt:'How can Goodhart effects damage an agent workflow?',
+    options:[
+      {text:'The system optimizes one number while reducing the real engineering outcome',correct:true,explanation:'For example, lower tokens can hide missing evidence or skipped tests.'},
+      {text:'Every metric becomes mathematically incorrect',correct:false,explanation:'The metric can remain accurate while becoming a poor proxy for the goal.'},
+      {text:'Git worktrees stop isolating files',correct:false,explanation:'Goodhart effects concern target optimization, not worktree mechanics.'},
+      {text:'Terraform automatically runs apply',correct:false,explanation:'Nothing about metric selection authorizes apply.'},
+    ]
+  },
+  {
+    prompt:'Which statements about RTK and Caveman are correct in this course? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'RTK can compact noisy terminal output before it reaches agent context',correct:true,explanation:'It is used as an optional presentation and context-efficiency tool.'},
+      {text:'Raw evidence and required gates must remain available after compaction',correct:true,explanation:'Compression must not remove the evidence needed for review or failure diagnosis.'},
+      {text:'Caveman-style experiments should be retained only when evaluations prove improvement',correct:true,explanation:'The course uses baseline-versus-candidate, retain-or-discard discipline.'},
+      {text:'Either tool may replace safety gates and human approval',correct:false,explanation:'Both are optional aids, not authority or approval systems.'},
+    ]
+  },
+]} />
