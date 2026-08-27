@@ -171,26 +171,39 @@ jq '.suppressions[] | {rule_id, scope, owner, reason, expires, compensating_evid
 }
 ```
 
-Then compare the simple ignore IDs with the registry IDs.
+First, list the simple ignore IDs.
 
 ```bash
-printf 'Ignore IDs:\n'; sed '/^#/d; /^$/d' section-8/scanner/trivy.ignore | sort; printf 'Registry IDs:\n'; jq -r '.suppressions[].rule_id' section-8/scanner/suppressions.json | sort
+sed '/^#/d; /^$/d' section-8/scanner/trivy.ignore | sort
 ```
 
 **Validated output**
 
 ```text
-Ignore IDs:
-AWS-0089
-AWS-0090
-AWS-0132
-Registry IDs:
 AWS-0089
 AWS-0090
 AWS-0132
 ```
 
-The Section 8 pipeline requires an exact match. This prevents a quick ignore-line edit from bypassing the detailed review record. It also checks for scope, owner, reason, future expiry, and compensating evidence. These fields make the exception reviewable; they do not prove the exception is correct.
+Now list the registry IDs.
+
+```bash
+jq -r '.suppressions[].rule_id' section-8/scanner/suppressions.json | sort
+```
+
+**Validated output**
+
+```text
+AWS-0089
+AWS-0090
+AWS-0132
+```
+
+The two short lists should match exactly. The Section 8 pipeline requires this
+same match. It prevents a quick ignore-line edit from bypassing the detailed
+review record. The pipeline also checks for scope, owner, reason, future expiry,
+and compensating evidence. These fields make the exception reviewable; they do
+not prove the exception is correct.
 
 An evaluator should test at least these suppression mutations:
 
