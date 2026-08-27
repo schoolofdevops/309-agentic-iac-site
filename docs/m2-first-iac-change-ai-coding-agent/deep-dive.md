@@ -96,7 +96,7 @@ git rev-parse HEAD:section-2/task.md
 **Expected output**
 
 ```text
-e1e74c1b612c83566edad2917db8a78aba84d230
+7c6e9cadc3ba0849a001c78cef6dd4e799bdf8bb
 ```
 
 This object ID binds the review to the exact committed task.
