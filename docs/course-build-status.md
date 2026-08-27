@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Release checkpoint:** Sections 1 and 2 are built and validated. Section 2 is ready for branch merge, deployment, and public-clone verification.
+> **Published checkpoint:** Sections 1 and 2 are built, validated, deployed, and verified from the public learner path.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 2 release |
-| Active learner section | Section 2 — *Build Your First IaC Change with an AI Coding Agent* |
-| Current sequence | Merge and deploy Section 2, verify the public lab, then begin Section 3. |
-| Current blocker | Public verification waits for the labs and site branch push. |
-| Last checkpoint | 27 August 2026 — complete Section 2 bundle passed live lab proof, deck and narration audit, and context-free learner QA. |
+| Active phase | Section 3 planning and live-lab proof |
+| Active learner section | Section 3 — *Plan Your IaC Change Before the Agent Writes Code* |
+| Current sequence | Prove the Section 3 lab before lesson, deck, voiceover, quiz, and learner QA production. |
+| Current blocker | None for Sections 1 and 2. |
+| Last checkpoint | 27 August 2026 — Section 2 passed live lab proof, learner QA, public clone, and GitHub Pages deployment `33042472084`. |
 
 ## Completed checkpoints
 
@@ -32,9 +32,8 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Merge and push the Section 2 source, labs, and site branches.
-2. Verify GitHub Pages and rerun the exact public learner clone.
-3. Build Section 3: *Plan Your IaC Change Before the Agent Writes Code*.
-4. Complete later low-resource replay evidence where those sections make a support claim.
+1. Prove the Section 3 planning lab on the learner path.
+2. Build Section 3: *Plan Your IaC Change Before the Agent Writes Code*.
+3. Complete later low-resource replay evidence where those sections make a support claim.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
