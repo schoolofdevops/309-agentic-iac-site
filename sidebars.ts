@@ -45,8 +45,11 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Section 4 — Give Your IaC Agent the Right Context',
       items: [
+        'm4-give-iac-agent-right-context/lesson',
         'm4-give-iac-agent-right-context/lab',
         'm4-give-iac-agent-right-context/operator-challenge',
+        'm4-give-iac-agent-right-context/deep-dive',
+        'm4-give-iac-agent-right-context/quiz',
       ],
     },
   ],
