@@ -155,8 +155,23 @@ export function hub(items, options = {}) {
   return withFoot(renderDiagram(createHubDiagram(items, options)), options.foot);
 }
 
-export function compare(items, {foot = ''} = {}) {
+export function compare(items, {foot = '', fragments = false} = {}) {
   const [left, leftSub, right, rightSub] = items;
+  if (fragments) {
+    return `
+    <g filter="url(#rough)" stroke="${INK}" stroke-width="2.8">
+      <rect x="70" y="70" width="430" height="210" rx="16" fill="#dae8fc"/>
+    </g>
+    ${labelText(285, 125, left, 'lbl-b')}
+    ${labelText(285, 180, leftSub, 'lbl', 'middle', 30)}
+    <g class="fragment">
+      <g filter="url(#rough)" stroke="${INK}" stroke-width="2.8"><rect x="600" y="70" width="430" height="210" rx="16" fill="#e1d5e7"/></g>
+      ${labelText(815, 125, right, 'lbl-b')}
+      ${labelText(815, 180, rightSub, 'lbl', 'middle', 30)}
+    </g>
+    <g filter="url(#rough)" fill="none" stroke="${GRAY}" stroke-width="2.2"><line x1="535" y1="75" x2="565" y2="275"/></g>
+    ${foot ? labelText(550, 335, foot, 'lbl-g') : ''}`;
+  }
   return `
     <g filter="url(#rough)" stroke="${INK}" stroke-width="2.8">
       <rect x="70" y="70" width="430" height="210" rx="16" fill="#dae8fc"/>

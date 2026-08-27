@@ -98,7 +98,7 @@ function terraformRepair() {
   const output = node('output.platform_name|random_id.platform.hex', 625, 105, 390, 150, '#dae8fc', 'output-reference');
   const nodes = [resource, output];
   const connector = edge('resource-to-output', resource.box.id, 'right', output.box.id, 'left', linePath(port(resource.box, 'right'), port(output.box, 'left')), nodes, {fragment: true, gray: false});
-  return `${connector}<g class="fragment">${resource.html}${text(287, 215, 'byte_length = 4', 'lbl')}</g>${output.html}${text(550, 330, '+4 lines · output remains unchanged', 'lbl-g')}`;
+  return `<g class="fragment">${resource.html}${text(287, 215, 'byte_length = 4', 'lbl')}</g>${connector}${output.html}${text(550, 330, '+4 lines · output remains unchanged', 'lbl-g')}`;
 }
 
 function slideVisual(slide) {

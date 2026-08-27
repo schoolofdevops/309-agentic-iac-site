@@ -57,6 +57,12 @@ test('builder writes the complete Module 2 deck', async () => {
     assert.ok((result.html.match(/data-edge-id=/g)?.length || 0) > 20);
     assert.match(result.html, /<g fill="none"[^>]*><path data-edge-id="proposed-to-authorized"/);
     assert.doesNotMatch(result.html, /<g[^>]*filter="url\(#rough\)"[^>]*><path data-edge-id="proposed-to-authorized"/);
+
+    const sections = [...result.html.matchAll(/<section\b[\s\S]*?<\/section>/g)].map((match) => match[0]);
+    const repairSlide = sections[38];
+    assert.ok(repairSlide.indexOf('data-node-id="resource-block"') < repairSlide.indexOf('data-edge-id="resource-to-output"'));
+    const dualEngineSlide = sections[39];
+    assert.equal((dualEngineSlide.match(/class="fragment"/g) || []).length, 1);
     assert.equal(await readFile(outputPath, 'utf8'), result.html);
 
     const validation = validateDeckHtml(result.html);
