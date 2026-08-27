@@ -263,8 +263,20 @@ Initializing provider plugins...
 - Finding latest version of hashicorp/random...
 - Installing hashicorp/random v3.9.0...
 - Installed hashicorp/random v3.9.0 (signed by HashiCorp)
-Terraform has created a lock file .terraform.lock.hcl to record the provider selections it made above.
+Terraform has created a lock file .terraform.lock.hcl to record the provider
+selections it made above. Include this file in your version control repository
+so that Terraform can guarantee to make the same selections by default when
+you run "terraform init" in the future.
+
 Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
 ```
 
 Your compatible provider patch version may be newer. Backend initialization remains disabled.
@@ -310,12 +322,30 @@ Initializing provider plugins...
 - Installing hashicorp/random v3.9.0...
 - Installed hashicorp/random v3.9.0 (signed, key ID 0C0AF313E5FD9F80)
 
+Providers are signed by their developers.
+If you'd like to know more about provider signing, you can read about it here:
+https://opentofu.org/docs/cli/plugins/signing/
+
+OpenTofu has made some changes to the provider dependency selections recorded
+in the .terraform.lock.hcl file. Review those changes and commit them to your
+version control system if they represent changes you intended to make.
+
 Warning: Dependency lock file entries automatically updated
 OpenTofu automatically rewrote some entries in your dependency lock file:
   - registry.terraform.io/hashicorp/random => registry.opentofu.org/hashicorp/random
 
-The version selections were preserved, but the hashes were not because the OpenTofu project's provider releases are not byte-for-byte identical.
+The version selections were preserved, but the hashes were not because the
+OpenTofu project's provider releases are not byte-for-byte identical.
+
 OpenTofu has been successfully initialized!
+
+You may now begin working with OpenTofu. Try running "tofu plan" to see
+any changes that are required for your infrastructure. All OpenTofu commands
+should now work.
+
+If you ever set or change modules or backend configuration for OpenTofu,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
 ```
 
 The provider version can differ. Record a source-rewrite warning if it appears.
