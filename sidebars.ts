@@ -74,6 +74,17 @@ const sidebars: SidebarsConfig = {
         'm6-build-test-optimize-reliable-iac-agent-workflows/quiz',
       ],
     },
+    {
+      type: 'category',
+      label: 'Section 7 — Build Infrastructure with Terraform, OpenTofu, and AI Agents',
+      items: [
+        'm7-build-infrastructure-terraform-opentofu-ai/lesson',
+        'm7-build-infrastructure-terraform-opentofu-ai/lab',
+        'm7-build-infrastructure-terraform-opentofu-ai/operator-challenge',
+        'm7-build-infrastructure-terraform-opentofu-ai/deep-dive',
+        'm7-build-infrastructure-terraform-opentofu-ai/quiz',
+      ],
+    },
   ],
 };
 

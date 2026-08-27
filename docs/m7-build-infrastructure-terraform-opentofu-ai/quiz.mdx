@@ -1,0 +1,151 @@
+---
+sidebar_position: 5
+title: 'Quiz: Build Infrastructure with Terraform, OpenTofu, and AI Agents'
+---
+
+import Quiz from '@site/src/components/Quiz';
+
+# Build Infrastructure with Terraform, OpenTofu, and AI Agents Quiz
+
+<Quiz questions={[
+  {
+    prompt:'Why can a Terraform configuration be valid but still unsafe to own?',
+    options:[
+      {text:'Validation checks syntax and schemas, not every provider, policy, state, data, or approval risk',correct:true,explanation:'Each claim needs evidence from the stage that can actually observe it.'},
+      {text:'Terraform validation always runs a production apply',correct:false,explanation:'Validation does not apply infrastructure.'},
+      {text:'Valid HCL cannot contain wildcard identity policy',correct:false,explanation:'A wildcard policy can be syntactically and schema valid.'},
+      {text:'Only formatting matters after validation',correct:false,explanation:'Plans, tests, policy, state, runtime evidence, and approval remain important.'},
+    ]
+  },
+  {
+    prompt:'Which statements describe Terraform configuration evaluation? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'All .tf files in one module directory form one configuration',correct:true,explanation:'File names organize source for people; they do not create execution order.'},
+      {text:'References create dependency-graph edges',correct:true,explanation:'Terraform uses these edges to order and parallelize operations.'},
+      {text:'Some provider-computed values remain unknown during planning',correct:true,explanation:'Terraform can know their type and dependency before the final value.'},
+      {text:'Resources execute in alphabetical filename order',correct:false,explanation:'The dependency graph, not file order, controls scheduling.'},
+    ]
+  },
+  {
+    prompt:'The identity module receives module.storage.bucket_arn. What does this reference do?',
+    options:[
+      {text:'Creates an implicit dependency edge from identity to storage',correct:true,explanation:'Identity needs the storage output, so Terraform schedules it after the required value exists.'},
+      {text:'Encrypts Terraform state',correct:false,explanation:'A reference creates data flow; it does not configure backend encryption.'},
+      {text:'Pins the AWS provider version',correct:false,explanation:'Provider constraints and locks control versions.'},
+      {text:'Approves the IAM policy',correct:false,explanation:'The reference provides an ARN but does not approve authority.'},
+    ]
+  },
+  {
+    prompt:'Which controls contribute to reproducible provider selection? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'A reviewed required_providers source and constraint',correct:true,explanation:'The constraint defines acceptable provider versions and source.'},
+      {text:'A reviewed .terraform.lock.hcl with exact version and checksums',correct:true,explanation:'The lock selects and verifies exact packages for the working copy.'},
+      {text:'A controlled initialization and upgrade process',correct:true,explanation:'Process prevents accidental dependency changes during normal runs.'},
+      {text:'An agent statement that the latest provider should work',correct:false,explanation:'A statement does not replace dependency identity and test evidence.'},
+    ]
+  },
+  {
+    prompt:'Why did the Section 7 starter reject the provider constraint >= 6.0.0?',
+    options:[
+      {text:'It selected an unreviewed 6.62.0 release instead of the proven 6.61.0 line',correct:true,explanation:'The direct initialization made the reproducibility problem visible.'},
+      {text:'Terraform requires every provider to use version 1.0.0',correct:false,explanation:'Provider versions follow their own constraints and releases.'},
+      {text:'Open ranges make HCL syntax invalid',correct:false,explanation:'The starter remained valid HCL.'},
+      {text:'A lock file can never select an exact version',correct:false,explanation:'Selecting an exact version is one purpose of the dependency lock.'},
+    ]
+  },
+  {
+    prompt:'What qualities make a useful module contract? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Typed and described inputs with relevant validation',correct:true,explanation:'These make expected values and failure messages explicit.'},
+      {text:'Narrow outputs that represent stable interfaces',correct:true,explanation:'Callers should depend on required identities, not every internal attribute.'},
+      {text:'A clear ownership and lifecycle boundary',correct:true,explanation:'Modules should help teams reason about change and responsibility.'},
+      {text:'One untyped map containing every possible setting',correct:false,explanation:'This hides required fields and weakens review.'},
+    ]
+  },
+  {
+    prompt:'A Terraform output is marked sensitive. What is still true?',
+    options:[
+      {text:'The value may still be stored in state and requires state protection',correct:true,explanation:'Sensitive marking reduces display; it is not state encryption or removal.'},
+      {text:'The value cannot reach any provider',correct:false,explanation:'Providers may still receive sensitive configuration values.'},
+      {text:'The value is deleted after apply',correct:false,explanation:'Terraform can retain it in state.'},
+      {text:'The output becomes approved for public logs',correct:false,explanation:'Sensitive data should not be copied into logs.'},
+    ]
+  },
+  {
+    prompt:'Which facts belong in a production state recovery decision? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'State lineage, serial, backend, and workspace identity',correct:true,explanation:'These facts identify the state history and target.'},
+      {text:'Configuration commit and provider locks',correct:true,explanation:'Recovery must bind state to the code and dependencies that interpret it.'},
+      {text:'Remote object inventory and active lock owner',correct:true,explanation:'State must be compared with actual infrastructure and concurrent writers.'},
+      {text:'Only the state filename',correct:false,explanation:'A filename is not enough to establish safe recovery.'},
+    ]
+  },
+  {
+    prompt:'What plan proves the Section 7 queue refactor preserved remote identity?',
+    options:[
+      {text:'The old address has moved to the new address with zero create and zero destroy',correct:true,explanation:'This shows a state-address move rather than remote replacement.'},
+      {text:'A plan that destroys the old queue and creates a new one',correct:false,explanation:'That is replacement, not identity-preserving refactoring.'},
+      {text:'A format check with no diff',correct:false,explanation:'Formatting does not observe state addresses or remote operations.'},
+      {text:'An agent summary saying the rename is harmless',correct:false,explanation:'The actual plan outranks the summary.'},
+    ]
+  },
+  {
+    prompt:'When is a direct terraform state mv operation preferred over a moved block?',
+    options:[
+      {text:'Only for a justified sharp-tool recovery where declarative refactoring is not practical and exact backup and review exist',correct:true,explanation:'Direct state operations change bindings without preserving normal configuration intent.'},
+      {text:'For every module rename',correct:false,explanation:'A moved block is normally more reviewable and repeatable.'},
+      {text:'Whenever the agent wants a smaller diff',correct:false,explanation:'Diff size does not justify direct state authority.'},
+      {text:'To remove remote infrastructure',correct:false,explanation:'Removing a state binding does not delete the remote object.'},
+    ]
+  },
+  {
+    prompt:'Which statements about least privilege are correct? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Review both allowed actions and resource identities',correct:true,explanation:'Either side can make a policy too broad.'},
+      {text:'Use module outputs to bind policy to exact bucket and queue identities',correct:true,explanation:'The outputs create reviewable resources and graph dependencies.'},
+      {text:'Keep runtime identity controls separate from a generated policy statement',correct:true,explanation:'Code, tests, credentials, runtime enforcement, and approval are different controls.'},
+      {text:'Action = "*" and Resource = "*" are acceptable when Terraform validates',correct:false,explanation:'Schema validity does not prove least privilege.'},
+    ]
+  },
+  {
+    prompt:'A plan shows -/+ for a bucket that may contain artifacts. What is the correct response?',
+    options:[
+      {text:'Stop and require redesign or explicit data-migration, backup, cutover, and rollback evidence',correct:true,explanation:'Replacement changes remote identity and can destroy data.'},
+      {text:'Approve it because the plan is green',correct:false,explanation:'A valid plan can still contain destructive replacement.'},
+      {text:'Treat it as an ordinary in-place update',correct:false,explanation:'The -/+ marker explicitly means replacement.'},
+      {text:'Ask the agent to hide the replacement line',correct:false,explanation:'Removing evidence increases risk.'},
+    ]
+  },
+  {
+    prompt:'An IAM policy resource is known after apply because its bucket ARN comes from a replacement. What should the reviewer do?',
+    options:[
+      {text:'Require a deterministic resource boundary or wait for evidence before approving least privilege',correct:true,explanation:'The unknown crosses an authority-review boundary.'},
+      {text:'Assume the ARN will be safe',correct:false,explanation:'Unknown is not approval.'},
+      {text:'Delete the policy test',correct:false,explanation:'Weakening evaluation does not resolve missing evidence.'},
+      {text:'Approve every unknown provider value',correct:false,explanation:'Unknowns need classification by risk and use.'},
+    ]
+  },
+  {
+    prompt:'Which evidence bundle best supports the complete Section 7 local lifecycle result?',
+    options:[
+      {text:'Eight planned creates and state addresses, direct reads across five services, plus empty state and APIs after cleanup',correct:true,explanation:'The combined plan, state, direct API, and cleanup observations support the full claim.'},
+      {text:'Only eight JSON-plan create actions',correct:false,explanation:'This proves plan shape but not apply, direct API presence, or cleanup.'},
+      {text:'Only direct S3, SQS, DynamoDB, IAM, and Logs reads',correct:false,explanation:'These prove objects existed but omit plan shape, state, refactor, convergence, and cleanup.'},
+      {text:'A claim that local evidence proves every real AWS environment',correct:false,explanation:'The proof is limited to the exact local endpoint and versions.'},
+    ]
+  },
+  {
+    prompt:'How should a team operate Terraform and OpenTofu against shared state?',
+    options:[
+      {text:'Define one writer policy, separate and review lock changes, compare plans, and record rollback',correct:true,explanation:'Mixed-tool operation needs explicit ownership and evidence.'},
+      {text:'Run both tools concurrently and let backend locking decide correctness',correct:false,explanation:'Locking serializes writes but does not make dependency resolution and behaviour identical.'},
+      {text:'Ignore registry-source differences when provider versions match',correct:false,explanation:'Section 7 records the lock-source and checksum difference explicitly.'},
+      {text:'Treat local syntax compatibility as production migration approval',correct:false,explanation:'Migration requires state, backend, provider, plan, and operational evidence.'},
+    ]
+  },
+]} />
