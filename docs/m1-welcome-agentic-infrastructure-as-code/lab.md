@@ -28,20 +28,7 @@ These values are a reference profile. Lower values produce a warning and allow y
 
 ## PART I - Open the learner repository
 
-Clone the learner repository.
-
-```bash
-git clone https://github.com/schoolofdevops/309-agentic-iac-labs.git
-cd 309-agentic-iac-labs
-```
-
-[ Expected output ]
-
-```text
-Cloning into '309-agentic-iac-labs'...
-```
-
-Check your current directory.
+Use the learner repository you cloned during Setup. Check your current directory.
 
 ```bash
 pwd
@@ -54,6 +41,8 @@ pwd
 ```
 
 Your path will be different. It should end with `309-agentic-iac-labs`.
+If it does not, change to the directory where you cloned the learner repository,
+then run `pwd` again.
 
 List the repository contents.
 
@@ -64,7 +53,7 @@ ls
 [ Expected output ]
 
 ```text
-README.md  labs  phase-0  section-1
+README.md  labs  phase-0  section-1  section-2
 ```
 
 You are now at the repository root. Later commands use paths from this directory.
@@ -116,28 +105,26 @@ The instructor demonstrates Codex. You may use Claude Code, Goose, Cursor, GitHu
 
 ## PART III - Inspect a safe task brief
 
-Read the task brief prepared for the first Terraform repair.
+Read the canonical task prepared for the first Terraform repair.
 
 ```bash
-sed -n '1,240p' section-1/challenge/safe-task-brief.md
+sed -n '1,240p' section-2/task.md
 ```
 
 [ Expected output ]
 
 ```text
-# Safe Task Brief: Repair the Missing Terraform Provider
+# Section 2 Repair Task
 
-## Objective
+## Goal
 ...
-## Allowed file
+## Work boundary
 ...
-## Allowed actions
+## Validate the repair
+...
+## About the provider lock file
 ...
 ## Do not
-...
-## Required evidence
-...
-## Stop and ask for help when
 ...
 ```
 

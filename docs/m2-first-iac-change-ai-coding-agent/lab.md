@@ -26,10 +26,9 @@ This lab starts no container and applies no infrastructure. The 7 GB course prof
 
 ## PART I - Inspect the task and starting state
 
-Go to the learner repository.
+Continue in the learner repository from Section 1. Check your current directory.
 
 ```bash
-cd 309-agentic-iac-labs
 pwd
 ```
 
@@ -40,6 +39,8 @@ pwd
 ```
 
 Your path will be different. It should end with `309-agentic-iac-labs`.
+If you opened a new terminal, change to the directory where you cloned the
+learner repository, then run `pwd` again.
 
 Check the current Git state before an agent changes anything.
 

@@ -52,6 +52,10 @@ Before the Terraform repair, prepare:
 3. OpenTofu;
 4. one compatible coding agent.
 
+The Section 2 starter declares Terraform `>= 1.14.0`. The validated course run
+used Terraform 1.14.8 and OpenTofu 1.12.6. A later compatible patch release is
+also suitable.
+
 Run the preflight again after installing a tool. Confirm that its row changes to `AVAILABLE`.
 
 ## Troubleshooting
