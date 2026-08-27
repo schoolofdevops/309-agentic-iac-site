@@ -4,14 +4,14 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 5 are built, validated, deployed, and verified from the public learner path.
+> **Published checkpoint:** Sections 1 through 5 are built, validated, deployed, and verified from the public learner path. Section 6 is complete locally and awaiting merged deployment verification.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 6 lab proof and design |
+| Active phase | Section 6 publication |
 | Active learner section | Section 6 — *Build, Test, and Optimize Reliable IaC Agent Workflows* |
-| Current sequence | Prove the Section 6 harness and evaluation path before content production. |
+| Current sequence | Merge verified Section 6 artifacts, deploy the site, and verify every public route. |
 | Current blocker | None. |
 | Last checkpoint | 27 August 2026 — Section 5 deployed and live-verified through GitHub Pages workflow `33092035073`. |
 
@@ -34,6 +34,10 @@ sidebar_position: 2
 - The Section 4 deck passes all 28 deck tests with 193 semantic nodes, 136 geometry-validated connectors, and 99 staged reveals. A complete 1280 by 720 render review passed.
 - A context-free learner completed the Section 3 to Section 4 seam with zero findings. The final context pack, exact six-file scope, challenge, navigation, site build, locally served routes, and committed/built/served deck hash all matched.
 - Section 4 is live. Its lesson, lab, challenge, deep dive, quiz, deck, build status, and public learner artifacts returned HTTP 200. Workflow `33076982964` deployed exact site commit `ddde0b0`, and the public deck hash matches the committed artifact.
+- Section 5 is live with its human-first capability lab, eight-lecture lesson, deep dive, challenge, quiz, 60-slide deck, and 62.7-minute voiceover. Its public routes and deck hash were verified after workflow `33092365662` deployed exact site commit `8507a43`.
+- Section 6 has a provider-free two-run harness lab, smallest-improvement challenge, eight-lecture lesson, evaluator deep dive, 15-question quiz, 60-slide deck, and 57.6-minute slide-aligned voiceover.
+- A context-free learner reproduced the weak functional-only green result, the complete 2/4 rejection, the accepted Terraform and OpenTofu 4/4 results, optional RTK path, and guarded cleanup. The restored canonical clone passed all 51 labs tests.
+- The Section 6 deck contains 152 semantic nodes, 123 geometry-validated connectors, and 122 staged reveals. All slides passed a complete 1280 by 720 visual review; the full site passes TypeScript and production-build gates.
 
 ## Important evidence note
 
@@ -41,8 +45,8 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Prove the Section 6 harness and evaluation lab on the low-resource path.
-2. Build Section 6 completely after that proof passes.
+1. Merge and deploy Section 6, then verify exact public routes and artifact hashes.
+2. Begin Section 7 with lab-first feasibility and evidence.
 3. Complete later low-resource replay evidence where those sections make a support claim.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
