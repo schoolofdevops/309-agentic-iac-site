@@ -149,22 +149,20 @@ codex exec --ephemeral --sandbox workspace-write --cd "$(pwd)" --color never "Re
 [ Captured output from the course validation run ]
 
 ```text
-Added the missing random_id.platform resource in main.tf.
+Implemented the smallest repair in main.tf:
 
 +resource "random_id" "platform" {
 +  byte_length = 4
 +}
 
-Validation results:
+Validation status:
 
-- terraform fmt -check — passed
-- terraform init -backend=false -input=false — failed: DNS could not resolve registry.terraform.io
-- terraform validate -no-color — blocked because the provider was unavailable
-- tofu fmt -check — passed
-- tofu init -backend=false -input=false — failed: DNS could not resolve registry.opentofu.org
-- tofu validate -no-color — blocked because the provider was unavailable
+- terraform fmt -check passed.
+- terraform init -backend=false -input=false failed because registry.terraform.io could not be resolved.
+- Remaining Terraform and OpenTofu commands were not run due to the task's stop condition.
+- No provider lock-file compatibility claim is being made.
 
-No provider lock-file warning was emitted. Only the permitted file changed. No apply, state, credential, delete, or destructive command was used.
+Only the permitted file changed. No apply, state, credential, delete, or destructive command was used. Local validation needs an environment with Terraform Registry network access before it can be completed.
 ```
 
 Your run may complete all six validations when the agent sandbox has registry access.
@@ -173,9 +171,8 @@ It must avoid apply. It must return the required evidence or stop honestly when 
 
 :::warning[Codex reports a registry DNS error]
 
-The live course run observed `lookup registry.terraform.io: no such host` inside the Codex workspace sandbox.
-It also observed `lookup registry.opentofu.org: no such host`.
-The agent reported the failed checks instead of bypassing its boundary.
+The committed course run observed `lookup registry.terraform.io: no such host` inside the Codex workspace sandbox.
+The agent stopped instead of bypassing its boundary. It did not run the remaining Terraform or OpenTofu commands.
 Continue with the host-side validation in PART V. Your terminal may have the registry access that the agent sandbox lacks.
 
 :::
