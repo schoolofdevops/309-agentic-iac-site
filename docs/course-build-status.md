@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 7 are built, validated, deployed, and verified from the public learner path.
+> **Published checkpoint:** Sections 1 through 8 are built, validated, deployed, and verified from the public learner path.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 8 lab-first feasibility |
-| Active learner section | Section 8 — *Test and Secure AI-Generated Infrastructure Code* |
-| Current sequence | Prove the Section 8 security and testing path before learner content production. |
+| Active phase | Section 9 Kubernetes and Helm lab-first feasibility |
+| Active learner section | Section 9 — *Deploy Applications with Kubernetes, Helm, and AI Agents* |
+| Current sequence | Prove the compact Kind and Helm workload path before learner content production. |
 | Current blocker | None. |
-| Last checkpoint | 28 August 2026 — Section 7 deployed and live-verified through GitHub Pages workflow `33113247778`. |
+| Last checkpoint | 28 August 2026 — Section 8 deployed and live-verified through GitHub Pages workflow `33125533866`. |
 
 ## Completed checkpoints
 
@@ -52,6 +52,16 @@ sidebar_position: 2
   deck returned HTTP 200 after workflow `33113247778` deployed exact site commit
   `53a1eb7`. The public 369,724-byte deck matches committed SHA-256
   `4181cbf6dc3c6e2cf4d3927550e81661cb3be5230b801c4486dd503f6c6b8f05`.
+- Section 8 is live with a human-first ten-gate evidence lab, nine-lecture
+  lesson, false-green evaluator deep dive, operator challenge, 15-question
+  quiz, 75-slide technical deck, and 66.3-minute slide-aligned voiceover.
+- A context-free learner passed the Section 7 to Section 8 seam. Five guidance
+  findings were fixed and replayed: RTK-safe listing, complete OpenTofu recovery,
+  variable plan hashes, answer-key navigation, and the deep-dive title.
+- Workflow `33125533866` deployed exact site commit `e8ad547`. Every Section 8
+  page and five checked learner artifacts returned HTTP 200. The public
+  352,855-byte deck matches committed SHA-256
+  `41279286f2bcd10de5514b87101f25679670f9375495ff4d96feacb07312c53e`.
 
 ## Important evidence note
 
@@ -59,8 +69,8 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Begin Section 8 with lab-first testing and security feasibility evidence.
-2. Build Section 8 only after its supported tools and low-resource proof are frozen.
-3. Complete later low-resource replay evidence where those sections make a support claim.
+1. Prove the Section 9 Helm package and small Kind runtime path.
+2. Freeze its supported versions and measured low-resource evidence.
+3. Build the Section 9 learner module only after the lab path is repeatable.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
