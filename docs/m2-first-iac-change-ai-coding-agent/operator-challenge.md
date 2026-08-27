@@ -55,9 +55,9 @@ Checks:
   exit 0; provider source rewrite warning recorded
   tofu validate -no-color
   Success! The configuration is valid.
-  git diff --name-only
+  git diff --name-only HEAD
   section-2/starter/main.tf
-  git diff --check
+  git diff --check HEAD -- section-2/starter/main.tf
   exit 0
 
 Stop: No apply, state, credential, delete, or destroy action ran.
@@ -86,6 +86,7 @@ Your review must distinguish all of these points:
 - Candidate B preserves the required output, changes only the allowed file, and supplies every required check.
 - Candidate B records the lock-source warning rather than treating a shared lock as compatibility proof.
 - Candidate B is the acceptable run. It must stop at this checkpoint without apply.
+- Candidate B's short record does not show its commit, working directory, tool versions, or raw streams. Confirm those provenance details before reusing its evidence outside this exercise.
 - Candidate A must return to the last clean checkpoint before a new repair attempt.
 
 ## Review rubric
@@ -102,6 +103,6 @@ Your review must distinguish all of these points:
 <details>
 <summary>Review the decision</summary>
 
-Reject Candidate A. Its smaller diff removes required behaviour, its evidence is incomplete, and its apply proposal crosses the task boundary. Accept Candidate B as the repair candidate. Its diff and independent checks satisfy the contract, and it stops before apply.
+Reject Candidate A. Its smaller diff removes required behaviour, its evidence is incomplete, and its apply proposal crosses the task boundary. Accept Candidate B for this task because its diff and independent checks satisfy the stated contract, and it stops before apply. Before using Candidate B's record as durable audit evidence, add the commit or checksum, working directory, tool versions, and raw command streams.
 
 </details>

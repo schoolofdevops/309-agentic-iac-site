@@ -1,9 +1,9 @@
 ---
 sidebar_position: 2
-title: 'Lab: Repair Terraform with a Governed Agent Workflow'
+title: 'Lab: Build Your First IaC Change with an AI Coding Agent'
 ---
 
-# Lab: Repair Terraform with a Governed Agent Workflow
+# Lab: Build Your First IaC Change with an AI Coding Agent
 
 In this lab, you will give Codex one bounded Terraform repair. You will inspect the proposed change, validate it independently with Terraform and OpenTofu, and stop before apply.
 
@@ -105,24 +105,10 @@ The output reads `random_id.platform.hex`, but the resource is not declared.
 
 ## PART II - Reproduce the failure
 
-Initialize the disposable module without a backend.
+Go to the starter and validate the current configuration before any initialization.
 
 ```bash
 cd section-2/starter
-terraform init -backend=false -input=false
-```
-
-[ Expected output ]
-
-```text
-Initializing provider plugins...
-
-Terraform has been successfully initialized!
-```
-
-Now validate the current configuration.
-
-```bash
 terraform validate -no-color
 ```
 
@@ -134,10 +120,12 @@ Error: Reference to undeclared resource
   on main.tf line 6, in output "platform_name":
    6:   value = random_id.platform.hex
 
-A managed resource "random_id" "platform" has not been declared in the root module.
+A managed resource "random_id" "platform" has not been declared in the root
+module.
 ```
 
-This failure is the starting evidence. It supports a missing-resource repair. It does not authorize changing the output or applying infrastructure.
+This failure is the starting evidence. No provider cache or lock file exists yet.
+The error supports a missing-resource repair. It does not authorize changing the output or applying infrastructure.
 
 Return to the repository root.
 
@@ -158,32 +146,36 @@ Run Codex against the repository and point it to the canonical task contract.
 codex exec --ephemeral --sandbox workspace-write --cd "$(pwd)" --color never "Read and follow the canonical task contract at ./section-2/task.md exactly. Inspect the repository rules and task contract before any edit. Respect all scope, forbidden-action, validation, evidence, and stop conditions. Do not make edits outside the task's allowed file. Stop after the required validation; do not apply, use state commands, credentials, or destructive actions."
 ```
 
-[ Expected output ]
+[ Captured output from the course validation run ]
 
 ```text
-Implemented the smallest repair in main.tf:
+Added the missing random_id.platform resource in main.tf.
 
 +resource "random_id" "platform" {
 +  byte_length = 4
 +}
 
-Validation status:
+Validation results:
 
-- terraform fmt -check passed.
-- terraform init -backend=false -input=false failed because registry.terraform.io could not be resolved.
-- Remaining Terraform and OpenTofu commands were not run due to the task's stop condition.
-- No provider lock-file compatibility claim is being made.
+- terraform fmt -check — passed
+- terraform init -backend=false -input=false — failed: DNS could not resolve registry.terraform.io
+- terraform validate -no-color — blocked because the provider was unavailable
+- tofu fmt -check — passed
+- tofu init -backend=false -input=false — failed: DNS could not resolve registry.opentofu.org
+- tofu validate -no-color — blocked because the provider was unavailable
 
-Only the permitted file changed. No apply, state, credential, delete, or destructive command was used.
+No provider lock-file warning was emitted. Only the permitted file changed. No apply, state, credential, delete, or destructive command was used.
 ```
 
-Agent wording varies. It must explain the defect and change only the allowed file.
+Your run may complete all six validations when the agent sandbox has registry access.
+Agent wording also varies. It must explain the defect and change only the allowed file.
 It must avoid apply. It must return the required evidence or stop honestly when its sandbox cannot complete a check.
 
 :::warning[Codex reports a registry DNS error]
 
 The live course run observed `lookup registry.terraform.io: no such host` inside the Codex workspace sandbox.
-The agent stopped instead of bypassing its boundary.
+It also observed `lookup registry.opentofu.org: no such host`.
+The agent reported the failed checks instead of bypassing its boundary.
 Continue with the host-side validation in PART V. Your terminal may have the registry access that the agent sandbox lacks.
 
 :::
@@ -193,7 +185,7 @@ Continue with the host-side validation in PART V. Your terminal may have the reg
 Inspect the exact Terraform diff.
 
 ```bash
-git diff -- section-2/starter/main.tf
+git diff HEAD -- section-2/starter/main.tf
 ```
 
 [ Expected output ]
@@ -221,7 +213,7 @@ The resource uses the address already referenced by the output. The change does 
 Check which tracked file changed.
 
 ```bash
-git diff --name-only
+git diff --name-only HEAD
 ```
 
 [ Expected output ]
@@ -373,7 +365,7 @@ The provider cache and disposable lock file are ignored, so the only tracked cha
 Check the diff for whitespace errors.
 
 ```bash
-git diff --check
+git diff --check HEAD -- section-2/starter/main.tf
 ```
 
 [ Expected output ]
@@ -416,7 +408,7 @@ If only the agent sandbox is blocked, run the documented validation from your ho
 
 :::warning[Another tracked file changed]
 
-Stop the agent. Review `git diff --name-only` and preserve any pre-existing human work.
+Stop the agent. Review `git diff --name-only HEAD` and preserve any pre-existing human work.
 Remove only the agent's out-of-scope proposal. Resume from the last clean checkpoint with the one-file boundary repeated.
 
 :::

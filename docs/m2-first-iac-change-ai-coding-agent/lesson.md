@@ -1,9 +1,9 @@
 ---
 sidebar_position: 1
-title: 'Governed Agent Workflows for IaC'
+title: 'Build Your First IaC Change with an AI Coding Agent'
 ---
 
-# Governed Agent Workflows for IaC
+# Build Your First IaC Change with an AI Coding Agent
 
 An infrastructure request often arrives as one sentence: “Fix the Terraform.” A capable coding agent can turn that sentence into a change very quickly. Speed is useful only when the agent also knows what it may inspect, what it may change, how it must prove the result, and where it must stop.
 
@@ -125,7 +125,7 @@ An agent summary is a claim. Evidence lets another person test that claim.
 |---|---|---|
 | “The file is formatted.” | `terraform fmt -check` with exit `0` | The references or behaviour are correct. |
 | “The configuration is valid.” | `terraform validate` and `tofu validate`, each with exit `0` | An apply is safe or the design meets policy. |
-| “Only one file changed.” | `git diff --name-only` plus the exact diff | No untracked or ignored artifact exists. |
+| “Only one file changed.” | `git diff --name-only HEAD` plus the exact diff | No untracked or ignored artifact exists. |
 | “Nothing was applied.” | Command inventory, absent state files, and restricted tool policy | No other actor changed an external system. |
 | “Both tools work.” | Separate initialization and validation output | One shared lock file is portable between registries. |
 

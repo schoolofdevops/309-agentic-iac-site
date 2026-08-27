@@ -18,7 +18,7 @@ DevOps, platform, SRE, cloud and infrastructure engineers, plus software and AI 
 | Section | Runtime | Status |
 |---|---:|---|
 | 1 — Agentic Infrastructure as Code Fundamentals | 1h 25m | Ready for review |
-| 2 — Governed Agent Workflows for IaC | 50m | Planned |
+| 2 — Build Your First IaC Change with an AI Coding Agent | 50m | Planned |
 | 3 — Plan Safe Infrastructure Changes | 50m | Planned |
 | 4 — Context, Memory, and Graph Engineering for IaC Agents | 1h 05m | Planned |
 | 5 — Agent Tools, Skills, and MCP for Infrastructure | 1h | Planned |

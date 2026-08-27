@@ -12,11 +12,11 @@ The lab proved one bounded repair with a diff and two IaC engines. This deep div
 
 Run this page from the learner repository root. It works whether your working copy still contains the repaired file or has returned to the committed broken starter. The commands use the committed starter as a stable reference and inspect a working-tree diff only when one exists. Re-running is safe.
 
-Create a temporary evidence directory and copy the committed starter into it.
+Create one unique temporary evidence directory and copy the committed starter into it.
 
 ```bash
-mkdir -p /tmp/agentic-iac-m2-evidence
-git show HEAD:section-2/starter/main.tf > /tmp/agentic-iac-m2-evidence/main.tf
+m2_tmpdir=$(mktemp -d /tmp/agentic-iac-m2-evidence.XXXXXX)
+git show HEAD:section-2/starter/main.tf > "$m2_tmpdir/main.tf"
 ```
 
 :::
@@ -28,7 +28,7 @@ A formatter is like a document layout check. It can confirm that the page follow
 Run the formatter against the committed broken starter and print its exit status.
 
 ```bash
-terraform fmt -check /tmp/agentic-iac-m2-evidence/main.tf
+terraform fmt -check "$m2_tmpdir/main.tf"
 printf 'fmt exit: %s\n' "$?"
 ```
 
@@ -43,7 +43,7 @@ The broken file is correctly formatted, so formatting can exit `0` while the con
 Run validation against the same committed file and preserve the exit status.
 
 ```bash
-terraform -chdir=/tmp/agentic-iac-m2-evidence validate -no-color
+terraform -chdir="$m2_tmpdir" validate -no-color
 printf 'validate exit: %s\n' "$?"
 ```
 
@@ -76,7 +76,7 @@ This object ID binds the review to the exact committed task. A working-tree file
 Check whether the working copy of the repair differs from the committed starter.
 
 ```bash
-git diff --numstat -- section-2/starter/main.tf
+git diff HEAD --numstat -- section-2/starter/main.tf
 ```
 
 **Expected output**
@@ -89,7 +89,7 @@ After the lab, the expected repair reports four inserted lines and no deletions.
 
 ## 3 — A diff proves scope only within its view
 
-`git diff --name-only` answers a narrow question: which tracked, unstaged files differ from the index? It does not include ignored provider caches, and without other options it may not include untracked artifacts or staged changes.
+`git diff --name-only HEAD` answers a narrow question: which tracked files differ from `HEAD`, including staged and unstaged edits? It does not include ignored provider caches or untracked artifacts.
 
 The evidence path therefore has several linked observations:
 
@@ -107,7 +107,7 @@ flowchart LR
 Check the candidate diff for whitespace errors and print the status.
 
 ```bash
-git diff --check -- section-2/starter/main.tf
+git diff --check HEAD -- section-2/starter/main.tf
 printf 'diff-check exit: %s\n' "$?"
 ```
 
@@ -149,7 +149,7 @@ Before storing raw logs, scan for credentials, authorization headers, private ke
 Remove only the temporary evidence directory created by this page.
 
 ```bash
-rm -r /tmp/agentic-iac-m2-evidence
+rm -r "$m2_tmpdir"
 ```
 
 **Expected output**
@@ -158,4 +158,5 @@ rm -r /tmp/agentic-iac-m2-evidence
 <expected output — folded in during live lab validation>
 ```
 
+This removes only the unique directory stored in `m2_tmpdir` during this terminal session.
 Keep the Section 2 learner repository and your repaired `main.tf`. This page does not create infrastructure, state, or a provider cache.
