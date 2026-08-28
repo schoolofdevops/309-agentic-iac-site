@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 8 are built, validated, deployed, and verified from the public learner path. Section 9 is built, validated, and learner-QA passed; deployment is next.
+> **Published checkpoint:** Sections 1 through 9 are built, validated, deployed, and verified from the public learner path.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 9 publication |
-| Active learner section | Section 9 — *Deploy Applications with Kubernetes, Helm, and AI Agents* |
-| Current sequence | Merge the verified branches, deploy the site, and verify the public Section 9 routes and deck hash. |
+| Active phase | Section 10 GitOps lab-first feasibility |
+| Active learner section | Section 10 — *GitOps and Human-Controlled Delivery* |
+| Current sequence | Prove the smallest safe Argo CD and human-approval path before learner content production. |
 | Current blocker | None. |
-| Last checkpoint | 28 August 2026 — Section 9 final context-free learner QA passed with zero open findings. |
+| Last checkpoint | 28 August 2026 — Section 9 deployed and live-verified through GitHub Pages workflow `33162322602`. |
 
 ## Completed checkpoints
 
@@ -74,8 +74,14 @@ sidebar_position: 2
   endpoint, cleanup passed, and no finding remains open.
 - The Section 9 deck is 364,535 bytes with SHA-256
   `fb9638a98a82c6ceb1aa0c919e7f602bd66091092e5b996d9162cd83e72eb9c2`.
-  These artifacts are ready for publication but are not yet claimed deployed
-  or live.
+  The public deck matches both values exactly.
+- Source `main` is `17a1df095499b479fffb229fb038c2c44464861a`,
+  learner labs `main` is `10ba468bcdeef065b3c7124716b1eec86ad83f4a`,
+  and site content `main` is
+  `86bfa488e2ed237414b393a718bc320c70b934d2`.
+- GitHub Pages workflow `33162322602` deployed exact site head `86bfa48`.
+  The public lesson, lab, operator challenge, deep dive, quiz, build-status
+  page, deck, and six checked learner artifacts returned HTTP 200.
 
 ## Important evidence note
 
@@ -83,10 +89,9 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Fast-forward the verified source, labs, and site branches to `main` while
-   preserving unrelated user edits.
-2. Push and deploy the Section 9 site build.
-3. Verify the public lesson, lab, challenge, deep dive, quiz, deck, learner
-   artifacts, and exact deck hash before marking Section 9 live.
+1. Freeze the Section 10 GitOps learner and approval contract.
+2. Prove the smallest safe Argo CD lifecycle within the course resource budget.
+3. Record exact reconciliation, approval, rollback, and cleanup evidence before
+   authoring Section 10 learner content.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.

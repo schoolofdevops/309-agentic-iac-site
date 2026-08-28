@@ -25,7 +25,7 @@ DevOps, platform, SRE, cloud and infrastructure engineers, plus software and AI 
 | 6 — Engineer, Evaluate, and Optimize Reliable Agentic IaC Workflows | 1h | Live |
 | 7 — Terraform and OpenTofu with AI Agents | 1h 25m | Live |
 | 8 — Test, Secure, and Govern AI-Generated IaC | 1h 10m | Live |
-| 9 — Kubernetes and Helm Delivery with AI Agents | 1h 20m | Ready for publication |
+| 9 — Kubernetes and Helm Delivery with AI Agents | 1h 20m | Live |
 | 10 — GitOps and Human-Controlled Delivery | 1h 05m | Planned |
 | 11 — Hands-On Hermes for Governed Operations | 55m | Planned |
 | 12 — Capstone: Ship a Governed Infrastructure Change | 1h 20m | Planned |
