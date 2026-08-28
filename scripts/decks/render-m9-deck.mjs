@@ -1,4 +1,4 @@
-import {access, mkdir, readFile, writeFile} from 'node:fs/promises';
+import {access, mkdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {createServer} from 'node:http';
 import {dirname, extname, join, resolve} from 'node:path';
@@ -61,7 +61,7 @@ async function writeContactSheet() {
     const number = String(slide.n).padStart(2, '0');
     return `<figure><img src="slide-${number}.png" alt="Slide ${slide.n}: ${escapeHtml(slide.title)}"><figcaption><b>M9.${number}</b> ${escapeHtml(slide.title)}</figcaption></figure>`;
   }).join('\n');
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Module 9 deck contact sheet</title><style>body{margin:24px;background:#eee;font:15px system-ui;color:#222}h1{margin:0 0 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:18px}figure{margin:0;background:white;padding:8px;border:1px solid #bbb;border-radius:8px}img{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:white}figcaption{padding:8px 4px 3px;line-height:1.35}</style></head><body><h1>Module 9 · 78-slide visual QA</h1><div class="grid">${tiles}</div></body></html>`;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Module 9 deck contact sheet</title><style>body{margin:24px;background:#eee;font:15px system-ui;color:#222}h1{margin:0 0 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:18px}figure{margin:0;background:white;padding:8px;border:1px solid #bbb;border-radius:8px}img{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:white}figcaption{padding:8px 4px 3px;line-height:1.35}</style></head><body><h1>Module 9 · ${slides.length}-slide visual QA</h1><div class="grid">${tiles}</div></body></html>`;
   await writeFile(join(ARTIFACT_DIRECTORY, 'contact-sheet.html'), html, 'utf8');
 }
 
@@ -70,6 +70,7 @@ export async function renderM9Deck() {
   const deckHtml = await readFile(DECK_PATH, 'utf8');
   const fragmentCounts = sectionFragments(deckHtml);
   if (fragmentCounts.length !== slides.length) throw new Error(`expected ${slides.length} sections, found ${fragmentCounts.length}`);
+  await rm(ARTIFACT_DIRECTORY, {recursive: true, force: true});
   await mkdir(ARTIFACT_DIRECTORY, {recursive: true});
   const server = await startStaticServer();
   const address = server.address();
@@ -86,7 +87,7 @@ export async function renderM9Deck() {
   } finally {
     await new Promise((resolveClose) => server.close(resolveClose));
   }
-  console.log(`wrote ${ARTIFACT_DIRECTORY}/slide-01.png through slide-78.png`);
+  console.log(`wrote ${ARTIFACT_DIRECTORY}/slide-01.png through slide-${String(slides.length).padStart(2, '0')}.png`);
   console.log(`wrote ${ARTIFACT_DIRECTORY}/contact-sheet.html`);
 }
 
