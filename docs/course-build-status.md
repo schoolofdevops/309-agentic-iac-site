@@ -75,11 +75,12 @@ sidebar_position: 2
 - The Section 9 deck is 364,535 bytes with SHA-256
   `fb9638a98a82c6ceb1aa0c919e7f602bd66091092e5b996d9162cd83e72eb9c2`.
   The public deck matches both values exactly.
-- Source `main` is `17a1df095499b479fffb229fb038c2c44464861a`,
-  learner labs `main` is `10ba468bcdeef065b3c7124716b1eec86ad83f4a`,
-  and site content `main` is
+- The exact verified Section 9 release commits are source
+  `17a1df095499b479fffb229fb038c2c44464861a`, learner labs
+  `10ba468bcdeef065b3c7124716b1eec86ad83f4a`, and deployed site content
   `86bfa488e2ed237414b393a718bc320c70b934d2`.
-- GitHub Pages workflow `33162322602` deployed exact site head `86bfa48`.
+- GitHub Pages workflow `33162322602` deployed exact site release commit
+  `86bfa48`.
   The public lesson, lab, operator challenge, deep dive, quiz, build-status
   page, deck, and six checked learner artifacts returned HTTP 200.
 
