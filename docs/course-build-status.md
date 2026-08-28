@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 8 are built, validated, deployed, and verified from the public learner path.
+> **Published checkpoint:** Sections 1 through 8 are built, validated, deployed, and verified from the public learner path. Section 9 is built, validated, and learner-QA passed; deployment is next.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 9 Kubernetes and Helm lab-first feasibility |
+| Active phase | Section 9 publication |
 | Active learner section | Section 9 — *Deploy Applications with Kubernetes, Helm, and AI Agents* |
-| Current sequence | Prove the compact Kind and Helm workload path before learner content production. |
+| Current sequence | Merge the verified branches, deploy the site, and verify the public Section 9 routes and deck hash. |
 | Current blocker | None. |
-| Last checkpoint | 28 August 2026 — Section 8 deployed and live-verified through GitHub Pages workflow `33125533866`. |
+| Last checkpoint | 28 August 2026 — Section 9 final context-free learner QA passed with zero open findings. |
 
 ## Completed checkpoints
 
@@ -62,6 +62,20 @@ sidebar_position: 2
   page and five checked learner artifacts returned HTTP 200. The public
   352,855-byte deck matches committed SHA-256
   `41279286f2bcd10de5514b87101f25679670f9375495ff4d96feacb07312c53e`.
+- Section 9 has a human-first Kubernetes and Helm lab, eleven-lecture lesson,
+  advanced live diagnostics lab, independent operator challenge, deep dive,
+  15-question quiz, 80-slide technical deck, and 76.0-minute voiceover.
+- The repaired package passes all 13 evaluator gates and renders nine
+  Kubernetes resources. Measured named Kind-node peaks ranged from 643.1 to
+  671.1 MiB; a separate older-client compatibility run peaked at 603.8 MiB.
+- A fresh context-free learner completed the Section 8 to Section 9 seam and
+  full runtime path. The final HTTP 503 diagnostic returned only the current
+  worker event, recovery restored one ready worker and a ready dependency
+  endpoint, cleanup passed, and no finding remains open.
+- The Section 9 deck is 364,535 bytes with SHA-256
+  `fb9638a98a82c6ceb1aa0c919e7f602bd66091092e5b996d9162cd83e72eb9c2`.
+  These artifacts are ready for publication but are not yet claimed deployed
+  or live.
 
 ## Important evidence note
 
@@ -69,8 +83,10 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Prove the Section 9 Helm package and small Kind runtime path.
-2. Freeze its supported versions and measured low-resource evidence.
-3. Build the Section 9 learner module only after the lab path is repeatable.
+1. Fast-forward the verified source, labs, and site branches to `main` while
+   preserving unrelated user edits.
+2. Push and deploy the Section 9 site build.
+3. Verify the public lesson, lab, challenge, deep dive, quiz, deck, learner
+   artifacts, and exact deck hash before marking Section 9 live.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
