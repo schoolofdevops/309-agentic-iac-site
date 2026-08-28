@@ -456,7 +456,8 @@ requires repair.
 
 ### Instructor path with Codex
 
-The instructor demonstrates Codex once from the labs repository.
+The instructor demonstrates Codex once from the labs repository. Codex asks a
+human to approve repository trust before it loads project-local instructions.
 
 ```bash
 codex
@@ -465,8 +466,23 @@ codex
 [ sample output ]
 
 ```text
-Codex opens an interactive session in the current repository.
+You are in <path-to-the-labs-repository>
+
+Do you trust the contents of this directory? Working with untrusted contents
+comes with higher risk of prompt injection. Trusting the directory allows
+project-local config, hooks, and exec policies to load.
+
+› 1. Yes, continue
+  2. No, quit
+
+Press enter to continue
 ```
+
+This is the recorded trust prompt from Codex 0.150.1. Read the repository
+before choosing. The human approves repository trust by selecting
+`1. Yes, continue`. Choose `2. No, quit` if the clone or its instructions are
+not trusted. Repository trust allows local configuration to load; it does not
+approve the repair, a deployment, or any other action.
 
 Give Codex this bounded task:
 
@@ -524,9 +540,37 @@ or task change.
 
 ### Optional pinned recovery
 
-Try the repair first. If you need the reviewed candidate, save your own work.
+Try the repair first. If you need the reviewed candidate, preserve your attempt
+before restoring anything. This command saves staged and unstaged changes from
+the three owned files outside the repository.
+
+```bash
+git diff --binary HEAD -- section-9/chart/templates/deployment.yaml section-9/chart/values.schema.json section-9/chart/values.yaml > "$S9_TEMP_ROOT/section-9-learner-attempt.patch"
+```
+
+[ Expected output ]
+
+```text
+(no output)
+```
+
+Restore only the three owned files from the pinned starter commit. This removes
+your current staged and unstaged edits from those files. It does not change any
+other learner file, and the saved patch preserves the attempt for later review.
+
+```bash
+git restore --source fdcc15c57c9879b3f15d03319ad5dd394e2706f2 --staged --worktree -- section-9/chart/templates/deployment.yaml section-9/chart/values.schema.json section-9/chart/values.yaml
+```
+
+[ Expected output ]
+
+```text
+(no output)
+```
+
 The repository includes the exact three-file diff from candidate commit
-`718fd28edab8a026bab114c0f21800e2df450c83`.
+`718fd28edab8a026bab114c0f21800e2df450c83`. Check it against the clean pinned
+starter files.
 
 ```bash
 git apply --check section-9/recovery/718fd28edab8a026bab114c0f21800e2df450c83.patch
@@ -538,7 +582,8 @@ git apply --check section-9/recovery/718fd28edab8a026bab114c0f21800e2df450c83.pa
 (no output)
 ```
 
-Apply the pinned patch only after its clean check passes.
+Apply the pinned patch only after its clean check passes. It touches only the
+same three owned files.
 
 ```bash
 git apply section-9/recovery/718fd28edab8a026bab114c0f21800e2df450c83.patch
@@ -654,13 +699,14 @@ List existing Kind clusters before creating anything.
 kind get clusters
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
-No kind clusters found.
+shared-training
 ```
 
-If other clusters are listed, continue only when `agentic-iac-s9` is absent.
+The list may instead be empty. Continue only when the exact name
+`agentic-iac-s9` is absent. Do not delete or adopt an unrelated cluster.
 
 ### Build the local workload image
 
@@ -1033,17 +1079,21 @@ Deleted nodes: ["agentic-iac-s9-control-plane"]
 
 ### Verify runtime cleanup
 
-List Kind clusters and confirm the exact name is absent.
+List Kind clusters and confirm the exact name is absent. Unrelated Kind clusters
+may remain because teardown owns only `agentic-iac-s9`.
 
 ```bash
 kind get clusters
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
-No kind clusters found.
+shared-training
 ```
+
+Your output may instead say `No kind clusters found.` The cleanup proof is that
+the exact name `agentic-iac-s9` is absent from the complete list.
 
 Check that the exact node container is absent.
 
@@ -1094,6 +1144,19 @@ rm "$S9_TEMP_ROOT/agentic-iac-section-9-repaired/.section-9-evaluation.json" "$S
 
 ```bash
 rmdir "$S9_TEMP_ROOT/agentic-iac-section-9-repaired"
+```
+
+[ Expected output ]
+
+```text
+(no output)
+```
+
+If you used pinned recovery, remove the saved learner attempt after you have
+finished reviewing it.
+
+```bash
+rm "$S9_TEMP_ROOT/section-9-learner-attempt.patch"
 ```
 
 [ Expected output ]

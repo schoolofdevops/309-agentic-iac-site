@@ -45,6 +45,8 @@ test('Section 9 lab freezes the two-defect starter and exact three-file candidat
   assert.match(lab, /committed-backend-token-material/);
   assert.match(lab, /missing-worker-resource-limits/);
   assert.match(lab, /718fd28edab8a026bab114c0f21800e2df450c83/);
+  assert.match(lab, /git diff --binary HEAD -- section-9\/chart\/templates\/deployment\.yaml section-9\/chart\/values\.schema\.json section-9\/chart\/values\.yaml > "\$S9_TEMP_ROOT\/section-9-learner-attempt\.patch"/);
+  assert.match(lab, /git restore --source fdcc15c57c9879b3f15d03319ad5dd394e2706f2 --staged --worktree -- section-9\/chart\/templates\/deployment\.yaml section-9\/chart\/values\.schema\.json section-9\/chart\/values\.yaml/);
   assert.match(lab, /git apply --check section-9\/recovery\/718fd28edab8a026bab114c0f21800e2df450c83\.patch/);
   assert.match(lab, /git apply section-9\/recovery\/718fd28edab8a026bab114c0f21800e2df450c83\.patch/);
 });
@@ -56,6 +58,12 @@ test('Section 9 lab demonstrates one portable agent task and keeps commands read
     assert.match(lab, new RegExp(name, 'i'));
   }
   assert.match(lab, /same task contract/i);
+  assert.match(lab, /Do you trust the contents of this directory\?/);
+  assert.match(lab, /Working with untrusted contents\s+comes with higher risk of prompt injection\./);
+  assert.match(lab, /project-local config, hooks, and exec policies\s+to load\./);
+  assert.match(lab, /1\. Yes, continue/);
+  assert.match(lab, /2\. No, quit/);
+  assert.match(lab, /human.*approves.*repository trust/is);
   assert.match(lab, /job-0001/);
   assert.match(lab, /"status":"queued"/);
   assert.match(lab, /MOCK INFERENCE: HELLO PLATFORM/);
@@ -64,4 +72,12 @@ test('Section 9 lab demonstrates one portable agent task and keeps commands read
   for (const pattern of [/\btest -[efd]\b/, /\bfind\s+section-9/, /node -e/, /rm -rf/, /meaningless marker/i]) {
     assert.doesNotMatch(lab, pattern);
   }
+});
+
+test('Section 9 lab prints exact kubeconform evidence and tolerates unrelated Kind clusters', () => {
+  const lab = readLab();
+  assert.match(lab, /Summary: 9 resources found parsing stdin - Valid: 9, Invalid: 0, Errors: 0, Skipped: 0/);
+  assert.match(lab, /Unrelated Kind clusters\s+may remain/i);
+  assert.match(lab, /exact name `agentic-iac-s9`.*absent/is);
+  assert.doesNotMatch(lab, /\[ Expected output \]\n\n```text\nNo kind clusters found\./);
 });
