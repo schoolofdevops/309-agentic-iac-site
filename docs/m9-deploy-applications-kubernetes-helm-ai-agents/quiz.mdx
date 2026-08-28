@@ -1,0 +1,152 @@
+---
+sidebar_position: 5
+title: 'Quiz: Deploy Applications with Kubernetes, Helm, and AI Agents'
+---
+
+import Quiz from '@site/src/components/Quiz';
+
+# Deploy Applications with Kubernetes, Helm, and AI Agents Quiz
+
+<Quiz questions={[
+  {
+    prompt:'A Deployment is accepted by the Kubernetes API, but its new Pod never becomes ready. What is the correct conclusion?',
+    options:[
+      {text:'API admission passed, while runtime reconciliation still needs evidence',correct:true,explanation:'Acceptance proves the object was admitted, not that scheduling, startup, probes, or dependencies succeeded.'},
+      {text:'The Deployment is healthy because valid YAML reached persistent storage',correct:false,explanation:'Stored desired state can still lead to an unready or failed runtime.'},
+      {text:'Helm must have rejected the release before Kubernetes received it',correct:false,explanation:'The scenario states that Kubernetes accepted the generated object.'},
+      {text:'The agent summary replaces the need to inspect status and events',correct:false,explanation:'A summary cannot replace controller, Pod, endpoint, and client observations.'},
+    ]
+  },
+  {
+    prompt:'Which observations belong to the Kubernetes reconciliation path? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'A Deployment controller creates or updates the required ReplicaSet',correct:true,explanation:'That controller moves workload objects toward the requested replica state.'},
+      {text:'A scheduler binds each eligible pending Pod to a selected node',correct:true,explanation:'Scheduling is a separate control step after Pod creation.'},
+      {text:'A kubelet starts containers, runs probes, and reports Pod conditions',correct:true,explanation:'The kubelet observes node-local runtime state and updates status.'},
+      {text:'A Helm values file continuously restarts every unhealthy container',correct:false,explanation:'Values shape rendered intent; the kubelet and controllers handle runtime reconciliation.'},
+    ]
+  },
+  {
+    prompt:'The API submits job-0001, but the worker cannot reach the dependency service. Which contract is broken?',
+    options:[
+      {text:'The worker dependency URL and readiness contract require investigation',correct:true,explanation:'The worker needs the correct endpoint and should remain unready while it cannot poll.'},
+      {text:'The API should perform all queued work inside the client request',correct:false,explanation:'That removes the tested asynchronous API and worker boundary.'},
+      {text:'The result should be marked complete before the worker receives it',correct:false,explanation:'Completion is valid only after processing and result storage.'},
+      {text:'The Kubernetes scheduler should rewrite the application endpoint',correct:false,explanation:'Scheduling selects a node; it does not repair application configuration.'},
+    ]
+  },
+  {
+    prompt:'Which controls belong in a useful Helm values schema and chart contract? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Require supported value types, ranges, enums, and named fields',correct:true,explanation:'Schema constraints reject invalid inputs before template evaluation.'},
+      {text:'Keep non-secret defaults small, documented, and safe to render',correct:true,explanation:'Defaults become release intent unless reviewed overrides replace them.'},
+      {text:'Version chart packaging separately from the application release',correct:true,explanation:'Template changes and software changes have related but distinct identities.'},
+      {text:'Store the live backend token as a required plain values string',correct:false,explanation:'Credential values belong outside chart source, Git, and rendered evidence.'},
+    ]
+  },
+  {
+    prompt:'A team has complete base YAML and needs two visible environment patches. Which choice is most direct?',
+    options:[
+      {text:'Use focused Kustomize overlays and validate the final render',correct:true,explanation:'Patches keep the base visible and express the small environment differences directly.'},
+      {text:'Convert every field into a Helm switch before reviewing output',correct:false,explanation:'A broad values surface adds template complexity without clear reuse value.'},
+      {text:'Apply manual live patches and omit them from the release record',correct:false,explanation:'Unrecorded live changes create drift and weak recovery evidence.'},
+      {text:'Let the agent choose a packaging model during an unrelated repair',correct:false,explanation:'Changing delivery models affects ownership, history, and rollback and needs design review.'},
+    ]
+  },
+  {
+    prompt:'Helm lint passes, but the rendered manifest contains inline token material and no worker limits. What should happen?',
+    options:[
+      {text:'Independent secret and resource gates must reject the candidate',correct:true,explanation:'Lint proves chart structure, while the rendered security and resource facts remain unsafe.'},
+      {text:'The chart should install because Helm produced syntactically valid YAML',correct:false,explanation:'Structural validity cannot authorize a package with known control failures.'},
+      {text:'The missing limits can be inferred from Docker configured capacity',correct:false,explanation:'Platform capacity does not create per-container resource controls.'},
+      {text:'The token is safe because a template generated the Secret object',correct:false,explanation:'Generated credential material still enters source, render, and release evidence.'},
+    ]
+  },
+  {
+    prompt:'Which identity and secret practices fit the tested package? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Give API, worker, and dependency roles separate ServiceAccount names',correct:true,explanation:'Separate identities keep later bindings scoped and reviewable.'},
+      {text:'Disable automount when a role makes no Kubernetes API request',correct:true,explanation:'No API need means no reason to place an API credential in the Pod.'},
+      {text:'Mount one key from an external Secret through a read-only volume',correct:true,explanation:'The chart can reference credential shape without storing the value.'},
+      {text:'Grant cluster admin so generated workloads never hit RBAC errors',correct:false,explanation:'Broad authority hides the missing contract and violates least privilege.'},
+    ]
+  },
+  {
+    prompt:'A worker process is alive but cannot poll its dependency. Which probe result is most useful?',
+    options:[
+      {text:'Liveness stays healthy while dependency-aware readiness becomes false',correct:true,explanation:'The process can recover without restart, while Service eligibility reflects role availability.'},
+      {text:'Liveness fails immediately and restarts every worker at once',correct:false,explanation:'A shared dependency outage can create a restart storm without fixing connectivity.'},
+      {text:'Readiness stays true because the worker process has not exited',correct:false,explanation:'Process existence is weaker than the ability to perform the worker role.'},
+      {text:'Startup remains active for the complete lifetime of the release',correct:false,explanation:'Startup gates initialization and should not replace ongoing readiness.'},
+    ]
+  },
+  {
+    prompt:'Which design choices support resource control and graceful shutdown? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Set requests for scheduling and limits for bounded consumption',correct:true,explanation:'The fields support different scheduling and runtime control decisions.'},
+      {text:'Stop polling new jobs when worker termination begins',correct:true,explanation:'The worker should not accept work that cannot finish or return safely.'},
+      {text:'Test active work against the configured termination grace period',correct:true,explanation:'A quiet rollout cannot prove that queued work survives termination.'},
+      {text:'Treat a memory limit as proof that an OOM kill cannot occur',correct:false,explanation:'Crossing the memory boundary can terminate the container.'},
+    ]
+  },
+  {
+    prompt:'A valid NetworkPolicy object exists in the core Kind run, but policy enforcement was disabled. What is proven?',
+    options:[
+      {text:'Only intended policy shape is visible; denial enforcement is unproven',correct:true,explanation:'An enforcing CNI plus positive and negative traffic evidence is required for a denial claim.'},
+      {text:'Every unapproved Pod was denied because Kubernetes stored the object',correct:false,explanation:'API storage does not guarantee that the data plane enforces the policy.'},
+      {text:'DNS is allowed because application Service names resolved earlier',correct:false,explanation:'Connectivity without enforcement does not test DNS under egress policy.'},
+      {text:'Namespace separation alone supplies complete tenant isolation',correct:false,explanation:'Isolation also depends on network, RBAC, admission, identity, and node controls.'},
+    ]
+  },
+  {
+    prompt:'The named Kind node peaked at 671.1 MiB while Docker had 7.744 GiB configured. How should this be reported?',
+    options:[
+      {text:'Named-node working set and Docker configured capacity are separate facts',correct:true,explanation:'The sampler observed one node container, while the allocation described available Docker capacity.'},
+      {text:'The complete host workload used exactly 671.1 MiB during the run',correct:false,explanation:'The measurement excluded the host and Docker Desktop virtual machine.'},
+      {text:'Every production cluster will remain below the same memory peak',correct:false,explanation:'The observation applies to the deterministic local profile and exact workload.'},
+      {text:'The configured 7.744 GiB is the measured active workload value',correct:false,explanation:'Configured capacity is not a sampled working set.'},
+    ]
+  },
+  {
+    prompt:'Which observations help diagnose a new unready API Pod without guessing? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Compare Pod conditions and probe events for the new revision',correct:true,explanation:'These show whether the replacement Pod is eligible and why a probe failed.'},
+      {text:'Inspect EndpointSlice ready conditions for old and new addresses',correct:true,explanation:'Endpoint conditions separate present addresses from eligible backends.'},
+      {text:'Compare the live Deployment field with the Helm release render',correct:true,explanation:'The comparison locates a difference between live and intended state.'},
+      {text:'Accept the first agent diagnosis without checking object identity',correct:false,explanation:'Evidence must remain attached to the exact revision and Pod being diagnosed.'},
+    ]
+  },
+  {
+    prompt:'The API Pod and endpoint are ready, but the fixed Kind host path returns no response after a Helm upgrade. What should be compared next?',
+    options:[
+      {text:'Stored Helm values, rendered Service, live Service, and host mapping',correct:true,explanation:'The first broken hop can sit after Pod readiness at the Service or node-facing path.'},
+      {text:'Only API liveness because every request failure means a dead process',correct:false,explanation:'The scenario already gives direct healthy Pod and endpoint evidence.'},
+      {text:'Only RBAC because a host port failure is an API authorization issue',correct:false,explanation:'RBAC controls Kubernetes API calls, not normal NodePort routing.'},
+      {text:'Only worker logs because the worker owns the client-facing Service',correct:false,explanation:'The API Service and host mapping own this request path.'},
+    ]
+  },
+  {
+    prompt:'Which statements correctly separate render evidence from runtime evidence? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'A render proves generated fields for the exact selected values',correct:true,explanation:'It is direct evidence about output before API and controller processing.'},
+      {text:'Runtime status must be related to the current object generation',correct:true,explanation:'Old status can describe an earlier desired state during reconciliation.'},
+      {text:'An HTTP 200 proves one observed path for one release and time',correct:true,explanation:'The result is useful but does not generalize to every route or environment.'},
+      {text:'A stable render hash proves that every generated field is correct',correct:false,explanation:'A hash identifies bytes and can identify a faulty artifact precisely.'},
+    ]
+  },
+  {
+    prompt:'All 13 static gates pass and three local lifecycles complete. What is the correct authority decision?',
+    options:[
+      {text:'The exact evidence is ready for human review of the next action',correct:true,explanation:'Static and local runtime proof prepare a decision but do not grant deployment authority.'},
+      {text:'The agent may approve production installation without more review',correct:false,explanation:'Credential, risk, promotion, and deployment decisions remain human controlled.'},
+      {text:'The chart is proven on every cloud cluster and network provider',correct:false,explanation:'The evidence applies to the recorded local Kind profile and proof boundaries.'},
+      {text:'Future source changes can reuse the result without rerunning gates',correct:false,explanation:'A source change breaks the evidence link and requires fresh validation.'},
+    ]
+  },
+]} />

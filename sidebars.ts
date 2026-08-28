@@ -96,6 +96,17 @@ const sidebars: SidebarsConfig = {
         'm8-test-secure-ai-generated-infrastructure/quiz',
       ],
     },
+    {
+      type: 'category',
+      label: 'Section 9 — Deploy Applications with Kubernetes, Helm, and AI Agents',
+      items: [
+        'm9-deploy-applications-kubernetes-helm-ai-agents/lesson',
+        'm9-deploy-applications-kubernetes-helm-ai-agents/lab',
+        'm9-deploy-applications-kubernetes-helm-ai-agents/operator-challenge',
+        'm9-deploy-applications-kubernetes-helm-ai-agents/deep-dive',
+        'm9-deploy-applications-kubernetes-helm-ai-agents/quiz',
+      ],
+    },
   ],
 };
 
