@@ -121,12 +121,13 @@ test('Section 9 deep dive connects render evidence to runtime evidence and its l
 
 test('Section 9 operator challenge preserves three sequential incidents without leaking the answer key', () => {
   const challenge = read('operator-challenge.md');
-  const incidents = [...challenge.matchAll(/^## Incident (\d):/gm)].map((match) => Number(match[1]));
-  assert.deepEqual(incidents, [1, 2, 3]);
+  const incidents = [...challenge.matchAll(/^## Incident ([A-C])$/gm)].map((match) => match[1]);
+  assert.deepEqual(incidents, ['A', 'B', 'C']);
   assert(words(challenge) >= 700, `challenge has only ${words(challenge)} substantive words`);
 
   for (const term of [
-    'complete the recovery proof before',
+    'evidence packet',
+    'complete\\s+the\\s+recovery\\s+proof\\s+before',
     'Pod status',
     'rollout status',
     'events',
@@ -137,18 +138,44 @@ test('Section 9 operator challenge preserves three sequential incidents without 
     'Helm values',
     'live Service',
     'HTTP 200',
-    'answer-key.md',
+    'likely layer and cause',
+    'bounded verification',
+    'recovery proof',
+    'record your answers',
   ]) assert.match(challenge, new RegExp(term, 'i'), `challenge must require ${term}`);
 
   for (const leak of [
+    'challenge/task.md',
+    'diagnostic task',
+    'answer-key',
     'bad-readiness-path',
     'unreachable-backend-connection',
     'wrong-helm-value',
+    'unreachable-backend',
     'http://unreachable-backend:8081',
     'service.api.nodePort=30081',
+    '30081',
+    '30080',
+    '/readyz',
+    '/ready',
     '"value":"/readyz"',
+    'kubectl patch',
+    'helm upgrade',
+    '--reset-values',
     'the root cause is',
   ]) assert.doesNotMatch(challenge, new RegExp(leak, 'i'), `challenge leaks ${leak}`);
+});
+
+test('Section 9 keeps NetworkPolicy intent separate from the disabled core runtime', () => {
+  const lesson = read('lesson.md');
+  const quiz = read('quiz.mdx');
+
+  assert.doesNotMatch(lesson, /denied by tested policy/i);
+  assert.match(lesson, /unproven in (?:the )?core profile/i);
+  assert.match(quiz, /networkPolicy\.enabled=false/);
+  assert.match(quiz, /no NetworkPolicy object (?:was|is) rendered or enforced/i);
+  assert.match(quiz, /optional policy render/i);
+  assert.doesNotMatch(quiz, /A valid NetworkPolicy object exists in the core Kind run/i);
 });
 
 test('Section 9 quiz has fifteen balanced scenarios and complete explanations', () => {

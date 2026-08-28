@@ -94,12 +94,12 @@ import Quiz from '@site/src/components/Quiz';
     ]
   },
   {
-    prompt:'A valid NetworkPolicy object exists in the core Kind run, but policy enforcement was disabled. What is proven?',
+    prompt:'The core Kind run used networkPolicy.enabled=false, so no NetworkPolicy object was rendered or enforced. What can the team conclude?',
     options:[
-      {text:'Only intended policy shape is visible; denial enforcement is unproven',correct:true,explanation:'An enforcing CNI plus positive and negative traffic evidence is required for a denial claim.'},
-      {text:'Every unapproved Pod was denied because Kubernetes stored the object',correct:false,explanation:'API storage does not guarantee that the data plane enforces the policy.'},
-      {text:'DNS is allowed because application Service names resolved earlier',correct:false,explanation:'Connectivity without enforcement does not test DNS under egress policy.'},
-      {text:'Namespace separation alone supplies complete tenant isolation',correct:false,explanation:'Isolation also depends on network, RBAC, admission, identity, and node controls.'},
+      {text:'Required application traffic worked under default Kind networking',correct:true,explanation:'The runtime observed the needed paths only while policy rendering and enforcement were disabled.'},
+      {text:'Optional policy render validation proves the same rules were enforced',correct:false,explanation:'A separate static render can inspect intended objects but cannot supply live CNI denial evidence.'},
+      {text:'Every unapproved Pod was denied even though no policy object existed',correct:false,explanation:'No rendered object and no enforcing runtime mean there is no observed denial claim.'},
+      {text:'Namespace separation supplied complete network and tenant isolation',correct:false,explanation:'Namespace organization does not replace NetworkPolicy, RBAC, identity, or node controls.'},
     ]
   },
   {

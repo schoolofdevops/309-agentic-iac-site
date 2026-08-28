@@ -751,7 +751,7 @@ flowchart LR
     A -->|DNS| N[Cluster DNS]
     W -->|DNS| N
     D -->|DNS if required| N
-    X[Other Pods] -. denied by tested policy .-> D
+    X[Other Pods] -. intended denial<br/>unproven in core profile .-> D
 ```
 
 Namespace labels and Pod labels select policy subjects. Ingress rules select
