@@ -42,9 +42,10 @@ You will:
 You need:
 
 - the learner labs repository;
-- Docker, Kind 0.27 through 0.32, kubectl 1.35 through 1.36, Helm 4.2,
-  Go 1.25, kubeconform 0.8, Conftest with OPA 1.19, Node.js 20 or later,
-  OpenSSL, and Git;
+- Docker and one of the two directly tested profiles: Kind 0.27 with kubectl
+  1.35, or Kind 0.32 with kubectl 1.36;
+- Helm 4.2, Go 1.25, kubeconform 0.8, Conftest with OPA 1.19, Node.js 20 or
+  later, OpenSSL, and Git;
 - about 15 minutes after the tools are installed;
 - one coding agent only if you want the guided agent path.
 
@@ -334,8 +335,7 @@ kind version
 kind v0.27.0 go1.23.6 darwin/arm64
 ```
 
-Kind v0.27.0 is the oldest directly tested version. Kind 0.28 through 0.32 use
-the same course path.
+This output belongs to the Kind 0.27 with kubectl 1.35 profile.
 
 Check the Kubernetes client.
 
@@ -349,7 +349,7 @@ kubectl version --client
 Client Version: v1.35.0
 ```
 
-kubectl v1.35.0 and v1.36.2 are directly tested client versions.
+The other directly tested profile uses Kind v0.32.0 with kubectl v1.36.2.
 
 Check Helm.
 
@@ -410,8 +410,10 @@ node --version
 v24.8.0
 ```
 
-Version patch numbers and architecture may differ. Stop only when a required
-tool is missing or outside the supported range above.
+Patch numbers and architecture may differ. Other nearby versions may work, but
+they are not directly proven. If your tools are present, continue to attempt
+the lab. Stop only when a required tool is missing or an actual tool or runtime
+command fails.
 
 ### Lint the starter
 

@@ -107,14 +107,17 @@ test('Section 9 lab updates a returning learner clone without discarding Section
   assert.match(lab, /https:\/\/github\.com\/schoolofdevops\/309-agentic-iac-labs\.git/);
 });
 
-test('Section 9 lab supports the directly proven Kind and kubectl compatibility path', () => {
+test('Section 9 lab separates two proven tool profiles from nearby unproven versions', () => {
   const lab = readLab();
-  assert.match(lab, /Kind 0\.27 through 0\.32/i);
-  assert.match(lab, /kubectl 1\.35 through 1\.36/i);
-  assert.match(lab, /Kind v0\.27\.0/i);
-  assert.match(lab, /Client Version: v1\.35\.0/i);
-  assert.doesNotMatch(lab, /Kind 0\.32, kubectl 1\.36/);
-  assert.match(lab, /Stop only when a required\s+tool is missing or outside the supported range/i);
+  assert.match(lab, /Kind 0\.27 with kubectl 1\.35/i);
+  assert.match(lab, /Kind 0\.32 with kubectl 1\.36/i);
+  assert.match(lab, /two directly tested profiles/i);
+  assert.match(lab, /nearby versions may work/i);
+  assert.match(lab, /not directly proven/i);
+  assert.match(lab, /continue to attempt\s+the lab/i);
+  assert.match(lab, /Stop only when a required\s+tool is missing or an actual tool or runtime\s+command fails/i);
+  assert.doesNotMatch(lab, /Kind 0\.27 through 0\.32|kubectl 1\.35 through 1\.36/i);
+  assert.doesNotMatch(lab, /Kind 0\.28 through 0\.32 use the same course path/i);
 });
 
 test('Section 9 lab renders to a file before kubeconform validates it', () => {
