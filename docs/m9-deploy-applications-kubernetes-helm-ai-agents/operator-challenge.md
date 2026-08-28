@@ -1,18 +1,18 @@
 ---
 sidebar_position: 3
-title: 'Operator Challenge - Diagnose Kubernetes and Helm Failures'
-description: Diagnose three sequential failures from Kubernetes and Helm evidence, then define bounded verification and recovery proof.
+title: 'Operator Challenge - Independent Evidence Packet Review'
+description: Review three Kubernetes and Helm evidence packets, then define bounded verification and recovery proof without changing a cluster.
 ---
 
-# Operator Challenge: Diagnose Kubernetes and Helm Failures
+# Operator Challenge: Independent Evidence Packet Review
 
 You are the operator for the local `inference-platform` release. The starting
 release was healthy: all three roles were ready, the API returned HTTP 200, and
 `job-0001` moved from queued to complete. You receive three incident evidence
 packets captured from controlled, sequential failures.
 
-This is an independent reasoning exercise. You do not receive an injection
-step, a named fault, or a repair command. Work only from the evidence shown on
+This is an independent packet-only review. You do not inject a fault, receive
+a named fault, or run a repair command. Work only from the evidence shown on
 this page.
 
 :::warning[Keep the evidence trails independent]

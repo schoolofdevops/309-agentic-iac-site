@@ -44,8 +44,8 @@ You need:
 - the learner labs repository;
 - Docker and one of the two directly tested profiles: Kind 0.27 with kubectl
   1.35, or Kind 0.32 with kubectl 1.36;
-- Helm 4.2, Go 1.25, kubeconform 0.8, Conftest with OPA 1.19, Node.js 20 or
-  later, OpenSSL, and Git;
+- Helm 4.2, Go 1.25, kubeconform 0.8, Conftest with OPA 1.19, yq, Node.js 20
+  or later, OpenSSL, and Git;
 - about 15 minutes after the tools are installed;
 - one coding agent only if you want the guided agent path.
 
@@ -351,7 +351,19 @@ Client Version: v1.35.0
 
 The other directly tested profile uses Kind v0.32.0 with kubectl v1.36.2.
 
-Check Helm.
+Find the Helm executable used by this shell.
+
+```bash
+command -v helm
+```
+
+[ sample output ]
+
+```text
+/opt/homebrew/bin/helm
+```
+
+Now ask that executable for its version.
 
 ```bash
 helm version --short
@@ -385,6 +397,19 @@ conftest --version
 
 ```text
 Conftest: dev
+```
+
+Check yq because the advanced diagnostics lab selects one environment variable
+from the rendered worker Deployment.
+
+```bash
+yq --version
+```
+
+[ sample output ]
+
+```text
+yq 3.4.3
 ```
 
 Check Go and Node.js because the evaluator runs both application and author
@@ -528,6 +553,12 @@ sed -n '1,260p' "$S9_TEMP_ROOT/agentic-iac-section-9-starter/evidence-report.jso
 ```json
 {
   "decision": "REJECTED",
+  "tool_paths": {
+    "helm": "<resolved Helm path>"
+  },
+  "tool_versions": {
+    "helm": "<version from that path>"
+  },
   "gates": {
     "helm_lint": {"status": "PASS"},
     "secret_scan": {"status": "FAIL"},
@@ -792,6 +823,12 @@ sed -n '1,260p' "$S9_TEMP_ROOT/agentic-iac-section-9-repaired/evidence-report.js
 ```json
 {
   "decision": "READY_FOR_HUMAN_REVIEW",
+  "tool_paths": {
+    "helm": "<resolved Helm path>"
+  },
+  "tool_versions": {
+    "helm": "<version from that path>"
+  },
   "gates": {
     "app_tests": {"status": "PASS"},
     "helm_lint": {"status": "PASS"},
@@ -806,6 +843,11 @@ sed -n '1,260p' "$S9_TEMP_ROOT/agentic-iac-section-9-repaired/evidence-report.js
 Compare the two reports. The repaired result binds 13 green gates to exact
 source, evaluator, render, app, chart, policy, tool, and command evidence. It
 means ready for human review. It does not approve a deployment.
+
+The evaluator resolves Helm once and uses that exact path for every Helm gate.
+Compare `tool_paths.helm` and `tool_versions.helm` with the direct path
+and version shown earlier. If they differ, stop and check whether your PATH or
+shell changed before trusting the report.
 
 ## PART VII - Run the Reviewed Package on Kind
 
@@ -1129,14 +1171,18 @@ Bounded retries during dependency startup are expected. A final ready Pod,
 ready endpoint, HTTP 200 readiness response, and completed job prove recovery.
 One earlier connection-refused line does not mean the final release failed.
 
-### Run the independent diagnostic challenge
+### Run the advanced live diagnostics lab
 
-The challenge introduces a bad readiness path, an unreachable backend
-connection, and a wrong Helm value. It requires Pods, events, endpoints,
-rendered values, descriptions, and logs before diagnosis.
+This optional live lab deliberately injects and recovers three faults: a bad
+readiness path, an unreachable backend connection, and a wrong Helm value. It
+requires Pods, events, endpoints, rendered values, descriptions, and logs
+before diagnosis.
+
+The sidebar Operator Challenge is different. It is an independent packet-only
+review. You reason from supplied evidence and do not change the cluster.
 
 Open
-[the Section 9 diagnostic task](https://github.com/schoolofdevops/309-agentic-iac-labs/blob/main/section-9/challenge/task.md)
+[the Section 9 advanced live diagnostics task](https://github.com/schoolofdevops/309-agentic-iac-labs/blob/main/section-9/challenge/task.md)
 and complete it before reading its separate answer key.
 
 ## Checkpoint

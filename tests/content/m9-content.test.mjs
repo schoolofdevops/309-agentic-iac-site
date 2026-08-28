@@ -117,10 +117,13 @@ test('Section 9 deep dive connects render evidence to runtime evidence and its l
   assert((deep.match(/```mermaid/g) || []).length >= 2);
   assert.match(deep, /:::tip\[Where you will use this\]/);
   assert.doesNotMatch(deep, /<expected output|folded in during live lab validation/i);
+  assert.doesNotMatch(deep, /An copied policy/);
 });
 
-test('Section 9 operator challenge preserves three sequential incidents without leaking the answer key', () => {
+test('Section 9 independent packet-only operator review preserves three sequential incidents', () => {
   const challenge = read('operator-challenge.md');
+  assert.match(challenge, /independent packet-only review/i);
+  assert.match(challenge, /do not inject a fault/i);
   const incidents = [...challenge.matchAll(/^## Incident ([A-C])$/gm)].map((match) => match[1]);
   assert.deepEqual(incidents, ['A', 'B', 'C']);
   assert(words(challenge) >= 700, `challenge has only ${words(challenge)} substantive words`);
@@ -218,7 +221,7 @@ test('Section 9 uses human searchable page titles and is wired after Section 8',
   const sidebar = readFileSync(new URL('../../sidebars.ts', import.meta.url), 'utf8');
 
   assert.match(lesson, /title: 'Deploy Applications with Kubernetes, Helm, and AI Agents'/);
-  assert.match(challenge, /title: 'Operator Challenge - Diagnose Kubernetes and Helm Failures'/);
+  assert.match(challenge, /title: 'Operator Challenge - Independent Evidence Packet Review'/);
   for (const source of [lesson, deep, challenge]) {
     assert.doesNotMatch(source, /\b(?:unleash|supercharge|magic|wizard|bot-powered|master Kubernetes)\b/i);
   }

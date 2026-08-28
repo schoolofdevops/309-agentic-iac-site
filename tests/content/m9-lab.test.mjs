@@ -132,3 +132,22 @@ test('Section 9 lab renders to a file before kubeconform validates it', () => {
   assert.match(lab, /wrote .*inference-platform\/templates\/serviceaccount\.yaml/i);
   assert.match(lab, /9 resources found in 4 files/i);
 });
+
+test('Section 9 names the live diagnostics lab separately from the packet-only operator review', () => {
+  const lab = readLab();
+  assert.match(lab, /advanced live diagnostics lab/i);
+  assert.match(lab, /deliberately injects and recovers three faults/i);
+  assert.match(lab, /sidebar Operator Challenge/i);
+  assert.match(lab, /independent packet-only\s+review/i);
+  assert.doesNotMatch(lab, /independent diagnostic challenge/i);
+});
+
+test('Section 9 lets the learner reconcile the direct Helm command with evaluator provenance', () => {
+  const lab = readLab();
+  assert.ok(lab.indexOf('command -v helm') < lab.indexOf('helm version --short'));
+  assert.match(lab, /"tool_paths": \{/);
+  assert.match(lab, /"helm": "<resolved Helm path>"/);
+  assert.match(lab, /uses that exact path for every Helm gate/i);
+  assert.match(lab, /compare `tool_paths\.helm` and `tool_versions\.helm`/i);
+  assert.match(lab, /yq --version/);
+});

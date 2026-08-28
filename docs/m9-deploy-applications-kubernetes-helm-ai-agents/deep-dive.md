@@ -293,7 +293,7 @@ A defensible policy test needs all of these layers:
 | DNS | Approved name resolution plus blocked unrelated egress | Prevents accidental DNS outage |
 
 DNS deserves an explicit rule because applications usually connect by Service
-name. Selector details vary across distributions. An copied policy that allows
+name. Selector details vary across distributions. A copied policy that allows
 UDP 53 to one hard-coded label may fail where DNS uses different labels, TCP
 fallback, or NodeLocal DNS. Inspect the supported cluster and test both lookup
 and application traffic.
