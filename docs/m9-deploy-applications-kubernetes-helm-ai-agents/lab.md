@@ -1074,6 +1074,7 @@ kind delete cluster --name agentic-iac-s9
 [ Expected output ]
 
 ```text
+Deleting cluster "agentic-iac-s9" ...
 Deleted nodes: ["agentic-iac-s9-control-plane"]
 ```
 

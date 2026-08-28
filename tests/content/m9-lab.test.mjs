@@ -81,3 +81,9 @@ test('Section 9 lab prints exact kubeconform evidence and tolerates unrelated Ki
   assert.match(lab, /exact name `agentic-iac-s9`.*absent/is);
   assert.doesNotMatch(lab, /\[ Expected output \]\n\n```text\nNo kind clusters found\./);
 });
+
+test('Section 9 teardown prints the complete Kind deletion output', () => {
+  const lab = readLab();
+  assert.match(lab, /kind delete cluster --name agentic-iac-s9/);
+  assert.match(lab, /```text\nDeleting cluster "agentic-iac-s9" \.\.\.\nDeleted nodes: \["agentic-iac-s9-control-plane"\]\n```/);
+});
