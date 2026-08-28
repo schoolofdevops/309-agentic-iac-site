@@ -76,7 +76,7 @@ test('Section 9 lab demonstrates one portable agent task and keeps commands read
 
 test('Section 9 lab prints exact kubeconform evidence and tolerates unrelated Kind clusters', () => {
   const lab = readLab();
-  assert.match(lab, /Summary: 9 resources found parsing stdin - Valid: 9, Invalid: 0, Errors: 0, Skipped: 0/);
+  assert.match(lab, /Summary: 9 resources found in 4 files - Valid: 9, Invalid: 0, Errors: 0, Skipped: 0/);
   assert.match(lab, /Unrelated Kind clusters\s+may remain/i);
   assert.match(lab, /exact name `agentic-iac-s9`.*absent/is);
   assert.doesNotMatch(lab, /\[ Expected output \]\n\n```text\nNo kind clusters found\./);
@@ -86,4 +86,46 @@ test('Section 9 teardown prints the complete Kind deletion output', () => {
   const lab = readLab();
   assert.match(lab, /kind delete cluster --name agentic-iac-s9/);
   assert.match(lab, /```text\nDeleting cluster "agentic-iac-s9" \.\.\.\nDeleted nodes: \["agentic-iac-s9-control-plane"\]\n```/);
+});
+
+test('Section 9 lab updates a returning learner clone without discarding Section 8 work', () => {
+  const lab = readLab();
+  const status = lab.indexOf('git status --short');
+  const stash = lab.indexOf('git stash push --include-untracked -m "section-8-checkpoint" -- section-8');
+  const fetch = lab.indexOf('git fetch origin main');
+  const fastForward = lab.indexOf('git merge --ff-only origin/main');
+  const restore = lab.indexOf('git stash pop');
+  const section = lab.indexOf('command ls -1 section-9');
+
+  assert(status >= 0, 'the learner must inspect local work before updating');
+  assert(stash > status, 'the lab must preserve learner-owned Section 8 changes before updating');
+  assert(fetch > stash, 'the lab must fetch the released learner branch after preserving local work');
+  assert(fastForward > fetch, 'the learner branch must fast-forward to the release');
+  assert(restore > fastForward, 'the lab must restore the learner-owned Section 8 changes');
+  assert(section > restore, 'Section 9 inspection must happen after the repository update');
+  assert.match(lab, /fresh clone/i);
+  assert.match(lab, /https:\/\/github\.com\/schoolofdevops\/309-agentic-iac-labs\.git/);
+});
+
+test('Section 9 lab supports the directly proven Kind and kubectl compatibility path', () => {
+  const lab = readLab();
+  assert.match(lab, /Kind 0\.27 through 0\.32/i);
+  assert.match(lab, /kubectl 1\.35 through 1\.36/i);
+  assert.match(lab, /Kind v0\.27\.0/i);
+  assert.match(lab, /Client Version: v1\.35\.0/i);
+  assert.doesNotMatch(lab, /Kind 0\.32, kubectl 1\.36/);
+  assert.match(lab, /Stop only when a required\s+tool is missing or outside the supported range/i);
+});
+
+test('Section 9 lab renders to a file before kubeconform validates it', () => {
+  const lab = readLab();
+  const render = 'helm template inference-platform section-9/chart --namespace inference --set networkPolicy.enabled=false --output-dir "$S9_RENDER_ROOT"';
+  const validate = 'kubeconform -strict -summary "$S9_RENDER_ROOT/inference-platform/templates"';
+
+  assert.match(lab, new RegExp(render.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(lab, new RegExp(validate.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.ok(lab.indexOf(render) < lab.indexOf(validate), 'render must finish before validation starts');
+  assert.doesNotMatch(lab, /helm template[^\n]+\|\s*kubeconform/);
+  assert.match(lab, /wrote .*inference-platform\/templates\/serviceaccount\.yaml/i);
+  assert.match(lab, /9 resources found in 4 files/i);
 });

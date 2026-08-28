@@ -41,9 +41,10 @@ You will:
 
 You need:
 
-- the learner labs repository at the Section 9 starter commit;
-- Docker, Kind 0.32, kubectl 1.36, Helm 4.2, Go 1.25, kubeconform 0.8,
-  Conftest with OPA 1.19, Node.js 20 or later, OpenSSL, and Git;
+- the learner labs repository;
+- Docker, Kind 0.27 through 0.32, kubectl 1.35 through 1.36, Helm 4.2,
+  Go 1.25, kubeconform 0.8, Conftest with OPA 1.19, Node.js 20 or later,
+  OpenSSL, and Git;
 - about 15 minutes after the tools are installed;
 - one coding agent only if you want the guided agent path.
 
@@ -59,6 +60,90 @@ exists, stop and decide whether it belongs to you. Do not adopt or delete an
 unknown cluster.
 
 ## PART I - Inspect the Generated Package
+
+### Update your learner repository
+
+Section 8 ends with a clean runtime, but you may still have learner-owned
+changes in `section-8`. Check those changes before you update the clone.
+
+```bash
+git status --short section-8
+```
+
+[ sample output ]
+
+```text
+ M section-8/README.md
+```
+
+Your output may be empty. If it is empty, skip the next save command.
+
+If Section 8 changes are listed, save them before the repository update.
+
+```bash
+git stash push --include-untracked -m "section-8-checkpoint" -- section-8
+```
+
+[ sample output ]
+
+```text
+Saved working directory and index state On main: section-8-checkpoint
+```
+
+Fetch the released learner branch.
+
+```bash
+git fetch origin main
+```
+
+[ sample output ]
+
+```text
+From https://github.com/schoolofdevops/309-agentic-iac-labs
+ * branch            main       -> FETCH_HEAD
+```
+
+Fast-forward your current branch to the release. This does not rewrite your
+history.
+
+```bash
+git merge --ff-only origin/main
+```
+
+[ sample output ]
+
+```text
+Updating <previous commit>..<release commit>
+Fast-forward
+```
+
+If you saved Section 8 changes above, restore them now.
+
+```bash
+git stash pop
+```
+
+[ sample output ]
+
+```text
+Dropped refs/stash@{0}
+```
+
+Your detailed status output may differ. The Section 8 files should still
+contain your work, and the released Section 9 files should now be present.
+
+Confirm that the pinned starter commit used later in recovery is available in
+your updated clone.
+
+```bash
+git show --no-patch --oneline fdcc15c57c9879b3f15d03319ad5dd394e2706f2
+```
+
+[ Expected output ]
+
+```text
+fdcc15c fix: sample complete Section 9 node lifecycle
+```
 
 ### Confirm your location
 
@@ -246,8 +331,11 @@ kind version
 [ sample output ]
 
 ```text
-kind v0.32.0 go1.25.7 darwin/arm64
+kind v0.27.0 go1.23.6 darwin/arm64
 ```
+
+Kind v0.27.0 is the oldest directly tested version. Kind 0.28 through 0.32 use
+the same course path.
 
 Check the Kubernetes client.
 
@@ -258,8 +346,10 @@ kubectl version --client
 [ sample output ]
 
 ```text
-Client Version: v1.36.2
+Client Version: v1.35.0
 ```
+
+kubectl v1.35.0 and v1.36.2 are directly tested client versions.
 
 Check Helm.
 
@@ -321,7 +411,7 @@ v24.8.0
 ```
 
 Version patch numbers and architecture may differ. Stop only when a required
-tool is missing or outside the supported major and minor version.
+tool is missing or outside the supported range above.
 
 ### Lint the starter
 
@@ -630,17 +720,47 @@ helm lint --strict section-9/chart
 1 chart(s) linted, 0 chart(s) failed
 ```
 
-Render the complete repaired package through kubeconform. The Secret must
-already exist at runtime, but no Secret object or value is rendered here.
+Render the complete repaired package into its own temporary directory. The
+Secret must already exist at runtime, but no Secret object or value is
+rendered here.
 
 ```bash
-helm template inference-platform section-9/chart --namespace inference --set networkPolicy.enabled=false | kubeconform -strict -summary
+S9_RENDER_ROOT="$S9_TEMP_ROOT/agentic-iac-section-9-render"
 ```
 
 [ Expected output ]
 
 ```text
-Summary: 9 resources found parsing stdin - Valid: 9, Invalid: 0, Errors: 0, Skipped: 0
+(no output)
+```
+
+```bash
+helm template inference-platform section-9/chart --namespace inference --set networkPolicy.enabled=false --output-dir "$S9_RENDER_ROOT"
+```
+
+[ sample output ]
+
+```text
+wrote <temporary path>/agentic-iac-section-9-render/inference-platform/templates/serviceaccount.yaml
+wrote <temporary path>/agentic-iac-section-9-render/inference-platform/templates/configmap.yaml
+wrote <temporary path>/agentic-iac-section-9-render/inference-platform/templates/service.yaml
+wrote <temporary path>/agentic-iac-section-9-render/inference-platform/templates/deployment.yaml
+```
+
+Helm prints one line per rendered object. Several objects share the same
+template file, so some paths appear more than once. If Helm fails, stop here;
+there is no validation command connected to an empty pipeline.
+
+Validate the files that Helm wrote.
+
+```bash
+kubeconform -strict -summary "$S9_RENDER_ROOT/inference-platform/templates"
+```
+
+[ Expected output ]
+
+```text
+Summary: 9 resources found in 4 files - Valid: 9, Invalid: 0, Errors: 0, Skipped: 0
 ```
 
 ### Run the repaired evaluator
@@ -1113,6 +1233,28 @@ docker ps -a --filter name=agentic-iac-s9-control-plane --format '{{.Names}}'
 The reports were useful for comparison. Remove their known files and empty
 directories now that your checkpoint notes are complete.
 
+Remove the four rendered files and their empty directories.
+
+```bash
+rm "$S9_RENDER_ROOT/inference-platform/templates/configmap.yaml" "$S9_RENDER_ROOT/inference-platform/templates/deployment.yaml" "$S9_RENDER_ROOT/inference-platform/templates/service.yaml" "$S9_RENDER_ROOT/inference-platform/templates/serviceaccount.yaml"
+```
+
+[ Expected output ]
+
+```text
+(no output)
+```
+
+```bash
+rmdir "$S9_RENDER_ROOT/inference-platform/templates" "$S9_RENDER_ROOT/inference-platform" "$S9_RENDER_ROOT"
+```
+
+[ Expected output ]
+
+```text
+(no output)
+```
+
 ```bash
 rm "$S9_TEMP_ROOT/agentic-iac-section-9-starter/.section-9-evaluation.json" "$S9_TEMP_ROOT/agentic-iac-section-9-starter/evidence-report.json"
 ```
@@ -1193,6 +1335,24 @@ link as the parent and do not reuse an existing evidence directory.
 Stop. Inspect who owns `agentic-iac-s9`. The lab refuses to adopt or delete an
 unknown cluster. Continue only after the owner removes it or gives you an
 explicit recovery decision.
+
+### Your learner repository cannot fast-forward
+
+Do not force the merge and do not delete your work. Keep the original clone,
+then create a fresh clone for Section 9.
+
+```bash
+git clone https://github.com/schoolofdevops/309-agentic-iac-labs.git 309-agentic-iac-labs-section-9
+```
+
+[ sample output ]
+
+```text
+Cloning into '309-agentic-iac-labs-section-9'...
+```
+
+Change into the new clone and begin Part I again. Your original clone remains
+unchanged.
 
 ### Helm reports that the external Secret is missing
 
