@@ -675,9 +675,7 @@ created ref=kindest/node@sha256:3489c... id=sha256:fa8c...
 ### Install Argo CD
 
 The frozen values disable Dex and automatic delivery. Helm installs only the
-controller used by this lab. The repo server keeps its full liveness check but
-gets five seconds to answer it, which prevents false restarts during Git cache
-replacement on the constrained profile.
+controller used by this lab.
 
 ```bash
 helm upgrade --install argocd argo/argo-cd \
@@ -690,7 +688,6 @@ helm upgrade --install argocd argo/argo-cd \
   --set global.image.tag=v3.5.1 \
   --set redis.image.repository=agentic-iac-s10/redis-transport \
   --set redis.image.tag=8.6.4-alpine \
-  --set repoServer.livenessProbe.timeoutSeconds=5 \
   --wait=legacy \
   --timeout 8m
 
@@ -996,6 +993,25 @@ node section-10/scripts/start-git-mirror.mjs \
 
 The stop command reports `container_removed` and `mirror_removed` as `true`.
 The start command reports a ready mirror at `S10_V2_REVISION`.
+
+The lab replaces the complete bare repository while keeping the same local
+URL. Argo CD can still hold object cache from the previous fixture. Restart
+only the repo-server so it opens the replacement repository without that
+cache. This cache reset is specific to the local lab fixture. Production Git
+repositories keep one stable repository identity and advance its refs; they
+do not normally require a repo-server restart for every approved commit.
+
+```bash
+kubectl --context kind-agentic-iac-s10 -n argocd rollout restart deployment/argocd-repo-server
+kubectl --context kind-agentic-iac-s10 -n argocd rollout status deployment/argocd-repo-server --timeout=120s
+```
+
+[ sample output ]
+
+```text
+deployment.apps/argocd-repo-server restarted
+deployment "argocd-repo-server" successfully rolled out
+```
 
 ### Explicitly sync v2
 
@@ -1311,6 +1327,21 @@ node section-10/scripts/start-git-mirror.mjs \
 [ sample output ]
 
 The start command reports a ready mirror at `S10_REVERT_REVISION`.
+
+This second whole-fixture replacement has the same local cache boundary.
+Reset only the repo-server again before asking the Application to refresh.
+
+```bash
+kubectl --context kind-agentic-iac-s10 -n argocd rollout restart deployment/argocd-repo-server
+kubectl --context kind-agentic-iac-s10 -n argocd rollout status deployment/argocd-repo-server --timeout=120s
+```
+
+[ sample output ]
+
+```text
+deployment.apps/argocd-repo-server restarted
+deployment "argocd-repo-server" successfully rolled out
+```
 
 Refresh the cached Git clone and wait until Application status resolves the
 exact recovery revision. Then build the explicit recovery operation.
