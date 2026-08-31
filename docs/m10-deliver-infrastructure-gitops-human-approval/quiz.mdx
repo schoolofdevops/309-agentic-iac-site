@@ -13,7 +13,7 @@ import Quiz from '@site/src/components/Quiz';
     options:[
       {text:'The delivery workflow identity that produced the plan evidence',correct:false,explanation:'The workflow produces bounded evidence but cannot provide accountable independent approval.'},
       {text:'An eligible human reviewer who inspected the exact revision and did not author its privilege change',correct:true,explanation:'Independent review prevents the authoring identity from granting and approving its own authority.'},
-      {text:'A repository administrator who has not inspected the exact revision',correct:false,explanation:'Administrative access does not replace review of the commit, evidence, purpose, and target.'},
+      {text:'A repository administrator who has not inspected the exact revision but relies on branch protection and a green check',correct:false,explanation:'Administrative access does not replace review of the commit, evidence, purpose, and target.'},
       {text:'The runtime platform owner after the change reaches the cluster',correct:false,explanation:'Approval must precede delivery and remain separate from the runtime identity.'},
     ]
   },
@@ -21,7 +21,7 @@ import Quiz from '@site/src/components/Quiz';
     prompt:'Which repository controls help turn a pull request into an enforceable review boundary? Select all that apply.',
     multiSelect:true,
     options:[
-      {text:'Path ownership that requests the correct specialist reviewers',correct:true,explanation:'CODEOWNERS can route Terraform, Helm, and workflow files to their responsible teams.'},
+      {text:'Path ownership that requests the correct specialist reviewers and is enforced by protected review rules',correct:true,explanation:'CODEOWNERS can route Terraform, Helm, and workflow files to their responsible teams.'},
       {text:'Required checks bound to the current proposed commit',correct:true,explanation:'A later push should invalidate results that describe an earlier revision.'},
       {text:'A merge rule that trusts any green check name without binding it to the current head commit',correct:false,explanation:'A stale or look-alike check can describe different source and cannot authorize the current change.'},
       {text:'Protected branch rules that enforce eligible independent approval',correct:true,explanation:'The host must prevent the author from bypassing the required decision path.'},
@@ -40,7 +40,7 @@ import Quiz from '@site/src/components/Quiz';
     prompt:'Which controls belong in a bounded GitHub Actions plan workflow? Select all that apply.',
     multiSelect:true,
     options:[
-      {text:'Explicit minimum token permissions for the plan job',correct:true,explanation:'Read-only planning should not inherit broad repository or deployment writes.'},
+      {text:'Explicit minimum token permissions for a plan job that does not require repository or deployment writes',correct:true,explanation:'Read-only planning should not inherit broad repository or deployment writes.'},
       {text:'A workspace-wide artifact upload because the later job will verify one file hash',correct:false,explanation:'A broad upload can disclose unrelated source, credentials, state, or sensitive plan data.'},
       {text:'An allow-listed artifact path with a recorded digest',correct:true,explanation:'The consumer needs bounded bytes and identity rather than a workspace archive.'},
       {text:'Executable third-party actions pinned to full commit SHAs',correct:true,explanation:'Exact pins prevent a mutable tag from silently selecting different code.'},
@@ -51,7 +51,7 @@ import Quiz from '@site/src/components/Quiz';
     options:[
       {text:'Reject the stale plan and produce evidence for commit B',correct:true,explanation:'Approval for one source revision cannot authorize another unreviewed revision.'},
       {text:'Apply the old plan after confirming that branch ownership and the original author have not changed',correct:false,explanation:'Stable ownership does not make a plan describe new source, state, variables, or target facts.'},
-      {text:'Update only the report source field and retain the approved binary plan',correct:false,explanation:'Editing metadata cannot make old plan bytes represent a new commit and current state.'},
+      {text:'Relabel the old plan as evidence for commit B',correct:false,explanation:'Editing metadata cannot make old plan bytes represent a new commit and current state.'},
       {text:'Ask the reviewer to approve the moving branch name instead of either commit',correct:false,explanation:'A branch name can move again and does not provide the exact subject required by approval.'},
     ]
   },
@@ -125,7 +125,7 @@ import Quiz from '@site/src/components/Quiz';
     prompt:'A Terraform apply fails after one provider operation succeeds. Which next step is safest?',
     options:[
       {text:'Repeat the saved plan after confirming that its digest still matches the approved artifact',correct:false,explanation:'A matching digest does not account for remote and state changes made by the failed apply.'},
-      {text:'Remove the completed address from state so the next run starts from the earlier model',correct:false,explanation:'Unreviewed state removal can create duplicate or unmanaged real infrastructure.'},
+      {text:'Remove the completed address from state before replanning',correct:false,explanation:'Unreviewed state removal can create duplicate or unmanaged real infrastructure.'},
       {text:'Run a targeted apply for the failed address before refreshing the complete dependency graph',correct:false,explanation:'A target can omit dependencies and still relies on assumptions made before partial progress.'},
       {text:'Compare configuration, state, remote objects, and operation evidence',correct:true,explanation:'Current partial state determines whether refresh, import, repair, or roll forward is safe.'},
     ]

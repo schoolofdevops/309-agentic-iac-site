@@ -129,15 +129,6 @@ test('Section 10 quiz has exactly fifteen balanced scenarios and complete explan
   assert.equal((quiz.match(/correct:(?:true|false)/g) || []).length, 60);
   assert.doesNotMatch(quiz, /correctAnswers|"type"\s*:|"id"\s*:/);
 
-  const options = [...quiz.matchAll(/\{text:'([^']+)',correct:(true|false),explanation:'([^']+)'\}/g)]
-    .map((match) => ({text: match[1], correct: match[2] === 'true'}));
-  assert.equal(options.length, 60, 'every option must use the established compact Quiz schema');
-  const mean = (values) => values.reduce((sum, value) => sum + value, 0) / values.length;
-  const correctAverage = mean(options.filter((option) => option.correct).map((option) => option.text.length));
-  const distractorAverage = mean(options.filter((option) => !option.correct).map((option) => option.text.length));
-  assert(correctAverage / distractorAverage > 0.85 && correctAverage / distractorAverage < 1.15,
-    `option lengths are biased: correct ${correctAverage.toFixed(1)}, distractor ${distractorAverage.toFixed(1)}`);
-
   const questions = [...quiz.matchAll(/prompt:'([^']+)',\s*(multiSelect:true,\s*)?options:\[\s*([\s\S]*?)\s*\]\s*\}/g)]
     .map((match) => ({
       prompt: match[1],
@@ -147,6 +138,21 @@ test('Section 10 quiz has exactly fifteen balanced scenarios and complete explan
     }));
   assert.equal(questions.length, 15);
   assert(questions.every((question) => question.options.length === 4));
+  assert.equal(questions.flatMap((question) => question.options).length, 60,
+    'every option must use the established compact Quiz schema');
+
+  const mean = (values) => values.reduce((sum, value) => sum + value, 0) / values.length;
+  for (const [type, typedQuestions] of [
+    ['single-select', questions.filter((question) => !question.multi)],
+    ['multi-select', questions.filter((question) => question.multi)],
+  ]) {
+    const typedOptions = typedQuestions.flatMap((question) => question.options);
+    const correctAverage = mean(typedOptions.filter((option) => option.correct).map((option) => option.text.length));
+    const distractorAverage = mean(typedOptions.filter((option) => !option.correct).map((option) => option.text.length));
+    const ratio = correctAverage / distractorAverage;
+    assert(ratio > 0.85 && ratio < 1.15,
+      `${type} option lengths are biased: correct ${correctAverage.toFixed(1)}, distractor ${distractorAverage.toFixed(1)}, ratio ${ratio.toFixed(3)}`);
+  }
 
   const singlePositions = questions.filter((question) => !question.multi)
     .map((question) => question.options.findIndex((option) => option.correct));
@@ -160,16 +166,19 @@ test('Section 10 quiz has exactly fifteen balanced scenarios and complete explan
   assert(new Set(multiSignatures).size >= 4, `multi-select subsets are repetitive: ${multiSignatures}`);
   assert(!multiSignatures.includes('0,1,2'), 'multi-select must not expose the old first-three pattern');
 
-  const longestCorrect = questions.filter((question) => {
+  const singleQuestions = questions.filter((question) => !question.multi);
+  const longestCorrect = singleQuestions.filter((question) => {
     const maximum = Math.max(...question.options.map((option) => option.text.length));
     return question.options.find((option) => option.text.length === maximum).correct;
   }).length;
-  const chanceExpectation = questions.reduce((sum, question) =>
-    sum + question.options.filter((option) => option.correct).length / question.options.length, 0);
-  assert(longestCorrect >= Math.floor(chanceExpectation) - 1,
-    `longest-option placement exposes an inverse cue: ${longestCorrect} correct versus ${chanceExpectation.toFixed(2)} expected`);
-  assert(longestCorrect <= Math.ceil(chanceExpectation),
-    `longest-option heuristic beats chance: ${longestCorrect} correct versus ${chanceExpectation.toFixed(2)} expected`);
+  const shortestCorrect = singleQuestions.filter((question) => {
+    const minimum = Math.min(...question.options.map((option) => option.text.length));
+    return question.options.find((option) => option.text.length === minimum).correct;
+  }).length;
+  assert(longestCorrect >= 1 && longestCorrect <= 3,
+    `single-select longest-option placement exposes a cue: ${longestCorrect} of ${singleQuestions.length}`);
+  assert(shortestCorrect >= 1 && shortestCorrect <= 3,
+    `single-select shortest-option placement exposes a cue: ${shortestCorrect} of ${singleQuestions.length}`);
 
   for (const trivial of [
     /number of letters/i,
