@@ -18,6 +18,16 @@ and 20 GB free disk. If less than 7 GB is available, continue only if you accept
 slower startup and possible local resource pressure. The lab does not fail only
 because the host reports less RAM.
 
+## Objectives
+
+By the end of this lab, you will be able to:
+
+- reject a delivery candidate from Git, Terraform, OpenTofu, and Helm evidence;
+- repair only the three failed trust decisions and approve the reviewed v1 commit;
+- publish immutable Git revisions and request explicit Argo CD sync operations;
+- diagnose stale Git, degraded rollout, and persistent drift evidence; and
+- recover with `git revert`, human approval, and a second explicit sync.
+
 ## PART I - Review and Repair the Candidate
 
 ### Check the learner branch
@@ -42,7 +52,9 @@ you continue.
 ### Create isolated evidence locations
 
 The evaluator must come from the approved base commit, not from the candidate
-being reviewed. Save that commit and create a detached trusted worktree.
+being reviewed. Save that commit and create a detached trusted worktree. The
+marked approval directory gives the gate one exact output boundary. The Helm
+variables isolate repository settings from your normal Helm configuration.
 
 ```bash
 S10_BASE_REVISION="$(git rev-parse HEAD)"
@@ -55,8 +67,22 @@ S10_APPROVAL_ROOT="$S10_TEMP_ROOT/approvals"
 S10_MIRROR_ROOT="$S10_OS_TEMP/agentic-iac-s10-gitops"
 S10_STARTER_EVIDENCE="$S10_OS_TEMP/agentic-iac-s10-starter-$$"
 S10_REPAIRED_EVIDENCE="$S10_OS_TEMP/agentic-iac-s10-repaired-$$"
+S10_HELM_ROOT="$S10_TEMP_ROOT/helm"
 
-mkdir "$S10_APPROVAL_ROOT"
+mkdir -m 700 "$S10_APPROVAL_ROOT"
+printf 'agentic-iac-s10-approval-root-v1\n' > \
+  "$S10_APPROVAL_ROOT/.agentic-iac-s10-approval-root"
+chmod 400 "$S10_APPROVAL_ROOT/.agentic-iac-s10-approval-root"
+
+mkdir -p "$S10_HELM_ROOT/config" \
+  "$S10_HELM_ROOT/cache/repository" \
+  "$S10_HELM_ROOT/data"
+export HELM_CONFIG_HOME="$S10_HELM_ROOT/config"
+export HELM_CACHE_HOME="$S10_HELM_ROOT/cache"
+export HELM_DATA_HOME="$S10_HELM_ROOT/data"
+export HELM_REPOSITORY_CONFIG="$S10_HELM_ROOT/config/repositories.yaml"
+export HELM_REPOSITORY_CACHE="$S10_HELM_ROOT/cache/repository"
+
 git worktree add --detach "$S10_TRUSTED_ROOT" "$S10_BASE_REVISION"
 
 printf 'base=%s\ntemporary_root=%s\nmirror_root=%s\n' \
@@ -240,14 +266,15 @@ jq '{status,findings,terraform,helm,apply_permitted}' \
   "$S10_REPAIRED_EVIDENCE/report.json"
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
 READY_FOR_HUMAN_REVIEW: 0 primary finding(s)
 ```
 
-The report should show an empty `findings` list, two valid engines, passing
-Helm evidence, and `apply_permitted: false`.
+The evaluator line is followed by the complete selected JSON object. It should
+show an empty `findings` list, two valid engines, passing Helm evidence, and
+`apply_permitted: false`.
 
 ### Produce direct Terraform and OpenTofu plans
 
@@ -285,13 +312,16 @@ terraform -chdir="$S10_PLAN_ROOT/terraform" show -json reviewed.tfplan \
   > "$S10_PLAN_ROOT/terraform-plan.json"
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
 Success! The configuration is valid.
 Success! 1 passed, 0 failed.
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
+
+This excerpt omits variable `init`, test progress, and provider detail. The
+three shown lines are the validation, test summary, and plan summary to check.
 
 Run OpenTofu against the same reviewed source.
 
@@ -306,13 +336,16 @@ tofu -chdir="$S10_PLAN_ROOT/opentofu" show -json reviewed.tfplan \
   > "$S10_PLAN_ROOT/opentofu-plan.json"
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
 Success! The configuration is valid.
 Success! 1 passed, 0 failed.
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
+
+This excerpt omits variable `init`, test progress, and provider detail. The
+three shown lines must agree with Terraform.
 
 Compare the resource actions and the delivery decision.
 
@@ -338,6 +371,37 @@ terraform_data.reviewed_delivery    create
 
 Both engines agree on the canonical `create` action. This is plan evidence,
 not apply permission and not deployment evidence.
+
+### Approve the reviewed v1 commit
+
+The first published revision also needs a human approval. Confirm the repaired
+evidence and both direct plans before running this command. The annotated tag
+records the fixed reviewer identity, purpose, and exact v1 commit that the v2
+gate will later verify.
+
+```bash
+git tag -a section-10-reviewed-v1 \
+  -m 'approved_by=human-platform-reviewer purpose=promote-v1' \
+  "$S10_V1_REVISION"
+
+printf 'v1_approval_revision=%s\n' \
+  "$(git rev-list -n 1 section-10-reviewed-v1)"
+git for-each-ref refs/tags/section-10-reviewed-v1 \
+  --format='approval_tag=%(refname:short) object_type=%(objecttype)'
+git cat-file tag section-10-reviewed-v1 | sed -n '/^$/,$p'
+```
+
+[ sample output ]
+
+```text
+v1_approval_revision=a0bb233ede26e14349ab8d7e97db2dd4415006f9
+approval_tag=section-10-reviewed-v1 object_type=tag
+
+approved_by=human-platform-reviewer purpose=promote-v1
+```
+
+Your revision will differ. This local annotated tag is visible approval
+evidence for the course gate. It is not an external code-review identity.
 
 ## PART II - Start the Local GitOps Runtime
 
@@ -369,8 +433,9 @@ OpenTofu v1.12.6
 v22.22.2
 ```
 
-Stop and update Kind if its version is below 0.32.0. A Kubernetes client one
-minor version from 1.36 is suitable for this local lab.
+Stop and update Kind if its version is below 0.32.0. The approval gate binds
+its evidence commands to the tested kubectl client `v1.36.2`; install that
+exact client before continuing.
 
 ### Check the exact runtime names
 
@@ -392,6 +457,59 @@ No kind clusters found.
 
 If either command shows a named Section 10 resource, clean up that earlier run
 before continuing.
+
+### Protect preexisting Docker state
+
+The four course tags must be free before the lab creates them. Stop if this
+check prints a tag; cleanup must not overwrite an earlier learner image. Also
+record whether the four frozen source images already exist. Setup will not
+pull over an existing source reference.
+
+```bash
+S10_COURSE_REFS_FILE="$S10_TEMP_ROOT/course-image-refs.txt"
+S10_COURSE_IMAGES="$S10_TEMP_ROOT/course-images.tsv"
+printf '%s\n' \
+  309-agentic-iac/inference-platform:s10-v1 \
+  309-agentic-iac/inference-platform:s10-v2 \
+  agentic-iac-s10/redis-transport:8.6.4-alpine \
+  agentic-iac-s10/argocd-transport:v3.5.1 \
+  > "$S10_COURSE_REFS_FILE"
+
+while read -r S10_IMAGE_REF
+do
+  if docker image inspect "$S10_IMAGE_REF" >/dev/null 2>&1; then
+    printf 'STOP: course tag already exists: %s\n' "$S10_IMAGE_REF" >&2
+    exit 1
+  fi
+done < "$S10_COURSE_REFS_FILE"
+
+S10_REDIS_IMAGE_REF='ecr-public.aws.com/docker/library/redis:8.6.4-alpine'
+S10_ARGO_IMAGE_REF='quay.io/argoproj/argocd:v3.5.1'
+S10_GIT_IMAGE_REF='bitnami/git@sha256:972d6f1ac0e2b62f689794c56620f75d18f22be8f1069554a7622622e5bed548'
+S10_NODE_IMAGE_REF='kindest/node@sha256:3489c7674813ba5d8b1a9977baea8a6e553784dab7b84759d1014dbd78f7ebd5'
+
+S10_REDIS_IMAGE_BEFORE="$(docker image inspect --format '{{.Id}}' \
+  "$S10_REDIS_IMAGE_REF" 2>/dev/null || printf 'absent')"
+S10_ARGO_IMAGE_BEFORE="$(docker image inspect --format '{{.Id}}' \
+  "$S10_ARGO_IMAGE_REF" 2>/dev/null || printf 'absent')"
+S10_GIT_IMAGE_BEFORE="$(docker image inspect --format '{{.Id}}' \
+  "$S10_GIT_IMAGE_REF" 2>/dev/null || printf 'absent')"
+S10_NODE_IMAGE_BEFORE="$(docker image inspect --format '{{.Id}}' \
+  "$S10_NODE_IMAGE_REF" 2>/dev/null || printf 'absent')"
+
+printf 'course_tags=free redis=%s argocd=%s git=%s node=%s\n' \
+  "$S10_REDIS_IMAGE_BEFORE" "$S10_ARGO_IMAGE_BEFORE" \
+  "$S10_GIT_IMAGE_BEFORE" "$S10_NODE_IMAGE_BEFORE"
+```
+
+[ sample output ]
+
+```text
+course_tags=free redis=absent argocd=sha256:71ad... git=absent node=sha256:fa8c...
+```
+
+Existing IDs and `absent` values vary. The stable evidence is
+`course_tags=free`.
 
 ### Build the two workload images
 
@@ -436,27 +554,24 @@ printf 'container_platform=%s\n' "$S10_PLATFORM"
 helm repo add argo https://argoproj.github.io/argo-helm --force-update
 helm repo update argo
 
-docker pull --platform "$S10_PLATFORM" \
-  ecr-public.aws.com/docker/library/redis:8.6.4-alpine
-docker pull --platform "$S10_PLATFORM" \
-  quay.io/argoproj/argocd:v3.5.1
-docker pull --platform "$S10_PLATFORM" \
-  bitnami/git@sha256:972d6f1ac0e2b62f689794c56620f75d18f22be8f1069554a7622622e5bed548
+if [[ "$S10_REDIS_IMAGE_BEFORE" == "absent" ]]; then
+  docker pull --platform "$S10_PLATFORM" "$S10_REDIS_IMAGE_REF"
+fi
+if [[ "$S10_ARGO_IMAGE_BEFORE" == "absent" ]]; then
+  docker pull --platform "$S10_PLATFORM" "$S10_ARGO_IMAGE_REF"
+fi
+if [[ "$S10_GIT_IMAGE_BEFORE" == "absent" ]]; then
+  docker pull --platform "$S10_PLATFORM" "$S10_GIT_IMAGE_REF"
+fi
 
 printf 'FROM %s\n' \
-  ecr-public.aws.com/docker/library/redis:8.6.4-alpine | \
+  "$S10_REDIS_IMAGE_REF" | \
   docker build --provenance=false --platform "$S10_PLATFORM" \
   --tag agentic-iac-s10/redis-transport:8.6.4-alpine -
 
-docker tag agentic-iac-s10/redis-transport:8.6.4-alpine \
-  ecr-public.aws.com/docker/library/redis:8.6.4-alpine
-
-printf 'FROM %s\n' quay.io/argoproj/argocd:v3.5.1 | \
+printf 'FROM %s\n' "$S10_ARGO_IMAGE_REF" | \
   docker build --provenance=false --platform "$S10_PLATFORM" \
   --tag agentic-iac-s10/argocd-transport:v3.5.1 -
-
-docker tag agentic-iac-s10/argocd-transport:v3.5.1 \
-  quay.io/argoproj/argocd:v3.5.1
 ```
 
 [ sample output ]
@@ -468,6 +583,38 @@ Status: Downloaded newer image for quay.io/argoproj/argocd:v3.5.1
 
 The transport builds change no application content. They give Kind one local
 platform manifest instead of a multi-platform index.
+
+Bind cleanup to the four exact course tag IDs. Also save the frozen source IDs
+so cleanup can remove only a source image pulled by this run.
+
+```bash
+: > "$S10_COURSE_IMAGES"
+while read -r S10_IMAGE_REF
+do
+  S10_CREATED_ID="$(docker image inspect --format '{{.Id}}' "$S10_IMAGE_REF")"
+  printf '%s\t%s\n' "$S10_IMAGE_REF" "$S10_CREATED_ID" \
+    >> "$S10_COURSE_IMAGES"
+  printf 'created ref=%s id=%s\n' "$S10_IMAGE_REF" "$S10_CREATED_ID"
+done < "$S10_COURSE_REFS_FILE"
+
+S10_REDIS_IMAGE_CREATED="$(docker image inspect \
+  --format '{{.Id}}' "$S10_REDIS_IMAGE_REF")"
+S10_ARGO_IMAGE_CREATED="$(docker image inspect \
+  --format '{{.Id}}' "$S10_ARGO_IMAGE_REF")"
+S10_GIT_IMAGE_CREATED="$(docker image inspect \
+  --format '{{.Id}}' "$S10_GIT_IMAGE_REF")"
+```
+
+[ sample output ]
+
+```text
+created ref=309-agentic-iac/inference-platform:s10-v1 id=sha256:3e2a...
+created ref=309-agentic-iac/inference-platform:s10-v2 id=sha256:69c8...
+created ref=agentic-iac-s10/redis-transport:8.6.4-alpine id=sha256:ab32...
+created ref=agentic-iac-s10/argocd-transport:v3.5.1 id=sha256:71ad...
+```
+
+The four printed bindings are the tags owned by this run.
 
 ### Create the pinned Kind cluster
 
@@ -487,10 +634,10 @@ kind load docker-image \
   309-agentic-iac/inference-platform:s10-v2 \
   --name agentic-iac-s10
 kind load docker-image \
-  ecr-public.aws.com/docker/library/redis:8.6.4-alpine \
+  agentic-iac-s10/redis-transport:8.6.4-alpine \
   --name agentic-iac-s10
 kind load docker-image \
-  quay.io/argoproj/argocd:v3.5.1 \
+  agentic-iac-s10/argocd-transport:v3.5.1 \
   --name agentic-iac-s10
 
 docker exec agentic-iac-s10-control-plane crictl images
@@ -502,17 +649,35 @@ docker exec agentic-iac-s10-control-plane crictl images
 IMAGE                                                   TAG             IMAGE ID
 docker.io/309-agentic-iac/inference-platform            s10-v1          ...
 docker.io/309-agentic-iac/inference-platform            s10-v2          ...
-ecr-public.aws.com/docker/library/redis                  8.6.4-alpine    ...
-quay.io/argoproj/argocd                                  v3.5.1          ...
+docker.io/agentic-iac-s10/redis-transport                8.6.4-alpine    ...
+docker.io/agentic-iac-s10/argocd-transport               v3.5.1          ...
 ```
 
 Check that the output includes both workload tags, Redis 8.6.4, and Argo CD
 3.5.1 before installing the chart.
 
+Kind may pull the frozen node image during cluster creation. Save its exact ID
+so cleanup can remove it only when it was absent before this run.
+
+```bash
+S10_NODE_IMAGE_CREATED="$(docker image inspect \
+  --format '{{.Id}}' "$S10_NODE_IMAGE_REF")"
+printf 'created ref=%s id=%s\n' \
+  "$S10_NODE_IMAGE_REF" "$S10_NODE_IMAGE_CREATED"
+```
+
+[ sample output ]
+
+```text
+created ref=kindest/node@sha256:3489c... id=sha256:fa8c...
+```
+
 ### Install Argo CD
 
 The frozen values disable Dex and automatic delivery. Helm installs only the
-controller used by this lab.
+controller used by this lab. The repo server keeps its full liveness check but
+gets five seconds to answer it, which prevents false restarts during Git cache
+replacement on the constrained profile.
 
 ```bash
 helm upgrade --install argocd argo/argo-cd \
@@ -521,6 +686,11 @@ helm upgrade --install argocd argo/argo-cd \
   --namespace argocd \
   --create-namespace \
   --values section-10/argocd/values.yaml \
+  --set global.image.repository=agentic-iac-s10/argocd-transport \
+  --set global.image.tag=v3.5.1 \
+  --set redis.image.repository=agentic-iac-s10/redis-transport \
+  --set redis.image.tag=8.6.4-alpine \
+  --set repoServer.livenessProbe.timeoutSeconds=5 \
   --wait=legacy \
   --timeout 8m
 
@@ -563,12 +733,14 @@ kubectl --context kind-agentic-iac-s10 \
   -o custom-columns='NAME:.metadata.name,TYPE:.type'
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
 NAME                                 TYPE
 inference-platform-backend-token     Opaque
 ```
+
+The namespace, Secret, and ConfigMap creation lines appear before this table.
 
 ## PART III - Publish and Sync the Reviewed Revision
 
@@ -621,9 +793,10 @@ kubectl --context kind-agentic-iac-s10 \
 printf '\n'
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
+application.argoproj.io/inference-platform created
 workload_namespace=inference
 {"syncOptions":["CreateNamespace=false"]}
 ```
@@ -691,7 +864,7 @@ kubectl --context kind-agentic-iac-s10 \
   deployment/inference-platform-worker --timeout=180s
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
 application.argoproj.io/inference-platform condition met
@@ -699,6 +872,9 @@ deployment "inference-platform-dependencies" successfully rolled out
 deployment "inference-platform-api" successfully rolled out
 deployment "inference-platform-worker" successfully rolled out
 ```
+
+Each of the four Application waits prints the same `condition met` line. The
+sample shows one of those four lines and all three rollout results.
 
 Observe the revision and workload image.
 
@@ -950,9 +1126,14 @@ sleep 1
 curl -fsS "http://127.0.0.1:18081/jobs/$S10_JOB_ID" | jq
 ```
 
-[ Expected output ]
+[ sample output ]
 
-```json
+```text
+{
+  "job_id": "job-0001",
+  "status": "queued"
+}
+job_id=job-0001
 {
   "job_id": "job-0001",
   "status": "complete",
@@ -986,10 +1167,11 @@ kubectl --context kind-agentic-iac-s10 -n argocd wait \
 sleep 15
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
 deployment.apps/inference-platform-api scaled
+application.argoproj.io/inference-platform annotated
 application.argoproj.io/inference-platform condition met
 ```
 
@@ -1199,7 +1381,7 @@ kubectl --context kind-agentic-iac-s10 \
   deployment/inference-platform-worker --timeout=180s
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
 application.argoproj.io/inference-platform condition met
@@ -1207,6 +1389,9 @@ deployment "inference-platform-dependencies" successfully rolled out
 deployment "inference-platform-api" successfully rolled out
 deployment "inference-platform-worker" successfully rolled out
 ```
+
+Each of the three Application waits prints the same `condition met` line. The
+sample shows one of those three lines and all three rollout results.
 
 Observe the recovered revision, replica count, and v1 image.
 
@@ -1334,6 +1519,89 @@ Deleted nodes: ["agentic-iac-s10-control-plane"]
 Argo CD keeps three CustomResourceDefinitions during Helm uninstall. Deleting
 the named Kind cluster removes them with the local cluster.
 
+### Remove owned Docker and Helm state
+
+The cluster and mirror are gone, so their images are no longer in use. Remove
+each course tag only after its current ID matches the ID saved by this run.
+
+```bash
+while IFS=$'\t' read -r S10_IMAGE_REF S10_CREATED_ID
+do
+  S10_CURRENT_ID="$(docker image inspect --format '{{.Id}}' "$S10_IMAGE_REF")"
+  if [[ "$S10_CURRENT_ID" != "$S10_CREATED_ID" ]]; then
+    printf 'STOP: image ownership changed for %s\n' "$S10_IMAGE_REF" >&2
+    exit 1
+  fi
+  docker image rm "$S10_IMAGE_REF"
+done < "$S10_COURSE_IMAGES"
+```
+
+[ sample output ]
+
+```text
+Untagged: 309-agentic-iac/inference-platform:s10-v1
+Untagged: 309-agentic-iac/inference-platform:s10-v2
+Untagged: agentic-iac-s10/redis-transport:8.6.4-alpine
+Untagged: agentic-iac-s10/argocd-transport:v3.5.1
+```
+
+Remove a frozen source image only when it was absent before the lab and still
+has the exact ID saved after setup. Preexisting source images remain untouched.
+
+```bash
+remove_new_source_image() {
+  local image_ref="$1" before_id="$2" created_id="$3" current_id
+  if [[ "$before_id" != "absent" ]]; then
+    current_id="$(docker image inspect --format '{{.Id}}' "$image_ref")"
+    if [[ "$current_id" != "$before_id" ]]; then
+      printf 'STOP: preexisting source image changed for %s\n' "$image_ref" >&2
+      exit 1
+    fi
+    return
+  fi
+  current_id="$(docker image inspect --format '{{.Id}}' "$image_ref")"
+  if [[ "$current_id" != "$created_id" ]]; then
+    printf 'STOP: source image ownership changed for %s\n' "$image_ref" >&2
+    exit 1
+  fi
+  docker image rm "$image_ref"
+}
+
+remove_new_source_image \
+  "$S10_REDIS_IMAGE_REF" "$S10_REDIS_IMAGE_BEFORE" "$S10_REDIS_IMAGE_CREATED"
+remove_new_source_image \
+  "$S10_ARGO_IMAGE_REF" "$S10_ARGO_IMAGE_BEFORE" "$S10_ARGO_IMAGE_CREATED"
+remove_new_source_image \
+  "$S10_GIT_IMAGE_REF" "$S10_GIT_IMAGE_BEFORE" "$S10_GIT_IMAGE_CREATED"
+remove_new_source_image \
+  "$S10_NODE_IMAGE_REF" "$S10_NODE_IMAGE_BEFORE" "$S10_NODE_IMAGE_CREATED"
+unset -f remove_new_source_image
+
+rm -r "$S10_HELM_ROOT"
+while read -r S10_IMAGE_REF
+do
+  if docker image inspect "$S10_IMAGE_REF" >/dev/null 2>&1; then
+    printf 'STOP: course tag remains: %s\n' "$S10_IMAGE_REF" >&2
+    exit 1
+  fi
+done < "$S10_COURSE_REFS_FILE"
+if [[ -e "$S10_HELM_ROOT" ]]; then
+  printf 'STOP: isolated Helm state remains\n' >&2
+  exit 1
+fi
+printf 'docker_course_tags=removed isolated_helm_state=removed\n'
+```
+
+[ sample output ]
+
+```text
+Untagged: bitnami/git@sha256:972d6f...
+docker_course_tags=removed isolated_helm_state=removed
+```
+
+Docker removal output varies with pre-run cache state. The last line confirms
+that the course tags and isolated Helm repository state were removed.
+
 ### Remove the owned local evidence
 
 The cleanup helper checks the course marker before removing each evaluator
@@ -1349,7 +1617,10 @@ rm "$S10_V2_APPROVAL" \
   "$S10_V2_APPROVAL.gate.json" \
   "$S10_RECOVERY_APPROVAL" \
   "$S10_RECOVERY_APPROVAL.gate.json" \
-  "$S10_PORT_FORWARD_LOG"
+  "$S10_PORT_FORWARD_LOG" \
+  "$S10_APPROVAL_ROOT/.agentic-iac-s10-approval-root" \
+  "$S10_COURSE_REFS_FILE" \
+  "$S10_COURSE_IMAGES"
 
 rm "$S10_PLAN_ROOT/terraform-plan.json" \
   "$S10_PLAN_ROOT/opentofu-plan.json"
@@ -1398,8 +1669,8 @@ newer, delete the partial `agentic-iac-s10` cluster, and restart Part II.
 ### Kind cannot load a Redis or Argo CD digest
 
 Re-run the single-platform transport build for your Docker server architecture.
-Then tag the transport image back to the frozen source reference and run the
-matching `kind load docker-image` command again.
+Then load the matching `agentic-iac-s10` transport tag again. Keep the Helm
+repository and tag overrides shown in the install command.
 
 ### Application revision does not change
 
@@ -1412,3 +1683,15 @@ read-only mirror is started.
 Read the destination namespace from the Application again. In this lab it is
 `inference`, not `inference-platform`. Then check Deployment events and rollout
 status before requesting another sync.
+
+## Summary
+
+You rejected exactly three trust failures, repaired only the reviewed delivery
+files, and compared direct Terraform and OpenTofu plans without apply. A human
+approved v1, v2, and the recovery revision before each publication boundary.
+
+The runtime evidence separated Git publication, Application status, operation
+status, workload readiness, and request behavior. Replica and image drift
+remained visible because self-heal was disabled. The final `git revert` and
+explicit recovery sync returned the workload to one ready v1 replica, and the
+cleanup restored the pre-run Docker tag state and removed isolated Helm state.
