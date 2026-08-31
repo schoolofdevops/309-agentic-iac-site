@@ -245,6 +245,19 @@ The consumer must validate those fields again. A name such as `approved-plan`
 is not identity proof. If an attacker can replace the bytes under the same
 name, the approval no longer binds the consumed artifact.
 
+Saved binary plans can contain sensitive values in clear text. Plan JSON can
+also expose sensitive values in clear text, even when terminal output marks
+them as sensitive or redacts them. Hashing proves integrity; it does not
+provide confidentiality. A correct digest can identify a leaked secret
+perfectly.
+
+Keep the protected saved-plan artifact in a restricted path for the controlled
+consumer. Apply access control, minimum retention, encryption provided by the
+artifact store, and audit access. Give reviewers a separate sanitized,
+schema-bounded review summary containing approved addresses, actions, hashes,
+and gate results. Never upload the complete workspace to make artifact
+selection easier.
+
 The local lab does not require a GitHub account or hosted runner. It examines a
 real workflow file and runs the same fixed plan harness locally. That proves
 the course evaluator and plan path. It does not prove hosted-runner identity,
@@ -434,6 +447,18 @@ spec:
     namespace: inference
   syncPolicy: {}
 ```
+
+This example is **fixture-specific**. The gated mirror advances `HEAD` only
+after a human approved the exact full commit. It exposes one reviewed commit,
+and the evidence compares Argo CD `.status.sync.revision` with that approved
+SHA. A symbolic revision such as `HEAD` or a branch can move; the word `HEAD`
+is not immutable evidence.
+
+Production has two clear choices. Pin the Application to a full commit SHA, or
+track a protected promotion ref and bind approval plus delivery evidence to
+the resolved full commit. In both cases, promote an immutable workload artifact digest
+and verify the resolved `.status.sync.revision` before accepting the
+sync result.
 
 The local Application demonstrates manual reconciliation from a reviewed Git
 revision. The anonymous read-only daemon is not a production repository

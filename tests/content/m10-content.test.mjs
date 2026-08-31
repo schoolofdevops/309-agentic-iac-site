@@ -42,6 +42,25 @@ test('Section 10 teaches the exact nine-lecture arc at working-engineer depth', 
     'immutable', 'sync wave', 'hook', 'Degraded', 'Git revert', 'Helm rollback',
     'Terraform recovery', 'roll forward', 'separation of duties',
   ]) assert.match(lesson, new RegExp(term, 'i'), `lesson must teach ${term}`);
+
+  for (const boundary of [
+    /saved (?:binary )?plan[s]?[^.]{0,100}sensitive values/i,
+    /plan JSON[^.]{0,100}(?:clear text|sensitive values)/i,
+    /hash(?:ing|es)?[^.]{0,100}integrity[^.]{0,100}(?:not|does not)[^.]{0,60}confidentiality/i,
+    /protected saved-plan artifact/i,
+    /sanitized[^.]{0,40}review summary/i,
+    /access control/i,
+    /minimum retention/i,
+  ]) assert.match(lesson, boundary, `lesson must teach sensitive-plan boundary ${boundary}`);
+
+  for (const boundary of [
+    /fixture-specific/i,
+    /gated mirror[^.]{0,120}HEAD[^.]{0,120}approved[^.]{0,80}(?:full|exact) commit/i,
+    /symbolic revision[^.]{0,100}(?:move|mutable)/i,
+    /\.status\.sync\.revision/i,
+    /protected promotion ref/i,
+    /immutable workload artifact digest/i,
+  ]) assert.match(lesson, boundary, `lesson must teach mutable-ref boundary ${boundary}`);
 });
 
 test('Section 10 follows one commit through transactional and reconciliation lanes without overstating proof', () => {
@@ -91,6 +110,10 @@ test('Section 10 operator challenge is independent, packet-only, and does not le
     'CODEOWNERS', 'branch protection', 'plan', 'commit', 'artifact',
     'Argo', 'runtime observation', 'record your answer',
   ]) assert.match(challenge, new RegExp(term, 'i'), `challenge must require ${term}`);
+  assert.match(challenge, /saved plan[^.]{0,100}sensitive/i);
+  assert.match(challenge, /hash[^.]{0,100}(?:not|does not)[^.]{0,60}confidentiality/i);
+  assert.match(challenge, /targetRevision: HEAD[\s\S]{0,600}(?:symbolic|mutable|move)/i);
+  assert.match(challenge, /\.status\.sync\.revision/i);
   for (const leak of [
     'answer-key', 'the correct split is', 'approve packet b', 'reject packet a',
     'the root cause is', 'copy this solution', 'section-10/challenge',
@@ -114,6 +137,47 @@ test('Section 10 quiz has exactly fifteen balanced scenarios and complete explan
   const distractorAverage = mean(options.filter((option) => !option.correct).map((option) => option.text.length));
   assert(correctAverage / distractorAverage > 0.85 && correctAverage / distractorAverage < 1.15,
     `option lengths are biased: correct ${correctAverage.toFixed(1)}, distractor ${distractorAverage.toFixed(1)}`);
+
+  const questions = [...quiz.matchAll(/prompt:'([^']+)',\s*(multiSelect:true,\s*)?options:\[\s*([\s\S]*?)\s*\]\s*\}/g)]
+    .map((match) => ({
+      prompt: match[1],
+      multi: Boolean(match[2]),
+      options: [...match[3].matchAll(/\{text:'([^']+)',correct:(true|false),explanation:'([^']+)'\}/g)]
+        .map((option) => ({text: option[1], correct: option[2] === 'true'})),
+    }));
+  assert.equal(questions.length, 15);
+  assert(questions.every((question) => question.options.length === 4));
+
+  const singlePositions = questions.filter((question) => !question.multi)
+    .map((question) => question.options.findIndex((option) => option.correct));
+  const positionCounts = [0, 1, 2, 3].map((position) => singlePositions.filter((value) => value === position).length);
+  assert(positionCounts.every((count) => count >= 2), `single-select positions expose a pattern: ${positionCounts}`);
+  assert(Math.max(...positionCounts) - Math.min(...positionCounts) <= 1,
+    `single-select positions are unbalanced: ${positionCounts}`);
+
+  const multiSignatures = questions.filter((question) => question.multi)
+    .map((question) => question.options.map((option, index) => option.correct ? index : null).filter((index) => index !== null).join(','));
+  assert(new Set(multiSignatures).size >= 4, `multi-select subsets are repetitive: ${multiSignatures}`);
+  assert(!multiSignatures.includes('0,1,2'), 'multi-select must not expose the old first-three pattern');
+
+  const longestCorrect = questions.filter((question) => {
+    const maximum = Math.max(...question.options.map((option) => option.text.length));
+    return question.options.find((option) => option.text.length === maximum).correct;
+  }).length;
+  const chanceExpectation = questions.reduce((sum, question) =>
+    sum + question.options.filter((option) => option.correct).length / question.options.length, 0);
+  assert(longestCorrect >= Math.floor(chanceExpectation) - 1,
+    `longest-option placement exposes an inverse cue: ${longestCorrect} correct versus ${chanceExpectation.toFixed(2)} expected`);
+  assert(longestCorrect <= Math.ceil(chanceExpectation),
+    `longest-option heuristic beats chance: ${longestCorrect} correct versus ${chanceExpectation.toFixed(2)} expected`);
+
+  for (const trivial of [
+    /number of letters/i,
+    /Terraform formatting will always reject/i,
+    /Argo CD will automatically delete the pull request/i,
+    /CODEOWNERS removes the Argo Application/i,
+    /any available registry/i,
+  ]) assert.doesNotMatch(quiz, trivial, `quiz contains trivial distractor ${trivial}`);
 });
 
 test('Section 10 has human-searchable navigation and no stale unpublished scaffolds', () => {

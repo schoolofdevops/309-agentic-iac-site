@@ -176,6 +176,10 @@ spec:
       selfHeal: true
 ```
 
+`HEAD` is a mutable symbolic revision. The packet does not show which full
+commit it resolved to, whether that commit was approved, or whether
+`.status.sync.revision` matched it when the sync ran.
+
 No Argo diff, sync status, health status, operation phase, workload image
 identity, or runtime observation is included. The request assumes that a
 successful workflow will make those records unnecessary.
@@ -227,6 +231,14 @@ target, direct plan JSON, resource actions, and policy results. Explain what
 must happen if the plan, state, variables, provider selection, target identity,
 or head commit changes while approval is pending.
 
+The broad workspace artifact includes a saved plan that can contain sensitive
+values in clear text, and its JSON form can expose the same data. Explain
+why those files remain unsafe even when terminal
+output is redacted. State why a hash proves integrity but does not provide
+confidentiality. Separate a protected saved plan for the controlled consumer
+from a sanitized review summary, and define bounded paths, access control, and
+minimum retention for both.
+
 Your design must keep planning separate from apply. Name the independent human
 approval, protected environment, workflow identity, concurrency rule, and
 stale-plan rejection needed before any production apply could be considered.
@@ -243,6 +255,11 @@ target revision, diff, sync status, health, operation phase, observed workload
 image, and an application-level runtime observation. Explain why automatic
 prune and self-heal require a separate policy decision and why Synced or
 Healthy would not replace a client result.
+
+Evaluate `targetRevision: HEAD` directly. Explain how a symbolic revision can
+move between approval and sync. Choose either a pinned commit or a protected
+promotion ref, then require the approved full commit to match
+`.status.sync.revision` and the immutable workload artifact digest.
 
 ### 5. Draw the minimum safe approval path
 
@@ -272,7 +289,9 @@ Your review is complete only when it contains:
 - explicit token permissions and exact action pin requirements;
 - required checks, CODEOWNERS, branch protection, and environment gates;
 - a commit-bound Terraform plan evidence schema and stale-plan response;
+- saved-plan confidentiality controls and a sanitized review summary;
 - Helm render and immutable image evidence;
+- a mutable symbolic-revision check against `.status.sync.revision`;
 - an Argo revision, sync, health, operation, and runtime evidence path;
 - separation of author, reviewer, workflow, and runtime identities;
 - one minimum safe approval-path diagram; and
