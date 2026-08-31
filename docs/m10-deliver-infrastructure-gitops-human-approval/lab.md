@@ -147,11 +147,13 @@ node "$S10_TRUSTED_ROOT/section-10/scripts/run-starter-review.mjs" \
   --output "$S10_STARTER_EVIDENCE"
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
-REJECTED: 3 primary finding(s); evidence written outside the repository
+REJECTED: 3 primary finding(s); evidence <temporary-path>/starter-evidence
 ```
+
+The evidence path varies by run.
 
 Read the decision and the independent Terraform, OpenTofu, and Helm evidence.
 
@@ -160,7 +162,7 @@ jq '{status,findings,terraform,helm,apply_permitted}' \
   "$S10_STARTER_EVIDENCE/report.json"
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```json
 {
@@ -184,6 +186,9 @@ jq '{status,findings,terraform,helm,apply_permitted}' \
   "apply_permitted": false
 }
 ```
+
+The sample shortens each finding object to its `id`. The report also includes
+a message for each finding.
 
 The valid Terraform and Helm evidence does not cancel the three trust
 failures. Reject this candidate.
@@ -361,8 +366,8 @@ jq '{reviewer:.identities.reviewer,apply_permitted}' \
 [ Expected output ]
 
 ```text
-terraform_data.reviewed_delivery    create
-terraform_data.reviewed_delivery    create
+terraform_data.reviewed_delivery	create
+terraform_data.reviewed_delivery	create
 {
   "reviewer": "human-platform-reviewer",
   "apply_permitted": false
@@ -928,7 +933,9 @@ v2_revision=bd7ef2a026ef20cba82f95bca56487721277487d
 ### Approve the exact v2 commit
 
 The gate opener checks the clean Git lineage and direct Application evidence.
-It does not trust a learner-supplied health flag.
+It does not trust a learner-supplied health flag. It also seals the exact gate
+file and parent identity in an owner-only handoff. The approval command checks
+that handoff through record creation, then consumes it.
 
 ```bash
 S10_V2_APPROVAL="$S10_APPROVAL_ROOT/v2.json"
