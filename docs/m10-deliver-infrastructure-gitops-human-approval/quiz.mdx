@@ -1,0 +1,152 @@
+---
+sidebar_position: 5
+title: 'Quiz: Deliver Infrastructure Safely with GitOps and Human Approval'
+---
+
+import Quiz from '@site/src/components/Quiz';
+
+# Deliver Infrastructure Safely with GitOps and Human Approval Quiz
+
+<Quiz questions={[
+  {
+    prompt:'An agent authored a Terraform and Helm change. Which identity should approve its production promotion?',
+    options:[
+      {text:'An eligible human reviewer who did not author the privilege change',correct:true,explanation:'Independent review prevents the authoring identity from granting and approving its own authority.'},
+      {text:'The authoring agent after its own validation commands pass',correct:false,explanation:'Validation evidence does not give the author permission to approve its proposal.'},
+      {text:'The runtime ServiceAccount because it will execute the workload',correct:false,explanation:'Runtime identity should not receive review, merge, sync, or apply authority.'},
+      {text:'Any workflow job that can write a positive status result',correct:false,explanation:'A workflow result is evidence and not an accountable human approval decision.'},
+    ]
+  },
+  {
+    prompt:'Which repository controls help turn a pull request into an enforceable review boundary? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Path ownership that requests the correct specialist reviewers',correct:true,explanation:'CODEOWNERS can route Terraform, Helm, and workflow files to their responsible teams.'},
+      {text:'Required checks bound to the current proposed commit',correct:true,explanation:'A later push should invalidate results that describe an earlier revision.'},
+      {text:'Protected branch rules that enforce eligible independent approval',correct:true,explanation:'The host must prevent the author from bypassing the required decision path.'},
+      {text:'A pull request title that includes the word reviewed',correct:false,explanation:'Human-readable text does not enforce identity, check, or merge requirements.'},
+    ]
+  },
+  {
+    prompt:'A fork pull request changes its workflow to use pull_request_target and then executes the fork checkout. What is the main risk?',
+    options:[
+      {text:'Untrusted fork code may run with the more trusted base context',correct:true,explanation:'That combination can expose elevated tokens or secrets to candidate-controlled code.'},
+      {text:'Terraform formatting will always reject the changed event name',correct:false,explanation:'Terraform formatting does not evaluate GitHub Actions event trust.'},
+      {text:'Argo CD will automatically delete the pull request branch',correct:false,explanation:'Argo reconciliation does not manage GitHub pull request event security.'},
+      {text:'The fork will receive production authority only after Helm lint',correct:false,explanation:'Helm lint does not create or control workflow token permissions.'},
+    ]
+  },
+  {
+    prompt:'Which controls belong in a bounded GitHub Actions plan workflow? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Explicit minimum token permissions for the plan job',correct:true,explanation:'Read-only planning should not inherit broad repository or deployment writes.'},
+      {text:'Executable third-party actions pinned to full commit SHAs',correct:true,explanation:'Exact pins prevent a mutable tag from silently selecting different code.'},
+      {text:'An allow-listed artifact path with a recorded digest',correct:true,explanation:'The consumer needs bounded bytes and identity rather than a workspace archive.'},
+      {text:'A shell expression that directly inserts untrusted event text',correct:false,explanation:'Candidate-controlled text can alter shell parsing and command behavior.'},
+    ]
+  },
+  {
+    prompt:'A reviewed Terraform plan names commit A, but the branch now points to commit B. What should the apply path do?',
+    options:[
+      {text:'Reject the stale plan and produce evidence for commit B',correct:true,explanation:'Approval for one source revision cannot authorize another unreviewed revision.'},
+      {text:'Apply the old plan because both commits share a branch name',correct:false,explanation:'Branch names move and do not preserve the reviewed source identity.'},
+      {text:'Replace the source revision field while keeping the old plan bytes',correct:false,explanation:'Editing metadata does not make an artifact describe new source and state.'},
+      {text:'Ask Argo CD health to decide whether Terraform may apply',correct:false,explanation:'Argo health does not authorize or validate a Terraform transaction.'},
+    ]
+  },
+  {
+    prompt:'Which fields help bind Terraform or OpenTofu plan evidence to its reviewed transaction? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Source revision, workflow digest, engine, and exact version',correct:true,explanation:'These identify important code and execution inputs used to produce the plan.'},
+      {text:'Plan digest, plan JSON digest, addresses, and resource actions',correct:true,explanation:'These bind the artifact and the semantic operations presented for review.'},
+      {text:'Gate results, target identity, and an explicit apply permission field',correct:true,explanation:'These show evaluator outcome and whether the artifact closes the apply path.'},
+      {text:'Only a screenshot that shows a green plan check',correct:false,explanation:'A screenshot lacks machine-verifiable source, artifact, action, and target identity.'},
+    ]
+  },
+  {
+    prompt:'Terraform and OpenTofu produce different plan hashes but the same accepted resource actions. What should the reviewer do?',
+    options:[
+      {text:'Retain byte differences and compare the required semantic actions',correct:true,explanation:'Different engine artifacts can be honest while the reviewed operation set agrees.'},
+      {text:'Rewrite one plan hash so both evidence reports look equal',correct:false,explanation:'Changing evidence destroys artifact identity and hides a real compatibility fact.'},
+      {text:'Treat matching resource addresses as authorization to apply',correct:false,explanation:'Semantic agreement still does not provide a human apply decision.'},
+      {text:'Delete engine versions because they caused the mismatch',correct:false,explanation:'Exact engine identity is necessary for interpreting and reproducing the evidence.'},
+    ]
+  },
+  {
+    prompt:'Which statements correctly describe Argo CD status? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Synced means tracked live fields match desired state at that observation',correct:true,explanation:'It is a time-bound comparison and not a complete application test.'},
+      {text:'Healthy is a resource assessment separate from sync status',correct:true,explanation:'A resource can match desired state while its health assessment is degraded.'},
+      {text:'Operation phase reports the result of a requested sync action',correct:true,explanation:'Succeeded, Failed, or Error describes the operation and not all future state.'},
+      {text:'OutOfSync proves that an attacker changed the cluster',correct:false,explanation:'Drift can come from manual action, controllers, defaults, or changed desired state.'},
+    ]
+  },
+  {
+    prompt:'Argo reports Synced, Healthy, and Succeeded, but the application request fails. What is the correct conclusion?',
+    options:[
+      {text:'Controller evidence passed while application correctness still failed',correct:true,explanation:'A separate runtime transaction is required beyond desired state and resource health.'},
+      {text:'The client result must be ignored because Argo is authoritative',correct:false,explanation:'Argo does not observe every application dependency and request semantic.'},
+      {text:'The Git commit is invalid because health was reported as green',correct:false,explanation:'The evidence shows a proof boundary, not an invalid Git object.'},
+      {text:'Terraform should immediately apply the same Kubernetes objects',correct:false,explanation:'Adding another owner does not repair the unproven application path.'},
+    ]
+  },
+  {
+    prompt:'A team promotes an image with the tag latest. Which additional fact is required for immutable promotion evidence?',
+    options:[
+      {text:'The exact image digest related to the reviewed build and commit',correct:true,explanation:'A digest identifies the promoted bytes while a mutable tag can move.'},
+      {text:'The number of letters in the repository and tag name',correct:false,explanation:'Name length says nothing about image content or build provenance.'},
+      {text:'A manual kubectl image change made after the review',correct:false,explanation:'A live mutation creates drift and does not update reviewed desired state.'},
+      {text:'A successful Docker pull from any available registry',correct:false,explanation:'Pull success does not bind the image to the approved source and build.'},
+    ]
+  },
+  {
+    prompt:'Which situations justify stopping automatic environment progression? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'The Application reports Degraded for the promoted revision',correct:true,explanation:'A degraded resource needs diagnosis before the next environment receives it.'},
+      {text:'The resolved Git revision differs from the approved commit',correct:true,explanation:'The delivery subject no longer matches the human decision.'},
+      {text:'The runtime transaction fails after controller health passes',correct:true,explanation:'Application evidence exposes a failure outside the controller health boundary.'},
+      {text:'A sync wave has a smaller number than another wave',correct:false,explanation:'Ordered wave numbers are normal when they represent a reviewed dependency.'},
+    ]
+  },
+  {
+    prompt:'Argo manages a Helm-rendered workload. An operator runs Helm rollback directly, but Git still names the newer version. What may happen?',
+    options:[
+      {text:'Argo can reconcile the workload back to the newer Git intent',correct:true,explanation:'A direct Helm action conflicts with the active Git desired-state owner.'},
+      {text:'The rollback permanently rewrites every commit in the repository',correct:false,explanation:'A release operation does not edit Git history or desired source bytes.'},
+      {text:'Terraform state automatically becomes the Helm release owner',correct:false,explanation:'Terraform ownership is not created by a direct Helm rollback.'},
+      {text:'CODEOWNERS removes the Argo Application from the cluster',correct:false,explanation:'Repository review routing does not perform Kubernetes deletion.'},
+    ]
+  },
+  {
+    prompt:'A Terraform apply fails after one provider operation succeeds. Which next step is safest?',
+    options:[
+      {text:'Compare configuration, state, remote objects, and operation evidence',correct:true,explanation:'Current partial state determines whether refresh, import, repair, or roll forward is safe.'},
+      {text:'Repeat the old apply until the provider returns exit zero',correct:false,explanation:'Blind retry can repeat an external side effect or use stale assumptions.'},
+      {text:'Delete the state file so Terraform forgets the completed action',correct:false,explanation:'Removing ownership evidence can create duplicates and unmanaged infrastructure.'},
+      {text:'Use Argo self-heal to update the cloud provider state',correct:false,explanation:'Argo reconciliation does not repair Terraform state or provider operations.'},
+    ]
+  },
+  {
+    prompt:'Which evidence links belong in a complete delivery audit trail? Select all that apply.',
+    multiSelect:true,
+    options:[
+      {text:'Request, exact commit, required checks, and reviewer decision',correct:true,explanation:'These connect intent and source to evaluated human review.'},
+      {text:'Approved artifact, purpose, target environment, and delivery result',correct:true,explanation:'These bind authorization to specific bytes, action, and destination.'},
+      {text:'Runtime observation, recovery revision, and cleanup proof',correct:true,explanation:'These show observed effect, correction history, and final course-owned state.'},
+      {text:'An agent summary with no source or object identity',correct:false,explanation:'A narrative without subjects and hashes cannot support an auditable claim.'},
+    ]
+  },
+  {
+    prompt:'The local learner replay peaked at 1.680 GiB on the named Kind node. How should that result be used?',
+    options:[
+      {text:'Report it as one measured workload observation below the 4 GiB ceiling',correct:true,explanation:'The value describes the exact named-node sampling boundary on the tested host.'},
+      {text:'Declare 1.680 GiB as the minimum memory for every learner',correct:false,explanation:'One measured peak is not a universal host requirement or rejection threshold.'},
+      {text:'Treat it as complete host and Docker virtual machine usage',correct:false,explanation:'The sampler measured the named node rather than every host process.'},
+      {text:'Use it as proof that production scale will need less memory',correct:false,explanation:'The deterministic local profile does not predict production workload demand.'},
+    ]
+  },
+]} />

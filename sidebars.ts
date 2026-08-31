@@ -107,6 +107,17 @@ const sidebars: SidebarsConfig = {
         'm9-deploy-applications-kubernetes-helm-ai-agents/quiz',
       ],
     },
+    {
+      type: 'category',
+      label: 'Section 10 — Deliver Infrastructure Safely with GitOps and Human Approval',
+      items: [
+        'm10-deliver-infrastructure-gitops-human-approval/lesson',
+        'm10-deliver-infrastructure-gitops-human-approval/lab',
+        'm10-deliver-infrastructure-gitops-human-approval/operator-challenge',
+        'm10-deliver-infrastructure-gitops-human-approval/deep-dive',
+        'm10-deliver-infrastructure-gitops-human-approval/quiz',
+      ],
+    },
   ],
 };
 
