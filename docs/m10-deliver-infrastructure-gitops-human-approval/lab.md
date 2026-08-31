@@ -933,9 +933,22 @@ v2_revision=bd7ef2a026ef20cba82f95bca56487721277487d
 ### Approve the exact v2 commit
 
 The gate opener checks the clean Git lineage and direct Application evidence.
-It does not trust a learner-supplied health flag. It also seals the exact gate
-file and parent identity in an owner-only handoff. The approval command checks
-that handoff through record creation, then consumes it.
+It does not trust a learner-supplied health flag. The opener stays alive and
+keeps the exact gate binding in memory while you inspect its evidence. Only
+that live process writes the approval record after it receives your explicit
+approval input and rechecks the original gate. There is no handoff file or
+background approval service.
+
+Run the opener directly. It prints the gate JSON before asking for approval.
+At the `Approval>` line, type the exact text shown after `type exactly:` and
+press Enter. For the sample revision above, the text would be:
+
+```text
+approve bd7ef2a026ef20cba82f95bca56487721277487d
+```
+
+Use your full `v2_revision`, not this sample value. The command remains alive
+from evidence validation through approval publication.
 
 ```bash
 S10_V2_APPROVAL="$S10_APPROVAL_ROOT/v2.json"
@@ -946,7 +959,7 @@ node section-10/scripts/open-gitops-approval-gate.mjs \
   --approval "$S10_V2_APPROVAL" \
   --purpose promote-v2
 
-jq . "$S10_V2_APPROVAL.gate.json"
+jq . "$S10_V2_APPROVAL"
 ```
 
 [ sample output ]
@@ -954,25 +967,28 @@ jq . "$S10_V2_APPROVAL.gate.json"
 ```text
 Approval gate opened for bd7ef2a026ef20cba82f95bca56487721277487d (promote-v2).
 Gate: /private/tmp/agentic-iac-s10-human.A1b2C3/approvals/v2.json.gate.json
-```
-
-Check that the gate binds the candidate commit to a `Synced`, `Healthy`, and
-`Succeeded` v1 Application. Then run the separate human approval command.
-
-```bash
-node section-10/scripts/approve-gitops-revision.mjs \
-  --gate "$S10_V2_APPROVAL.gate.json" \
-  --output "$S10_V2_APPROVAL" \
-  --revision "$S10_V2_REVISION" \
-  --purpose promote-v2
-
-jq . "$S10_V2_APPROVAL"
-```
-
-[ sample output ]
-
-```text
+{
+  "schema": "agentic-iac-s10-approval-gate/v1",
+  "purpose": "promote-v2",
+  "revision": "bd7ef2a026ef20cba82f95bca56487721277487d",
+  "opened_at": "2026-08-31T16:13:08.277Z",
+  "observed": {
+    "sync": "Synced",
+    "health": "Healthy",
+    "operation": "Succeeded",
+    "revision": "a0bb233ede26e14349ab8d7e97db2dd4415006f9"
+  }
+}
+Approval> type exactly: approve bd7ef2a026ef20cba82f95bca56487721277487d
 Approved revision bd7ef2a026ef20cba82f95bca56487721277487d for promote-v2.
+{
+  "schema": "agentic-iac-s10-human-approval/v1",
+  "approved_by": "human-platform-reviewer",
+  "requested_by": "agent-author",
+  "revision": "bd7ef2a026ef20cba82f95bca56487721277487d",
+  "purpose": "promote-v2",
+  "approved": true
+}
 ```
 
 The local approval record binds one purpose and one commit. It does not prove
@@ -1274,7 +1290,17 @@ Run every command in that file. Write the five-part diagnosis before reading
 ### Approve the recovery commit
 
 The recovery gate derives the exact revert lineage from Git. It also rechecks
-that the two-replica drift remains `OutOfSync` for 15 seconds.
+that the two-replica drift remains `OutOfSync` for 15 seconds. This foreground
+opener also retains its in-memory binding through publication.
+
+At the `Approval>` line, type the exact text shown after `type exactly:` and
+press Enter. For the sample recovery revision, the text would be:
+
+```text
+approve 06aae8fb5edfebd1ff0637648ccc762de74553f5
+```
+
+Use your full `revert_revision`, not this sample value.
 
 ```bash
 S10_RECOVERY_APPROVAL="$S10_APPROVAL_ROOT/recovery.json"
@@ -1285,7 +1311,7 @@ node section-10/scripts/open-gitops-approval-gate.mjs \
   --approval "$S10_RECOVERY_APPROVAL" \
   --purpose revert-and-recover
 
-jq . "$S10_RECOVERY_APPROVAL.gate.json"
+jq . "$S10_RECOVERY_APPROVAL"
 ```
 
 [ sample output ]
@@ -1293,25 +1319,26 @@ jq . "$S10_RECOVERY_APPROVAL.gate.json"
 ```text
 Approval gate opened for 06aae8fb5edfebd1ff0637648ccc762de74553f5 (revert-and-recover).
 Gate: /private/tmp/agentic-iac-s10-human.A1b2C3/approvals/recovery.json.gate.json
-```
-
-Check the revision, purpose, `OutOfSync` status, and two replicas. Then approve
-that exact recovery commit.
-
-```bash
-node section-10/scripts/approve-gitops-revision.mjs \
-  --gate "$S10_RECOVERY_APPROVAL.gate.json" \
-  --output "$S10_RECOVERY_APPROVAL" \
-  --revision "$S10_REVERT_REVISION" \
-  --purpose revert-and-recover
-
-jq . "$S10_RECOVERY_APPROVAL"
-```
-
-[ sample output ]
-
-```text
+{
+  "schema": "agentic-iac-s10-approval-gate/v1",
+  "purpose": "revert-and-recover",
+  "revision": "06aae8fb5edfebd1ff0637648ccc762de74553f5",
+  "opened_at": "2026-08-31T16:14:35.072Z",
+  "observed": {
+    "sync": "OutOfSync",
+    "replicas_after_15_seconds": 2
+  }
+}
+Approval> type exactly: approve 06aae8fb5edfebd1ff0637648ccc762de74553f5
 Approved revision 06aae8fb5edfebd1ff0637648ccc762de74553f5 for revert-and-recover.
+{
+  "schema": "agentic-iac-s10-human-approval/v1",
+  "approved_by": "human-platform-reviewer",
+  "requested_by": "agent-author",
+  "revision": "06aae8fb5edfebd1ff0637648ccc762de74553f5",
+  "purpose": "revert-and-recover",
+  "approved": true
+}
 ```
 
 ### Publish and sync the recovery

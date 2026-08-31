@@ -29,3 +29,22 @@ test('variable and abridged evaluator displays are honestly labeled', () => {
   assert.match(lab, /The evidence path varies by run\./);
   assert.match(lab, /The sample shortens each finding object to its `id`\./);
 });
+
+test('human approval stays foreground and visibly interactive through publication', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  assert.doesNotMatch(lab, /owner-only handoff|binding\.json|\.sock|GATE_PID|GATE_LOG/);
+  assert.match(lab, /keeps the exact gate binding in memory[\s\S]*Only\s+that live process writes the approval record/);
+  assert.equal(lab.split('node section-10/scripts/open-gitops-approval-gate.mjs').length - 1, 2);
+  assert.equal(lab.split('node section-10/scripts/approve-gitops-revision.mjs').length - 1, 0);
+  assert.equal(lab.split('Approval> type exactly: approve ').length - 1, 2);
+  assert.match(lab, /```text\napprove bd7ef2a026ef20cba82f95bca56487721277487d\n```/);
+  assert.match(lab, /```text\napprove 06aae8fb5edfebd1ff0637648ccc762de74553f5\n```/);
+  const blocks = [...lab.matchAll(/```bash\n([\s\S]*?)\n```/g)]
+    .map((match) => match[1])
+    .filter((block) => block.includes('open-gitops-approval-gate.mjs'));
+  assert.equal(blocks.length, 2);
+  for (const block of blocks) {
+    assert.doesNotMatch(block, /\||<<|\b(?:echo|printf)\b|2>&1|&\s*$/m,
+      'approval input must be typed at the foreground prompt');
+  }
+});
