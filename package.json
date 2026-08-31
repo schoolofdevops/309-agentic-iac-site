@@ -17,6 +17,7 @@
     "deck:m7": "node scripts/decks/build-m7-deck.mjs",
     "deck:m8": "node scripts/decks/build-m8-deck.mjs",
     "deck:m9": "node scripts/decks/build-m9-deck.mjs",
+    "deck:m10": "node scripts/decks/build-m10-deck.mjs",
     "deck:check": "node --test tests/decks/*.test.mjs && node scripts/decks/validate-deck.mjs static/decks/m1-agentic-iac-fundamentals.html --fresh && node scripts/decks/validate-deck.mjs static/decks/m2-first-iac-change-ai-coding-agent.html --fresh && node scripts/decks/validate-deck.mjs static/decks/m3-plan-iac-before-agent-codes.html && node scripts/decks/validate-deck.mjs static/decks/m4-give-iac-agent-right-context.html && node scripts/decks/validate-deck.mjs static/decks/m5-connect-iac-agent-tools-skills-mcp.html",
     "deck:render:m1": "node scripts/decks/render-m1-deck.mjs",
     "deck:render:m2": "node scripts/decks/render-m2-deck.mjs",
@@ -24,7 +25,8 @@
     "deck:render:m4": "node scripts/decks/render-m4-deck.mjs",
     "deck:render:m5": "node scripts/decks/render-m5-deck.mjs",
     "deck:render:m8": "node scripts/decks/render-m8-deck.mjs",
-    "deck:render:m9": "node scripts/decks/render-m9-deck.mjs"
+    "deck:render:m9": "node scripts/decks/render-m9-deck.mjs",
+    "deck:render:m10": "node scripts/decks/render-m10-deck.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",

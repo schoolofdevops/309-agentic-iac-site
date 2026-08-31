@@ -4,6 +4,8 @@ title: 'Deliver Infrastructure Safely with GitOps and Human Approval'
 description: Follow one reviewed commit through a plan-only Terraform lane and a manually approved Argo CD reconciliation lane.
 ---
 
+import Slides from '@site/src/components/Slides';
+
 # Deliver Infrastructure Safely with GitOps and Human Approval
 
 An infrastructure change is not safe because an agent produced valid code. It
@@ -17,6 +19,8 @@ continuously compares a Kubernetes environment with reviewed Git state. A
 human approves each local commit and explicitly requests each sync. The agent
 may inspect, propose, edit within scope, and run checks. It may not approve,
 merge, apply, sync, or grant itself new authority.
+
+<Slides src="decks/m10-deliver-infrastructure-gitops-human-approval.html" title="Section 10: Deliver Infrastructure Safely with GitOps and Human Approval" />
 
 :::info[The tested local profile]
 
