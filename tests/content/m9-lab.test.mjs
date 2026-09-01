@@ -163,6 +163,20 @@ test('Section 9 ends with a human checkpoint commit for exactly the three repair
   assert.match(lab, /final `git status --short` should print nothing/i);
 });
 
+test('Section 9 sets a copy-safe local Git identity before the learner creates commits', () => {
+  const lab = readLab();
+  const identity = lab.indexOf('git config --local user.name "Course Learner"');
+  const firstCommit = lab.indexOf("git commit -m 'Complete Section 9 Helm repair'");
+  assert.ok(identity > lab.indexOf('pwd'), 'identity setup must follow the repository location check');
+  assert.ok(identity < firstCommit, 'local identity must be set before the learner commit');
+  assert.match(lab, /git config --local user\.email "learner@example\.invalid"/);
+  assert.match(lab, /git config --get user\.name\ngit config --get user\.email/);
+  assert.match(lab, /```text\nCourse Learner\nlearner@example\.invalid\n```/);
+  assert.match(lab, /identity.*recorded.*commit.*evidence/is);
+  assert.match(lab, /use your own name\s+and email/i);
+  assert.doesNotMatch(lab, /git config --global user\.(?:name|email)/);
+});
+
 test('Section 9 starter-evidence teardown explains and tolerates the selected recovery path', () => {
   const lab = readLab();
   const cleanup = lab.slice(lab.indexOf('### Remove the exact temporary evidence'));

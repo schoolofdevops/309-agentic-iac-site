@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
@@ -33,7 +34,52 @@ test('variable and abridged evaluator displays are honestly labeled', () => {
   const lab = readFileSync(labUrl, 'utf8');
   assert.match(lab, /\[ sample output \]\n\n```text\nREJECTED: 3 primary finding\(s\); evidence <temporary-path>\/starter-evidence\n```/);
   assert.match(lab, /The evidence path varies by run\./);
-  assert.match(lab, /The sample shortens each finding object to its `id`\./);
+  assert.match(lab, /The command shows each finding by its short `id`\./);
+});
+
+test('jq executes the documented finding-ID projection for rejected and repaired reports', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  const filter = '{status, findings: [.findings[].id], terraform, helm, apply_permitted}';
+  assert.equal(lab.split(`jq '${filter}'`).length - 1, 2,
+    'starter and repaired evidence must use the executable ID projection');
+
+  const rejected = {
+    status: 'REJECTED',
+    findings: [
+      {id: 'S10_ARGO_AUTOMATION_ENABLED', message: 'Automatic sync requires human review.'},
+      {id: 'S10_AUTHOR_SELF_APPROVAL', message: 'Author and reviewer must differ.'},
+      {id: 'S10_PRIVILEGED_WORKFLOW_CHANGED', message: 'Privileged workflow is outside scope.'},
+    ],
+    terraform: {terraform: 'VALID', opentofu: 'VALID'},
+    helm: {lint: 'PASS'},
+    apply_permitted: false,
+  };
+  const repaired = {...rejected, status: 'READY_FOR_HUMAN_REVIEW', findings: []};
+  const messages = rejected.findings.map(({message}) => message);
+
+  const runFilter = (report) => {
+    const result = spawnSync('jq', [filter], {
+      input: JSON.stringify(report),
+      encoding: 'utf8',
+    });
+    assert.equal(result.status, 0, result.stderr);
+    return JSON.parse(result.stdout);
+  };
+
+  assert.deepEqual(runFilter(rejected), {
+    status: 'REJECTED',
+    findings: [
+      'S10_ARGO_AUTOMATION_ENABLED',
+      'S10_AUTHOR_SELF_APPROVAL',
+      'S10_PRIVILEGED_WORKFLOW_CHANGED',
+    ],
+    terraform: {terraform: 'VALID', opentofu: 'VALID'},
+    helm: {lint: 'PASS'},
+    apply_permitted: false,
+  });
+  assert.deepEqual(runFilter(repaired).findings, []);
+  assert.deepEqual(rejected.findings.map(({message}) => message), messages,
+    'projecting IDs must not alter the messages in the source report');
 });
 
 test('human approval stays foreground and visibly interactive through publication', () => {
@@ -65,6 +111,18 @@ test('Section 10 accepts both clean and older three-file Section 9 handoffs', ()
   ]) assert.ok(lab.includes(path));
   assert.match(lab, /git commit -m 'Complete Section 9 Helm repair'/);
   assert.match(lab, /do not include it in this commit and do not hide it with a broad\s+stash/i);
+});
+
+test('Section 10 sets repository-local Git identity before its earliest recovery commit', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  const identity = lab.indexOf('git config --local user.name "Course Learner"');
+  const firstCommit = lab.indexOf('git commit');
+  assert.ok(identity > lab.indexOf('pwd'), 'identity setup must follow the initial repository location check');
+  assert.ok(identity < firstCommit, 'identity setup must precede the optional Section 9 recovery commit');
+  assert.match(lab, /git config --local user\.email "learner@example\.invalid"/);
+  assert.match(lab, /git config --get user\.name\ngit config --get user\.email/);
+  assert.match(lab, /use your\s+own name\s+and email/i);
+  assert.doesNotMatch(lab, /git config --global user\.(?:name|email)/);
 });
 
 test('tool discovery reports both proven profiles without an artificial version gate', () => {

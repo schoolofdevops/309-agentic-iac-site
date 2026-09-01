@@ -163,6 +163,30 @@ pwd
 
 Your path will be different. It should end at the root of your labs clone.
 
+### Set your Git identity for this course repository
+
+Git records an author in every commit. Set a local identity for this clone
+before you create the Section 9 and Section 10 commits. This identity becomes
+part of the commit history used as review evidence. You may use your own name
+and email instead of the sample values.
+
+```bash
+git config --local user.name "Course Learner"
+git config --local user.email "learner@example.invalid"
+git config --get user.name
+git config --get user.email
+```
+
+[ Expected output ]
+
+```text
+Course Learner
+learner@example.invalid
+```
+
+The `--local` option changes only this learner clone. It does not change your
+global Git identity.
+
 List the visible Section 9 files before opening individual artifacts.
 
 ```bash
@@ -1474,8 +1498,8 @@ git clone https://github.com/schoolofdevops/309-agentic-iac-labs.git 309-agentic
 Cloning into '309-agentic-iac-labs-section-9'...
 ```
 
-Change into the new clone and begin Part I again. Your original clone remains
-unchanged.
+Change into the new clone and begin Part I again, including the local Git
+identity step. Your original clone remains unchanged.
 
 ### Helm reports that the external Secret is missing
 

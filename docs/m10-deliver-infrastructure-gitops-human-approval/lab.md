@@ -46,6 +46,30 @@ git status --short
 /Users/learner/309-agentic-iac-labs
 ```
 
+### Confirm your local Git identity
+
+Section 9 normally sets this identity in the same clone. Set it here as well
+so Section 10 also works when you enter from an older Section 9 path. Git
+records this identity in each commit used as review evidence. You may use your
+own name and email instead of the sample values.
+
+```bash
+git config --local user.name "Course Learner"
+git config --local user.email "learner@example.invalid"
+git config --get user.name
+git config --get user.email
+```
+
+[ sample output ]
+
+```text
+Course Learner
+learner@example.invalid
+```
+
+The `--local` option changes only this learner clone. It does not change your
+global Git identity.
+
 If `git status --short` prints nothing, your Section 9 checkpoint is already
 saved. Continue to the next heading.
 
@@ -197,7 +221,7 @@ The evidence path varies by run.
 Read the decision and the independent Terraform, OpenTofu, and Helm evidence.
 
 ```bash
-jq '{status,findings,terraform,helm,apply_permitted}' \
+jq '{status, findings: [.findings[].id], terraform, helm, apply_permitted}' \
   "$S10_STARTER_EVIDENCE/report.json"
 ```
 
@@ -226,8 +250,8 @@ jq '{status,findings,terraform,helm,apply_permitted}' \
 }
 ```
 
-The sample shortens each finding object to its `id`. The report also includes
-a message for each finding.
+The command shows each finding by its short `id`. The report also includes a
+message for each finding.
 
 The valid Terraform and Helm evidence does not cancel the three trust
 failures. Reject this candidate.
@@ -306,7 +330,7 @@ node "$S10_TRUSTED_ROOT/section-10/scripts/run-starter-review.mjs" \
   --candidate-revision "$S10_V1_REVISION" \
   --output "$S10_REPAIRED_EVIDENCE"
 
-jq '{status,findings,terraform,helm,apply_permitted}' \
+jq '{status, findings: [.findings[].id], terraform, helm, apply_permitted}' \
   "$S10_REPAIRED_EVIDENCE/report.json"
 ```
 
