@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 9 are built, validated, deployed, and verified from the public learner path.
+> **Published checkpoint:** Sections 1 through 10 are built and validated. Section 10 deployment verification is in progress.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
-| Active phase | Section 10 GitOps lab-first feasibility |
-| Active learner section | Section 10 — *GitOps and Human-Controlled Delivery* |
-| Current sequence | Prove the smallest safe Argo CD and human-approval path before learner content production. |
+| Active phase | Section 11 Hermes operations lab-first feasibility |
+| Active learner section | Section 11 — *Hands-On Hermes for Governed Operations* |
+| Current sequence | Publish Section 10, then prove the smallest key-free Hermes operations path before learner content production. |
 | Current blocker | None. |
-| Last checkpoint | 28 August 2026 — Section 9 deployed and live-verified through GitHub Pages workflow `33162322602`. |
+| Last checkpoint | 1 September 2026 — Section 10 passed full learner QA and focused post-repair QA with zero open findings. |
 
 ## Completed checkpoints
 
@@ -83,6 +83,22 @@ sidebar_position: 2
   `86bfa48`.
   The public lesson, lab, operator challenge, deep dive, quiz, build-status
   page, deck, and six checked learner artifacts returned HTTP 200.
+- Section 10 has a human-first GitOps lab, nine-lecture lesson, independent
+  operator challenge, reconciliation deep dive, 15-question quiz, 74-slide
+  technical deck, and 68.0-minute slide-aligned voiceover.
+- A fresh context-free learner completed the Section 9 to Section 10 seam and
+  all 85 learner command fences. Both Terraform and OpenTofu planned one safe
+  reviewed record without apply. All four exact course images loaded with Kind
+  v0.27.0, and both foreground human approvals passed.
+- Argo CD promoted v1 and v2 only after explicit approval, preserved manual
+  drift, exposed a degraded missing-image failure, and recovered to the exact
+  v1 tree. The transaction returned `MOCK INFERENCE: GITOPS DELIVERY`.
+- The measured Kind-node sample was 1.837 GiB, below the 4 GiB course ceiling.
+  Exact cleanup removed every course-owned runtime while preserving the four
+  pre-existing source images.
+- The two learner-clarity findings were repaired and independently reviewed. A
+  fresh focused replay verified intentional repository-local Git identity and
+  literal evidence output with zero blocker, confusing, or cosmetic findings.
 
 ## Important evidence note
 
@@ -90,9 +106,10 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Freeze the Section 10 GitOps learner and approval contract.
-2. Prove the smallest safe Argo CD lifecycle within the course resource budget.
-3. Record exact reconciliation, approval, rollback, and cleanup evidence before
-   authoring Section 10 learner content.
+1. Verify the exact Section 10 source, learner labs, site, deck, and status page
+   from the public release.
+2. Freeze the Section 11 Hermes operations contract and key-free fallback.
+3. Prove the smallest governed Hermes observe, propose, approve, and verify
+   path within the course resource budget before learner content production.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
