@@ -145,6 +145,30 @@ function renderPlanJson(slide) {
   return `<g class="semantic-node" data-node-id="plan-json" data-x="140" data-y="45" data-width="820" data-height="285"><g filter="url(#rough)" stroke="#1e1e1e" stroke-width="2.8"><rect x="140" y="45" width="820" height="285" rx="18" fill="#dae8fc"/></g><text x="185" y="105" class="lbl-b" text-anchor="start">plan JSON</text><text x="185" y="165" class="lbl" text-anchor="start">address</text><text x="410" y="165" class="lbl-b" text-anchor="start">${escapeHtml(slide.items[0])}</text><text x="185" y="220" class="lbl" text-anchor="start">actions</text><text x="410" y="220" class="lbl-b" text-anchor="start">[${escapeHtml(slide.items[1])}]</text><text x="185" y="275" class="lbl" text-anchor="start">apply_permitted</text><text x="410" y="275" class="lbl-b" text-anchor="start">${escapeHtml(slide.items[2].split(': ').at(-1))}</text></g>${footText(slide.foot, 372)}`;
 }
 
+function renderArtifactUpload(slide) {
+  const token = diagramNode(slide.items[0], 60, 20, 260, 80, 0);
+  const action = diagramNode(slide.items[1], 420, 20, 300, 80, 1, 'hub');
+  const boundary = diagramNode('bounded-standard-upload', 50, 140, 1000, 170, 2);
+  const edges = [
+    connector(token, action, {fromPort: 'right', toPort: 'left'}),
+    connector(action, boundary, {fromPort: 'bottom', toPort: 'top'}),
+  ];
+  const checked = diagram('artifact-upload', [token, action, boundary], edges, false);
+  if (checked.errors.length) throw new Error(`invalid artifact-upload diagram:\n${checked.errors.join('\n')}`);
+  const edgeHtml = `<g class="semantic-edges" fill="none" stroke="#757575" stroke-width="2.1">${edges.map(customEdgeHtml).join('')}</g>`;
+  const controls = slide.items.slice(2, 6).map((item, index) => {
+    const x = 75 + index * 245;
+    return `<g><g filter="url(#rough)" stroke="#1e1e1e" stroke-width="2.3"><rect x="${x}" y="185" width="215" height="92" rx="12" fill="${FILLS[index % FILLS.length]}"/></g>${customLabel(x + 107.5, 220, item, 'lbl-sm', 24)}</g>`;
+  }).join('');
+  return `${edgeHtml}${customNodeHtml(token)}${customNodeHtml(action)}
+    <g class="semantic-node" data-node-id="bounded-standard-upload" data-x="50" data-y="140" data-width="1000" data-height="170">
+      <g filter="url(#rough)" fill="none" stroke="#757575" stroke-width="2.3" stroke-dasharray="9 7"><rect x="50" y="140" width="1000" height="170" rx="18"/></g>
+      <text x="550" y="172" text-anchor="middle" class="lbl-b">bounded standard upload</text>
+    </g>${controls}
+    ${customLabel(550, 340, slide.foot, 'lbl-g')}
+    ${customLabel(550, 364, slide.items[6], 'lbl-g')}`;
+}
+
 function renderConverge(slide) {
   const nodes = [
     diagramNode(slide.items[0], 75, 60, 260, 95, 0),
@@ -173,6 +197,27 @@ function renderTransactionLoop(slide) {
     connector(nodes[6], nodes[3]),
   ];
   return `${renderDiagram(diagram('transaction-loop', nodes, edges, slide.fragments))}<text x="275" y="245" text-anchor="middle" class="lbl-g">one bounded transaction</text><text x="785" y="395" text-anchor="middle" class="lbl-g">observation feeds the next diff · never Git</text>`;
+}
+
+function renderPromotionPipeline(slide) {
+  const pipelineNodes = slide.items.slice(0, 5).map((item, index) =>
+    diagramNode(item, 40 + index * 220, 20, 180, 82, index),
+  );
+  const pipelineEdges = pipelineNodes.slice(0, -1).map((source, index) =>
+    connector(source, pipelineNodes[index + 1], {fromPort: 'right', toPort: 'left'}),
+  );
+  const pipeline = renderDiagram(diagram('promotion-pipeline', pipelineNodes, pipelineEdges, true));
+  return `${pipeline}
+    <g filter="url(#rough)" stroke="#1e1e1e" stroke-width="2.5"><rect x="70" y="132" width="960" height="62" rx="13" fill="#e1d5e7"/></g>
+    ${customLabel(550, 170, slide.items[5], 'lbl-b')}
+    ${customLabel(550, 232, slide.items[6], 'lbl-b')}
+    <text x="550" y="258" text-anchor="middle" class="lbl-g">digest may match or change</text>
+    <g filter="url(#rough)" stroke="#1e1e1e" stroke-width="2.5">
+      <rect x="70" y="278" width="455" height="96" rx="13" fill="#ffe6cc"/>
+      <rect x="575" y="278" width="455" height="96" rx="13" fill="#dae8fc"/>
+    </g>
+    ${customLabel(297.5, 313, slide.items[7], 'lbl-sm', 24)}
+    ${customLabel(802.5, 313, slide.items[8], 'lbl-sm', 24)}`;
 }
 
 function renderDriftLoop(slide) {
@@ -230,8 +275,10 @@ function renderM10Visual(slide) {
   if (slide.type === 'workflowYaml') return renderWorkflowYaml(slide);
   if (slide.type === 'argoYaml') return renderArgoYaml(slide);
   if (slide.type === 'planJson') return renderPlanJson(slide);
+  if (slide.type === 'artifactUpload') return renderArtifactUpload(slide);
   if (slide.type === 'converge') return renderConverge(slide);
   if (slide.type === 'transactionLoop') return renderTransactionLoop(slide);
+  if (slide.type === 'promotionPipeline') return renderPromotionPipeline(slide);
   if (slide.type === 'driftLoop') return renderDriftLoop(slide);
   if (slide.type === 'evidenceTrail') return renderEvidenceTrail(slide);
   if (slide.type === 'evidenceGraph') return renderEvidenceGraph(slide);
@@ -267,7 +314,8 @@ function renderSection(slide) {
         : '';
   const titleStyle = isTitle ? ' style="font-size:1.28em"' : '';
   const subtitleStyle = isTitle ? ' style="font-size:1.02em"' : '';
-  return `<section${isTitle ? ' data-auto-animate' : ''}>${kicker}<h2 class="t"${titleStyle}>${escapeHtml(slide.title)}</h2>${slide.subtitle ? `<p class="s"${subtitleStyle}>${escapeHtml(slide.subtitle)}</p>` : ''}<svg viewBox="0 0 1100 400" role="img" aria-label="${escapeHtml(describeSlide(slide))}">${renderM10Visual(slide)}</svg>${credit}<div class="pageno">${page(slide.n)}</div></section>`;
+  const visualLimit = slide.type === 'artifactUpload' ? ' data-max-height="52"' : '';
+  return `<section${isTitle ? ' data-auto-animate' : ''}>${kicker}<h2 class="t"${titleStyle}>${escapeHtml(slide.title)}</h2>${slide.subtitle ? `<p class="s"${subtitleStyle}>${escapeHtml(slide.subtitle)}</p>` : ''}<svg viewBox="0 0 1100 400" role="img"${visualLimit} aria-label="${escapeHtml(describeSlide(slide))}">${renderM10Visual(slide)}</svg>${credit}<div class="pageno">${page(slide.n)}</div></section>`;
 }
 
 function assembleDeck(shell, candidateSlides) {
@@ -284,6 +332,7 @@ function assembleDeck(shell, candidateSlides) {
   .reveal .slides section.divider h2.t{order:0;font-size:2.05em;max-width:90%;}
   .reveal .slides section:first-of-type svg{min-height:32%;}
   </style></head>`);
+  html = html.replace('var mh = 58;', "var mh = parseFloat(svg.getAttribute('data-max-height') || '58');");
   if (html.includes('{{slides}}')) throw new Error('deck shell contains an unresolved slides token');
   return html;
 }

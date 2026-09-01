@@ -80,6 +80,32 @@ test('Module 10 preserves the reviewed, promoted, and recovery Git identities', 
   assert.doesNotMatch(text, /1e01929/i);
 });
 
+test('Module 10 distinguishes promotion from a reproducible rebuild', async () => {
+  const {html} = await buildM10Deck({checkOnly: true});
+  const promotion = sectionsOf(html).find((section) => section.includes('Promotion Changes Intent, Not Artifact Bytes'));
+
+  assert.match(promotion, /promotion moves.*artifact already built/i);
+  assert.match(promotion, /new build.*provenance event/i);
+  assert.match(promotion, /digest changes.*different bytes.*identity/i);
+  assert.match(promotion, /digest matches.*matching bytes.*new build event/i);
+  assert.doesNotMatch(promotion, /a rebuild creates a different artifact/i);
+});
+
+test('Module 10 keeps standard artifact upload inside the read-only plan job', async () => {
+  const {html} = await buildM10Deck({checkOnly: true});
+  const permissions = sectionsOf(html).find((section) => section.includes('Token Permissions Start Read-Only'));
+
+  assert.match(permissions, /GITHUB_TOKEN.*contents.*read/i);
+  assert.match(permissions, /pinned upload action/i);
+  assert.match(permissions, /exact path/i);
+  assert.match(permissions, /hidden files.*excluded/i);
+  assert.match(permissions, /retention.*7 days/i);
+  assert.match(permissions, /returned.*SHA-256 digest/i);
+  assert.match(permissions, /attestations.*packages.*id-token/i);
+  assert.doesNotMatch(permissions, /artifact.*write only/i);
+  assert.match(permissions, /^<section><h2 class="t">Token Permissions Start Read-Only<\/h2><p class="s">Standard upload keeps the plan token read-only\.<\/p><svg[^>]*data-max-height="52"/);
+});
+
 test('Module 10 draws rejection, reconciliation, and approval edges in evidence order', async () => {
   const {html} = await buildM10Deck({checkOnly: true});
   const sections = sectionsOf(html);
