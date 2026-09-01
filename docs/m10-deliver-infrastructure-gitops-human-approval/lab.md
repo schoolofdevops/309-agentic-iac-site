@@ -46,8 +46,47 @@ git status --short
 /Users/learner/309-agentic-iac-labs
 ```
 
-`git status --short` should print nothing. Commit or move unrelated work before
-you continue.
+If `git status --short` prints nothing, your Section 9 checkpoint is already
+saved. Continue to the next heading.
+
+An older copy of the Section 9 lab may leave these exact three repair files
+modified:
+
+```text
+ M section-9/chart/templates/deployment.yaml
+ M section-9/chart/values.schema.json
+ M section-9/chart/values.yaml
+```
+
+If these are the only paths listed, inspect and save that completed repair now.
+
+```bash
+git diff -- \
+  section-9/chart/templates/deployment.yaml \
+  section-9/chart/values.schema.json \
+  section-9/chart/values.yaml
+
+git add \
+  section-9/chart/templates/deployment.yaml \
+  section-9/chart/values.schema.json \
+  section-9/chart/values.yaml
+
+git diff --cached --check
+git diff --cached --stat
+git commit -m 'Complete Section 9 Helm repair'
+git status --short
+```
+
+[ sample output ]
+
+```text
+[main <commit>] Complete Section 9 Helm repair
+ 3 files changed, <insertions and deletions>
+```
+
+The final status command should print nothing. If the first status lists any
+other path, do not include it in this commit and do not hide it with a broad
+stash. Preserve or commit that work separately before continuing.
 
 ### Create isolated evidence locations
 
@@ -412,8 +451,10 @@ evidence for the course gate. It is not an external code-review identity.
 
 ### Check tools and local capacity
 
-This profile requires Kind 0.32.0 or newer for the pinned Kubernetes 1.36
-node. Older Kind releases cannot read this node's containerd configuration.
+The course has directly exercised two local client profiles: Kind 0.27 with
+kubectl 1.35, and Kind 0.32 with kubectl 1.36. The Section 10 cluster command
+pins its node image separately from these host clients. Nearby versions may
+also work, but they are not directly proven by the course evidence.
 
 ```bash
 docker info --format 'docker_arch={{.Architecture}} memory_bytes={{.MemTotal}} cpus={{.NCPU}}'
@@ -438,9 +479,10 @@ OpenTofu v1.12.6
 v22.22.2
 ```
 
-Stop and update Kind if its version is below 0.32.0. The approval gate binds
-its evidence commands to the tested kubectl client `v1.36.2`; install that
-exact client before continuing.
+Do not reject a working machine only because its version differs from the
+sample. Continue when the required tools are present. Stop only if a printed
+command reports a real tool or runtime failure, then troubleshoot that failure
+before continuing.
 
 ### Check the exact runtime names
 
@@ -1243,8 +1285,32 @@ not repair the Deployment without a human sync.
 
 ### Create the Git revert
 
-Revert the exact v2 commit. Do not rewrite history or patch the live workload
-back to v1.
+First, read the two revision identities that the revert depends on.
+
+```bash
+printf 'v1_revision=%s\nv2_revision=%s\n' \
+  "$S10_V1_REVISION" "$S10_V2_REVISION"
+
+git show --no-patch --oneline "$S10_V1_REVISION"
+git show --no-patch --oneline "$S10_V2_REVISION"
+```
+
+[ sample output ]
+
+```text
+v1_revision=a0bb233ede26e14349ab8d7e97db2dd4415006f9
+v2_revision=bd7ef2a026ef20cba82f95bca56487721277487d
+a0bb233 Repair Section 10 delivery boundaries
+bd7ef2a Promote inference platform to s10-v2
+```
+
+The two full revision values must be present and different. The second commit
+must be the named `Promote inference platform to s10-v2` change. If either
+revision is missing, both values are the same, or the v2 subject is different,
+stop here and return to the v1 and v2 commit steps.
+
+Now revert the exact v2 commit. Do not rewrite history or patch the live
+workload back to v1.
 
 ```bash
 git revert --no-edit "$S10_V2_REVISION"
@@ -1678,7 +1744,7 @@ node section-10/scripts/cleanup-starter-evidence.mjs \
 node section-10/scripts/cleanup-starter-evidence.mjs \
   "$S10_REPAIRED_EVIDENCE"
 
-rm "$S10_V2_APPROVAL" \
+command rm -f "$S10_V2_APPROVAL" \
   "$S10_V2_APPROVAL.gate.json" \
   "$S10_RECOVERY_APPROVAL" \
   "$S10_RECOVERY_APPROVAL.gate.json" \
@@ -1726,10 +1792,12 @@ No kind clusters found.
 
 ## Troubleshooting
 
-### Kind reports an unknown containerd config version
+### Kind cluster creation fails
 
-Your Kind CLI is older than the pinned Kubernetes node. Install Kind 0.32.0 or
-newer, delete the partial `agentic-iac-s10` cluster, and restart Part II.
+Read the error from `kind create cluster`. Do not upgrade only because your
+version differs from the sample. If the command reports a real configuration
+or runtime error, delete only the partial `agentic-iac-s10` cluster, correct
+the reported problem, and run the cluster command again.
 
 ### Kind cannot load a Redis or Argo CD digest
 

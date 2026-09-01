@@ -151,3 +151,14 @@ test('Section 9 lets the learner reconcile the direct Helm command with evaluato
   assert.match(lab, /compare `tool_paths\.helm` and `tool_versions\.helm`/i);
   assert.match(lab, /yq --version/);
 });
+
+test('Section 9 ends with a human checkpoint commit for exactly the three repair files', () => {
+  const lab = readLab();
+  const heading = lab.indexOf('### Save the reviewed Section 9 repair');
+  const checkpoint = lab.indexOf('## Checkpoint');
+  assert.ok(heading > 0 && heading < checkpoint, 'repair commit must precede the Section 9 checkpoint');
+  assert.match(lab, /git add \\\n+  section-9\/chart\/templates\/deployment\.yaml \\\n+  section-9\/chart\/values\.schema\.json \\\n+  section-9\/chart\/values\.yaml/);
+  assert.match(lab, /git commit -m 'Complete Section 9 Helm repair'/);
+  assert.match(lab, /git show --stat --oneline --summary HEAD/);
+  assert.match(lab, /final `git status --short` should print nothing/i);
+});

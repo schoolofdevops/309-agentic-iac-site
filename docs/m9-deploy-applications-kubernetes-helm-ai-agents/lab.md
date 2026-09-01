@@ -1185,6 +1185,74 @@ Open
 [the Section 9 advanced live diagnostics task](https://github.com/schoolofdevops/309-agentic-iac-labs/blob/main/section-9/challenge/task.md)
 and complete it before reading its separate answer key.
 
+### Save the reviewed Section 9 repair
+
+Section 10 uses Git revisions as delivery evidence. Save this completed repair
+as its own commit before you leave Section 9.
+
+Review the same three learner-owned files one last time.
+
+```bash
+git status --short -- \
+  section-9/chart/templates/deployment.yaml \
+  section-9/chart/values.schema.json \
+  section-9/chart/values.yaml
+
+git diff -- \
+  section-9/chart/templates/deployment.yaml \
+  section-9/chart/values.schema.json \
+  section-9/chart/values.yaml
+```
+
+[ sample output ]
+
+```text
+ M section-9/chart/templates/deployment.yaml
+ M section-9/chart/values.schema.json
+ M section-9/chart/values.yaml
+```
+
+Only these three paths should appear. Stage them by name, check the staged
+change, and create the checkpoint commit.
+
+```bash
+git add \
+  section-9/chart/templates/deployment.yaml \
+  section-9/chart/values.schema.json \
+  section-9/chart/values.yaml
+
+git diff --cached --check
+git diff --cached --stat
+git commit -m 'Complete Section 9 Helm repair'
+```
+
+[ sample output ]
+
+```text
+[main <commit>] Complete Section 9 Helm repair
+ 3 files changed, <insertions and deletions>
+```
+
+Confirm that the commit contains exactly those three repair files.
+
+```bash
+git show --stat --oneline --summary HEAD
+git status --short
+```
+
+[ sample output ]
+
+```text
+<commit> Complete Section 9 Helm repair
+ .../chart/templates/deployment.yaml | ...
+ .../chart/values.schema.json        | ...
+ .../chart/values.yaml               | ...
+```
+
+The final `git status --short` should print nothing. If it lists an unrelated
+file, leave that file uncommitted and decide how you want to preserve it before
+starting Section 10.
+
 ## Checkpoint
 
 Your Section 9 checkpoint contains:
@@ -1198,6 +1266,7 @@ Your Section 9 checkpoint contains:
 - direct health and dependency-aware readiness HTTP 200 evidence;
 - a directly observed `job-0001` queued-to-complete flow;
 - Pod, Service, endpoint, event, description, and role-log evidence;
+- one Git commit containing exactly the three learner-owned repair files;
 - no NetworkPolicy enforcement claim;
 - a human decision boundary before any non-local deployment.
 

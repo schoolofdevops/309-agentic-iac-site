@@ -48,3 +48,44 @@ test('human approval stays foreground and visibly interactive through publicatio
       'approval input must be typed at the foreground prompt');
   }
 });
+
+test('Section 10 accepts both clean and older three-file Section 9 handoffs', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  assert.match(lab, /If `git status --short` prints nothing, your Section 9 checkpoint is already\s+saved/i);
+  for (const path of [
+    'section-9/chart/templates/deployment.yaml',
+    'section-9/chart/values.schema.json',
+    'section-9/chart/values.yaml',
+  ]) assert.ok(lab.includes(path));
+  assert.match(lab, /git commit -m 'Complete Section 9 Helm repair'/);
+  assert.match(lab, /do not include it in this commit and do not hide it with a broad\s+stash/i);
+});
+
+test('tool discovery reports both proven profiles without an artificial version gate', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  assert.match(lab, /Kind 0\.27 with\s+kubectl 1\.35/i);
+  assert.match(lab, /Kind 0\.32 with kubectl 1\.36/i);
+  assert.match(lab, /Do not reject a working machine only because its version differs/i);
+  assert.match(lab, /Stop only if a printed\s+command reports a real tool or runtime failure/i);
+  assert.doesNotMatch(lab, /requires Kind 0\.32\.0 or newer/i);
+  assert.doesNotMatch(lab, /install that exact client before continuing/i);
+  assert.doesNotMatch(lab, /Install Kind 0\.32\.0 or newer/i);
+});
+
+test('revert follows a readable and distinct v1-v2 lineage checkpoint', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  const identity = lab.indexOf("printf 'v1_revision=%s\\nv2_revision=%s\\n'");
+  const v1 = lab.indexOf('git show --no-patch --oneline "$S10_V1_REVISION"');
+  const v2 = lab.indexOf('git show --no-patch --oneline "$S10_V2_REVISION"');
+  const revert = lab.indexOf('git revert --no-edit "$S10_V2_REVISION"');
+  assert.ok(identity > 0 && identity < v1 && v1 < v2 && v2 < revert);
+  assert.match(lab, /two full revision values must be present and different/i);
+  assert.match(lab, /Promote inference platform to s10-v2/);
+});
+
+test('read-only approval marker cleanup is exact and noninteractive', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  assert.match(lab, /command rm -f "\$S10_V2_APPROVAL"[\s\S]*"\$S10_APPROVAL_ROOT\/\.agentic-iac-s10-approval-root"/);
+  assert.doesNotMatch(lab, /\nrm "\$S10_V2_APPROVAL"/);
+  assert.match(lab, /remaining\s+file-removal commands print nothing/i);
+});
