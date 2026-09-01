@@ -1372,25 +1372,31 @@ rmdir "$S9_RENDER_ROOT/inference-platform/templates" "$S9_RENDER_ROOT/inference-
 (no output)
 ```
 
-```bash
-rm "$S9_TEMP_ROOT/agentic-iac-section-9-starter/.section-9-evaluation.json" "$S9_TEMP_ROOT/agentic-iac-section-9-starter/evidence-report.json"
-```
-
-[ Expected output ]
-
-```text
-(no output)
-```
+The selected recovery path may not create starter evidence. Remove it when it
+exists, or print a clear message when there is nothing to remove.
 
 ```bash
-rmdir "$S9_TEMP_ROOT/agentic-iac-section-9-starter"
+S9_STARTER_EVIDENCE="$S9_TEMP_ROOT/agentic-iac-section-9-starter"
+
+if [[ ! -d "$S9_STARTER_EVIDENCE" ]]
+then
+  printf 'Starter evidence was not created; nothing to remove.\n'
+else
+  command rm -f "$S9_STARTER_EVIDENCE/.section-9-evaluation.json" \
+    "$S9_STARTER_EVIDENCE/evidence-report.json"
+  rmdir "$S9_STARTER_EVIDENCE" && \
+    printf 'Removed starter evidence.\n'
+fi
 ```
 
-[ Expected output ]
+[ sample output ]
 
 ```text
-(no output)
+Starter evidence was not created; nothing to remove.
 ```
+
+If Part IV created the directory, the last line is `Removed starter evidence.`
+instead.
 
 ```bash
 rm "$S9_TEMP_ROOT/agentic-iac-section-9-repaired/.section-9-evaluation.json" "$S9_TEMP_ROOT/agentic-iac-section-9-repaired/evidence-report.json"

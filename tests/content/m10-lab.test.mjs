@@ -12,7 +12,7 @@ test('whole-fixture mirror replacements visibly reset only the local Argo reposi
   assert.equal(lab.split('kubectl --context kind-agentic-iac-s10 -n argocd rollout status deployment/argocd-repo-server --timeout=120s').length - 1, 2);
 });
 
-test('every stable Expected output block matches the preserved replay bytes', () => {
+test('every live-proven Expected output block matches the preserved replay bytes', () => {
   const lab = readFileSync(labUrl, 'utf8');
   assert.equal(lab.split('[ Expected output ]').length - 1, 4);
   for (const exact of [
@@ -21,6 +21,12 @@ test('every stable Expected output block matches the preserved replay bytes', ()
     '[ Expected output ]\n\n```text\nNo kind clusters found.\n```',
     '[ Expected output ]\n\nThese process cleanup commands print nothing.',
   ]) assert.ok(lab.includes(exact), `missing exact replay output:\n${exact}`);
+});
+
+test('four-image helper output stays sample evidence until the complete replay is proven', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  const sample = '[ sample output ]\n\n```text\nLoaded 309-agentic-iac/inference-platform:s10-v1 into agentic-iac-s10-control-plane\nLoaded 309-agentic-iac/inference-platform:s10-v2 into agentic-iac-s10-control-plane\nLoaded agentic-iac-s10/redis-transport:8.6.4-alpine into agentic-iac-s10-control-plane\nLoaded agentic-iac-s10/argocd-transport:v3.5.1 into agentic-iac-s10-control-plane\n```';
+  assert.ok(lab.includes(sample), `missing complete four-image sample output:\n${sample}`);
 });
 
 test('variable and abridged evaluator displays are honestly labeled', () => {
@@ -88,4 +94,24 @@ test('read-only approval marker cleanup is exact and noninteractive', () => {
   assert.match(lab, /command rm -f "\$S10_V2_APPROVAL"[\s\S]*"\$S10_APPROVAL_ROOT\/\.agentic-iac-s10-approval-root"/);
   assert.doesNotMatch(lab, /\nrm "\$S10_V2_APPROVAL"/);
   assert.match(lab, /remaining\s+file-removal commands print nothing/i);
+});
+
+test('Section 10 uses one readable compatibility loader instead of the broken Kind image loader', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  const call = lab.match(/node section-10\/scripts\/load-kind-images\.mjs \\\n+  --cluster agentic-iac-s10 \\\n+([\s\S]*?)\n```/);
+  assert.ok(call, 'the lab must make one named learner helper call');
+  for (const image of [
+    '309-agentic-iac/inference-platform:s10-v1',
+    '309-agentic-iac/inference-platform:s10-v2',
+    'agentic-iac-s10/redis-transport:8.6.4-alpine',
+    'agentic-iac-s10/argocd-transport:v3.5.1',
+  ]) assert.ok(call[0].includes(image), `loader call must include ${image}`);
+  assert.doesNotMatch(lab, /kind load docker-image/);
+  assert.match(lab, /Kind 0\.27 and Kind 0\.32/i);
+});
+
+test('reviewed repair sample matches the directly observed three-file commit', () => {
+  const lab = readFileSync(labUrl, 'utf8');
+  assert.match(lab, /3 files changed, 1 insertion\(\+\), 5 deletions\(-\)/);
+  assert.doesNotMatch(lab, /3 files changed, 2 insertions\(\+\), 6 deletions\(-\)/);
 });

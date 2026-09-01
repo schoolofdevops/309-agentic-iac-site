@@ -162,3 +162,12 @@ test('Section 9 ends with a human checkpoint commit for exactly the three repair
   assert.match(lab, /git show --stat --oneline --summary HEAD/);
   assert.match(lab, /final `git status --short` should print nothing/i);
 });
+
+test('Section 9 starter-evidence teardown explains and tolerates the selected recovery path', () => {
+  const lab = readLab();
+  const cleanup = lab.slice(lab.indexOf('### Remove the exact temporary evidence'));
+  assert.match(cleanup, /if \[\[ ! -d "\$S9_STARTER_EVIDENCE" \]\]/);
+  assert.match(cleanup, /Starter evidence was not created; nothing to remove\./);
+  assert.match(cleanup, /command rm -f "\$S9_STARTER_EVIDENCE\/\.section-9-evaluation\.json"/);
+  assert.doesNotMatch(cleanup, /rm "\$S9_TEMP_ROOT\/agentic-iac-section-9-starter\/\.section-9-evaluation\.json"/);
+});

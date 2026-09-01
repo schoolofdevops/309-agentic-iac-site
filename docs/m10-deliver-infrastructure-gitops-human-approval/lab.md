@@ -288,7 +288,7 @@ printf 'v1_revision=%s\n' "$S10_V1_REVISION"
 
 ```text
 [section10-gitops a0bb233] Repair Section 10 delivery boundaries
- 3 files changed, 2 insertions(+), 6 deletions(-)
+ 3 files changed, 1 insertion(+), 5 deletions(-)
 v1_revision=a0bb233ede26e14349ab8d7e97db2dd4415006f9
 ```
 
@@ -673,20 +673,42 @@ kind create cluster \
   --image kindest/node@sha256:3489c7674813ba5d8b1a9977baea8a6e553784dab7b84759d1014dbd78f7ebd5 \
   --config section-10/tools/kind/cluster.yaml \
   --wait 180s
+```
 
-kind load docker-image \
+[ sample output ]
+
+```text
+Set kubectl context to "kind-agentic-iac-s10"
+```
+
+Kind 0.27 can create this pinned node, but its built-in image loader cannot
+read the node's newer containerd configuration. The course helper supports
+Kind 0.27 and Kind 0.32. It checks the exact node and local images, then
+transfers the four image archives directly into the disposable node.
+The transfer uses privileged containerd access only inside that local node. It
+does not give the workload privileged access.
+
+```bash
+node section-10/scripts/load-kind-images.mjs \
+  --cluster agentic-iac-s10 \
   309-agentic-iac/inference-platform:s10-v1 \
-  --name agentic-iac-s10
-kind load docker-image \
   309-agentic-iac/inference-platform:s10-v2 \
-  --name agentic-iac-s10
-kind load docker-image \
   agentic-iac-s10/redis-transport:8.6.4-alpine \
-  --name agentic-iac-s10
-kind load docker-image \
-  agentic-iac-s10/argocd-transport:v3.5.1 \
-  --name agentic-iac-s10
+  agentic-iac-s10/argocd-transport:v3.5.1
+```
 
+[ sample output ]
+
+```text
+Loaded 309-agentic-iac/inference-platform:s10-v1 into agentic-iac-s10-control-plane
+Loaded 309-agentic-iac/inference-platform:s10-v2 into agentic-iac-s10-control-plane
+Loaded agentic-iac-s10/redis-transport:8.6.4-alpine into agentic-iac-s10-control-plane
+Loaded agentic-iac-s10/argocd-transport:v3.5.1 into agentic-iac-s10-control-plane
+```
+
+Now read the node's image list.
+
+```bash
 docker exec agentic-iac-s10-control-plane crictl images
 ```
 
