@@ -4,16 +4,16 @@ sidebar_position: 2
 
 # Course Build Status
 
-> **Published checkpoint:** Sections 1 through 10 are built and validated. Section 10 deployment verification is in progress.
+> **Published checkpoint:** Sections 1 through 10 are built, validated, deployed, and verified from the public learner path.
 
 | Field | Current value |
 |---|---|
 | Course | *Agentic Infrastructure as Code: Terraform, Kubernetes & AI Agents* |
 | Active phase | Section 11 Hermes operations lab-first feasibility |
 | Active learner section | Section 11 — *Hands-On Hermes for Governed Operations* |
-| Current sequence | Publish Section 10, then prove the smallest key-free Hermes operations path before learner content production. |
+| Current sequence | Prove the smallest key-free Hermes operations path before learner content production. |
 | Current blocker | None. |
-| Last checkpoint | 1 September 2026 — Section 10 passed full learner QA and focused post-repair QA with zero open findings. |
+| Last checkpoint | 1 September 2026 — Section 10 deployed and live-verified through GitHub Pages workflow `33490033322`. |
 
 ## Completed checkpoints
 
@@ -99,6 +99,15 @@ sidebar_position: 2
 - The two learner-clarity findings were repaired and independently reviewed. A
   fresh focused replay verified intentional repository-local Git identity and
   literal evidence output with zero blocker, confusing, or cosmetic findings.
+- The exact published Section 10 content commits are source
+  `37559340aaea547a2e48287fa4d793969f816210`, learner labs
+  `70ce9ba5e33e48a718683b7a6242735f919547ff`, and site
+  `d6450421aae90b8ae281d4ce7870052315111a6a`. GitHub Pages workflow
+  `33490033322` deployed the exact site commit successfully.
+- The public lesson, lab, operator challenge, deep dive, quiz, build-status
+  page, introduction, deck, and seven checked learner artifacts returned HTTP
+  200. The public 359,996-byte deck matches SHA-256
+  `97a941be26d89ccc767a387d55003efaa195c35238c2173a54af817336bbc432`.
 
 ## Important evidence note
 
@@ -106,10 +115,10 @@ P0–P4 are internal feasibility gates, not course sections. A fresh smoke repla
 
 ## Next checkpoints
 
-1. Verify the exact Section 10 source, learner labs, site, deck, and status page
-   from the public release.
-2. Freeze the Section 11 Hermes operations contract and key-free fallback.
-3. Prove the smallest governed Hermes observe, propose, approve, and verify
+1. Freeze the Section 11 Hermes operations contract and key-free fallback.
+2. Prove the smallest governed Hermes observe, propose, approve, and verify
    path within the course resource budget before learner content production.
+3. Build the Section 11 lab, lesson, technical deck, voiceover, quiz, and
+   learner QA only after the viability gate passes.
 
 The canonical curriculum lives in the source repository at `planning/COURSE-OUTLINE.md`.
