@@ -60,6 +60,21 @@ function diagram(kind, nodes, edges, fragments = false) {
   return {kind, nodes, edges, fragments, errors: edges.flatMap((edge) => validateEdge(edge, nodes))};
 }
 
+function customLabel(x, y, value, className = 'lbl-sm', lineHeight = 21) {
+  const parts = String(value).split('|');
+  return `<text x="${x}" y="${y}" text-anchor="middle" class="${className}">${parts.map((part, index) => `<tspan x="${x}" dy="${index ? lineHeight : 0}">${escapeHtml(part)}</tspan>`).join('')}</text>`;
+}
+
+function customNodeHtml(node) {
+  const parts = String(node.label).split('|');
+  const labelY = node.y + (node.height - (parts.length - 1) * 21) / 2 + 7;
+  return `<g class="semantic-node" data-node-id="${escapeHtml(node.id)}" data-x="${node.x}" data-y="${node.y}" data-width="${node.width}" data-height="${node.height}"><g filter="url(#rough)" stroke="#1e1e1e" stroke-width="${node.role === 'hub' ? 3 : 2.5}"><rect x="${node.x}" y="${node.y}" width="${node.width}" height="${node.height}" rx="${node.role === 'hub' ? 16 : 12}" fill="${node.fill}"/></g>${customLabel(node.x + node.width / 2, labelY, node.label, node.role === 'hub' ? 'lbl-b' : 'lbl-sm')}</g>`;
+}
+
+function customEdgeHtml(edge) {
+  return `<path data-edge-id="${escapeHtml(edge.id)}" data-from="${escapeHtml(edge.from)}" data-to="${escapeHtml(edge.to)}" data-from-port="${escapeHtml(edge.fromPort)}" data-to-port="${escapeHtml(edge.toPort)}" d="${edge.route.d}" marker-end="url(#ahg)"/>`;
+}
+
 function footText(value, y = 382) {
   return value ? `<text x="550" y="${y}" text-anchor="middle" class="lbl-g"><tspan x="550" dy="0">${escapeHtml(value)}</tspan></text>` : '';
 }
@@ -87,6 +102,45 @@ function renderTrustBoundary(slide) {
   return `${boundary}${renderDiagram(diagram('trust-boundary', nodes, edges, slide.fragments))}${footText(slide.foot)}`;
 }
 
+function renderInboundGate(slide) {
+  const gate = diagramNode(slide.items[0], 405, 145, 290, 110, 4, 'hub', '#f8cecc');
+  const positions = [[45, 35], [25, 160], [45, 285], [835, 35], [855, 160], [835, 285]];
+  const sources = slide.items.slice(1).map((item, index) => diagramNode(item, positions[index][0], positions[index][1], 220, 75, index));
+  const nodes = [gate, ...sources];
+  const edges = sources.map((source) => connector(source, gate));
+  const checked = diagram('inbound-gate', nodes, edges, true);
+  if (checked.errors.length) throw new Error(`invalid inbound-gate diagram:\n${checked.errors.join('\n')}`);
+  const steps = edges.map((edge, index) => `<g class="fragment semantic-step"><g class="semantic-edges" fill="none" stroke="#757575" stroke-width="2.1">${customEdgeHtml(edge)}</g>${customNodeHtml(sources[index])}</g>`).join('');
+  return `${customNodeHtml(gate)}${steps}${footText(slide.foot)}`;
+}
+
+function yamlCard(lines, annotations) {
+  const rowY = [52, 158, 264];
+  const fills = ['#dae8fc', '#e1d5e7', '#ffe6cc'];
+  const rows = lines.map((lineGroup, index) => {
+    const parts = lineGroup.split('|');
+    return `<g><g filter="url(#rough)" stroke="#1e1e1e" stroke-width="2.3"><rect x="35" y="${rowY[index]}" width="690" height="88" rx="12" fill="${fills[index]}"/></g><text x="65" y="${rowY[index] + 31}" text-anchor="start" class="lbl-sm">${parts.map((part, partIndex) => `<tspan x="${65 + partIndex * 22}" dy="${partIndex ? 25 : 0}">${escapeHtml(part)}</tspan>`).join('')}</text></g>`;
+  }).join('');
+  const notes = annotations.map((note, index) => `<g><g filter="url(#rough)" stroke="#1e1e1e" stroke-width="2.3"><rect x="805" y="${rowY[index] + 6}" width="255" height="76" rx="12" fill="#d5e8d4"/></g>${customLabel(932, rowY[index] + 37, note, 'lbl-sm')}<g fill="none" stroke="#757575" stroke-width="2"><line x1="725" y1="${rowY[index] + 44}" x2="805" y2="${rowY[index] + 44}" marker-end="url(#ahg)"/></g></g>`).join('');
+  return `${rows}${notes}`;
+}
+
+function renderWorkflowYaml(slide) {
+  return `${yamlCard([
+    'on:|  pull_request:',
+    'permissions:|  contents: read',
+    'uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',
+  ], ['untrusted PR|event', 'read-only|token', 'pinned action|bytes'])}${footText(slide.foot, 382)}`;
+}
+
+function renderArgoYaml(slide) {
+  return `${yamlCard([
+    'source:|  targetRevision: HEAD',
+    'syncPolicy:|  syncOptions: [CreateNamespace=false]',
+    'status.sync.revision: de8c3809e589b919345a97bddc6e3bc55e6e5d6b',
+  ], ['moving fixture|ref', 'automated|absent', 'resolved full|commit'])}${footText(slide.foot, 382)}`;
+}
+
 function renderPlanJson(slide) {
   return `<g class="semantic-node" data-node-id="plan-json" data-x="140" data-y="45" data-width="820" data-height="285"><g filter="url(#rough)" stroke="#1e1e1e" stroke-width="2.8"><rect x="140" y="45" width="820" height="285" rx="18" fill="#dae8fc"/></g><text x="185" y="105" class="lbl-b" text-anchor="start">plan JSON</text><text x="185" y="165" class="lbl" text-anchor="start">address</text><text x="410" y="165" class="lbl-b" text-anchor="start">${escapeHtml(slide.items[0])}</text><text x="185" y="220" class="lbl" text-anchor="start">actions</text><text x="410" y="220" class="lbl-b" text-anchor="start">[${escapeHtml(slide.items[1])}]</text><text x="185" y="275" class="lbl" text-anchor="start">apply_permitted</text><text x="410" y="275" class="lbl-b" text-anchor="start">${escapeHtml(slide.items[2].split(': ').at(-1))}</text></g>${footText(slide.foot, 372)}`;
 }
@@ -104,19 +158,21 @@ function renderTransactionLoop(slide) {
   const nodes = [
     diagramNode(slide.items[0], 45, 100, 190, 90, 0),
     diagramNode(slide.items[1], 320, 100, 190, 90, 3),
-    diagramNode(slide.items[2], 585, 45, 155, 80, 0),
-    diagramNode(slide.items[3], 815, 45, 155, 80, 1),
-    diagramNode(slide.items[4], 815, 250, 155, 80, 2),
-    diagramNode(slide.items[5], 585, 250, 155, 80, 3),
+    diagramNode(slide.items[2], 535, 45, 180, 80, 0),
+    diagramNode(slide.items[3], 730, 170, 180, 80, 1),
+    diagramNode(slide.items[4], 875, 45, 180, 80, 2),
+    diagramNode(slide.items[5], 875, 295, 180, 80, 3),
+    diagramNode(slide.items[6], 535, 295, 180, 80, 0),
   ];
   const edges = [
     connector(nodes[0], nodes[1], {fromPort: 'right', toPort: 'left'}),
-    connector(nodes[2], nodes[3], {fromPort: 'right', toPort: 'left'}),
-    connector(nodes[3], nodes[4], {fromPort: 'bottom', toPort: 'top'}),
-    connector(nodes[4], nodes[5], {fromPort: 'left', toPort: 'right'}),
-    connector(nodes[5], nodes[2], {fromPort: 'top', toPort: 'bottom'}),
+    connector(nodes[2], nodes[3]),
+    connector(nodes[3], nodes[4]),
+    connector(nodes[4], nodes[5], {fromPort: 'bottom', toPort: 'top'}),
+    connector(nodes[5], nodes[6], {fromPort: 'left', toPort: 'right'}),
+    connector(nodes[6], nodes[3]),
   ];
-  return `${renderDiagram(diagram('transaction-loop', nodes, edges, slide.fragments))}<text x="275" y="245" text-anchor="middle" class="lbl-g">one bounded transaction</text><text x="778" y="375" text-anchor="middle" class="lbl-g">continuing reconciliation loop</text>`;
+  return `${renderDiagram(diagram('transaction-loop', nodes, edges, slide.fragments))}<text x="275" y="245" text-anchor="middle" class="lbl-g">one bounded transaction</text><text x="785" y="395" text-anchor="middle" class="lbl-g">observation feeds the next diff · never Git</text>`;
 }
 
 function renderDriftLoop(slide) {
@@ -170,6 +226,9 @@ function renderAuthorityBoundary(slide) {
 function renderM10Visual(slide) {
   if (slide.type === 'twoLanes' || slide.type === 'splitCommit') return renderTwoLanes(slide);
   if (slide.type === 'trustBoundary') return renderTrustBoundary(slide);
+  if (slide.type === 'inboundGate') return renderInboundGate(slide);
+  if (slide.type === 'workflowYaml') return renderWorkflowYaml(slide);
+  if (slide.type === 'argoYaml') return renderArgoYaml(slide);
   if (slide.type === 'planJson') return renderPlanJson(slide);
   if (slide.type === 'converge') return renderConverge(slide);
   if (slide.type === 'transactionLoop') return renderTransactionLoop(slide);
@@ -190,8 +249,8 @@ export function validateSlideSequence(candidateSlides) {
 function renderSection(slide) {
   if (slide.divider) return `<section class="divider"><h2 class="t">${escapeHtml(slide.title)}</h2><div class="pageno">${page(slide.n)}</div></section>`;
   const isTitle = slide.n === 1;
-  const isClosing = slide.n === 69;
-  const isLabBridge = slide.n === 70;
+  const isClosing = slide.n === 73;
+  const isLabBridge = slide.n === 74;
   const kicker = isTitle
     ? '<p class="kicker">MODULE 10 &nbsp;·&nbsp; AGENTIC INFRASTRUCTURE AS CODE</p>'
     : isClosing
@@ -234,7 +293,7 @@ export async function buildM10Deck({outputPath = DEFAULT_OUTPUT, checkOnly = fal
   const html = assembleDeck(shell, slides);
   const dividerCount = slides.filter((slide) => slide.divider).length;
   const result = {html, slideCount: slides.length, dividerCount, contentCount: slides.length - dividerCount};
-  if (result.slideCount !== 70 || dividerCount !== 9 || result.contentCount !== 61) throw new Error(`unexpected deck structure: ${result.slideCount} slides, ${dividerCount} dividers, ${result.contentCount} content slides`);
+  if (result.slideCount !== 74 || dividerCount !== 9 || result.contentCount !== 65) throw new Error(`unexpected deck structure: ${result.slideCount} slides, ${dividerCount} dividers, ${result.contentCount} content slides`);
   if (!checkOnly) {
     const resolvedOutput = resolve(outputPath);
     const temporaryOutput = `${resolvedOutput}.tmp`;

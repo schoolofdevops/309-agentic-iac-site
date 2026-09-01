@@ -10,11 +10,11 @@ import {validateDeckHtml} from '../../scripts/decks/validate-deck.mjs';
 
 const sectionsOf = (html) => [...html.matchAll(/<section\b[\s\S]*?<\/section>/g)].map((match) => match[0]);
 
-test('Module 10 is a 70-slide forward-only sequence with nine exact lecture dividers', () => {
-  assert.deepEqual(slides.map((slide) => slide.n), Array.from({length: 70}, (_, index) => index + 1));
+test('Module 10 is a 74-slide forward-only sequence with nine exact lecture dividers', () => {
+  assert.deepEqual(slides.map((slide) => slide.n), Array.from({length: 74}, (_, index) => index + 1));
   assert.deepEqual(slides.filter((slide) => slide.divider).map((slide) => slide.title), lectureTitles);
-  assert.equal(slides[68].title, 'Reviewed Bytes Move; Human Authority Stays Separate');
-  assert.equal(slides[69].type, 'icons');
+  assert.equal(slides[72].title, 'Reviewed Bytes Move; Human Authority Stays Separate');
+  assert.equal(slides[73].type, 'icons');
   assert.throws(() => validateSlideSequence([{n: 1}, {n: 1}]), /duplicate slide number/);
 });
 
@@ -23,11 +23,13 @@ test('Module 10 covers every approved delivery mechanism with no orphan topic', 
   for (const term of [
     'CODEOWNERS', 'Branch Rules', 'pull_request_target', 'Trusted Evaluator',
     'Token Permissions', 'Pin Every', 'Plan Artifacts', 'Protected Environment',
+    'The Reviewed Workflow Makes Trust Visible', 'actions/checkout@',
     'terraform_data.reviewed_delivery', 'apply_permitted: false', 'OpenTofu 1.12.6',
-    'Saved Plans', 'Stale Inputs', 'Controlled Apply', 'Refresh', 'OutOfSync',
+    'Saved Plans', 'Changed Inputs Reject', 'Controlled Apply', 'Refresh', 'OutOfSync',
     'Explicit Sync', 'Self-Heal', 'Prune', 's10-v1', 's10-v2', 'Fixture HEAD',
     'Sync Waves', 'Hooks', 'Git Revert', 'Roll Forward', 'Typed Links',
-    'Separation of Duties', '1.680 GiB', '61 passed',
+    'Separation of Duties', 'Signature Proves Identity', 'Ignored Fields Shrink',
+    '1.680 GiB', '61 passed',
   ]) assert.match(text, new RegExp(term, 'i'), `missing ${term}`);
 });
 
@@ -44,15 +46,15 @@ test('Module 10 carries one commit through distinct plan and reconciliation lane
 test('Module 10 semantic edges point toward their stated destinations', async () => {
   const {html} = await buildM10Deck({checkOnly: true});
   const sections = sectionsOf(html);
-  const lanes = sections.find((section) => section.includes('One Commit Enters Two Delivery Lanes'));
+  const lanes = sections.find((section) => section.includes('One Reviewed v1 Commit Enters Both Lanes'));
   const trust = sections.find((section) => section.includes('Trusted Evaluator Bytes Judge Untrusted PR Bytes'));
   const state = sections.find((section) => section.includes('Git Holds Desired State; Kubernetes Holds Live State'));
   const promotion = sections.find((section) => section.includes('Promotion Evidence Binds Commit, Artifact, and Target'));
   const graph = sections.find((section) => section.includes('Typed Links State the Exact Relationship'));
   const duties = sections.find((section) => section.includes('Separation of Duties Blocks Authority Loops'));
 
-  assert.match(lanes, /data-from="commit-1e01929" data-to="plan-only-workflow"/);
-  assert.match(lanes, /data-from="commit-1e01929" data-to="argo-cd-desired-state"/);
+  assert.match(lanes, /data-from="v1-reviewed-de8c3809e589" data-to="plan-only-workflow"/);
+  assert.match(lanes, /data-from="v1-reviewed-de8c3809e589" data-to="argo-cd-desired-state"/);
   assert.match(lanes, /data-from="plan-only-workflow" data-to="human-decision"/);
   assert.match(lanes, /data-from="argo-cd-desired-state" data-to="human-decision"/);
   assert.match(trust, /data-from="trusted-workflow-sha" data-to="fixed-evaluator"/);
@@ -67,6 +69,75 @@ test('Module 10 semantic edges point toward their stated destinations', async ()
   assert.match(graph, /data-from="runtime-observation" data-to="delivery-claim"/);
   assert.match(duties, /data-from="agent-proposes" data-to="delivery-acts"/);
   assert.match(duties, /forbidden author bypass/);
+});
+
+test('Module 10 preserves the reviewed, promoted, and recovery Git identities', () => {
+  const text = JSON.stringify(slides);
+  assert.match(text, /de8c3809e589b919345a97bddc6e3bc55e6e5d6b/);
+  assert.match(text, /f3616b72738f4c7477d5f0882d475e76eaa5acd9/);
+  assert.match(text, /5fc2c75c0e9c69f6a2b7bbd8c49f337e9e6889b6/);
+  assert.match(text, /d68f9405ee521b33162bf505b6bbca4a947f7ba1/);
+  assert.doesNotMatch(text, /1e01929/i);
+});
+
+test('Module 10 draws rejection, reconciliation, and approval edges in evidence order', async () => {
+  const {html} = await buildM10Deck({checkOnly: true});
+  const sections = sectionsOf(html);
+  const stale = sections.find((section) => section.includes('Changed Inputs Reject the Stale Plan'));
+  const loop = sections.find((section) => section.includes('Terraform Transacts; Argo Reconciles'));
+  const trail = sections.find((section) => section.includes('One Evidence Trail Connects Nine Records'));
+
+  for (const source of ['source-moved', 'workflow-moved', 'variables-changed', 'target-changed', 'policy-changed', 'state-changed']) {
+    assert.match(stale, new RegExp(`data-from="${source}" data-to="reject-stale-plan"`));
+    assert.doesNotMatch(stale, new RegExp(`data-from="reject-stale-plan" data-to="${source}"`));
+  }
+  for (const [from, to] of [
+    ['desired-git', 'diff'],
+    ['diff', 'explicit-sync'],
+    ['explicit-sync', 'live-objects'],
+    ['live-objects', 'observed-live'],
+    ['observed-live', 'diff'],
+  ]) assert.match(loop, new RegExp(`data-from="${from}" data-to="${to}"`));
+  assert.doesNotMatch(loop, /data-from="observed-live" data-to="desired-git"/);
+
+  for (const [from, to] of [
+    ['request', 'commit'],
+    ['commit', 'checks'],
+    ['checks', 'artifact-identity'],
+    ['artifact-identity', 'reviewer'],
+    ['reviewer', 'approval-commit-digest'],
+    ['approval-commit-digest', 'operation'],
+    ['operation', 'observation'],
+    ['observation', 'cleanup'],
+  ]) assert.match(trail, new RegExp(`data-from="${from}" data-to="${to}"`));
+});
+
+test('Module 10 shows exact reviewed workflow and Argo Application fields', async () => {
+  const {html} = await buildM10Deck({checkOnly: true});
+  const sections = sectionsOf(html);
+  const workflow = sections.find((section) => section.includes('The Reviewed Workflow Makes Trust Visible'));
+  const application = sections.find((section) => section.includes('The Application Keeps Sync Manual'));
+
+  assert.match(workflow, /pull_request:/);
+  assert.match(workflow, /permissions:/);
+  assert.match(workflow, /contents: read/);
+  assert.match(workflow, /actions\/checkout@/);
+  assert.match(workflow, /3d3c42e5aac5ba805825da76410c181273ba90b1/);
+  assert.match(application, /targetRevision: HEAD/);
+  assert.match(application, /syncPolicy:/);
+  assert.match(application, /automated/);
+  assert.match(application, /absent/);
+  assert.match(application, /status\.sync\.revision/);
+  assert.match(application, /de8c3809e589b919345a97bddc6e3bc55e6e5d6b/);
+});
+
+test('Module 10 states signature and ignored-field proof limits', () => {
+  const signature = slides.find((slide) => slide.title === 'A Signature Proves Identity, Not Safety');
+  const ignored = slides.find((slide) => slide.title === 'Ignored Fields Shrink Drift Evidence');
+  assert.match(JSON.stringify(signature), /SIGNATURE VALID.*trusted key signed bytes.*ENGINEERING REVIEW.*content \+ risk accepted/i);
+  assert.match(JSON.stringify(signature), /key custody \+ identity mapping remain policy/i);
+  assert.match(JSON.stringify(ignored), /RULE OWNER.*IGNORED FIELD.*STALE MASK.*PROOF LIMIT/i);
+  assert.match(JSON.stringify(ignored), /hide image or security drift/i);
 });
 
 test('Module 10 fragment steps keep connectors tied to visible destinations', async () => {
@@ -89,7 +160,7 @@ test('Module 10 fragment steps keep connectors tied to visible destinations', as
 test('Module 10 renders descriptive accessible visuals and valid connector geometry', async () => {
   const {html} = await buildM10Deck({checkOnly: true});
   const sections = sectionsOf(html);
-  assert.equal(sections.length, 70);
+  assert.equal(sections.length, 74);
   assert.equal(sections.filter((section) => /class="divider"/.test(section)).length, 9);
   for (const [index, section] of sections.entries()) {
     if (/class="divider"/.test(section)) {
@@ -142,8 +213,8 @@ test('Module 10 builder writes one exact self-contained deck', async () => {
   const outputPath = join(directory, 'deck.html');
   try {
     const result = await buildM10Deck({outputPath});
-    assert.deepEqual([result.slideCount, result.dividerCount, result.contentCount], [70, 9, 61]);
-    assert.equal(result.html.match(/class="pageno"/g)?.length, 70);
+    assert.deepEqual([result.slideCount, result.dividerCount, result.contentCount], [74, 9, 65]);
+    assert.equal(result.html.match(/class="pageno"/g)?.length, 74);
     assert.equal(result.html.includes('src="http'), false);
     assert.equal(result.html.includes('href="http'), false);
     assert.equal(result.html.includes("display: 'flex'"), true);
